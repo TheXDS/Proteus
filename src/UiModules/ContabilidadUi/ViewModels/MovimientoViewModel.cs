@@ -6,7 +6,7 @@ using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.ContabilidadUi.ViewModels
 {
-    public abstract class MovimientoViewModel : DynamicViewModel<Movimiento>
+    public abstract class MovimientoViewModel : ViewModel<Movimiento>
     {
         private decimal _debe;
         private decimal _haber;
