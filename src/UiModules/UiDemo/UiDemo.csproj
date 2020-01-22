@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>UiDemo</AssemblyName>
+    <Description>Demostración de capacidades de UI de Proteus.</Description>
+  </PropertyGroup>
+</Project>
