@@ -7,5 +7,6 @@ namespace TheXDS.Proteus.Models
     {
         public virtual CuentaMolde? Parent { get; set; }
         public virtual List<CuentaMolde> Children { get; set; } = new List<CuentaMolde>();
+        public virtual Divisa? DefaultDivisa { get; set; }
     }
 }

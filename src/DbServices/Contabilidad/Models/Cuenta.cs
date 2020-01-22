@@ -8,5 +8,7 @@ namespace TheXDS.Proteus.Models
         public virtual List<Cuenta> Children { get; set; } = new List<Cuenta>();
         public virtual List<SubCuenta> SubCuentas { get; set; } = new List<SubCuenta>();
         public virtual Cuenta? Parent { get; set; }
+        public virtual Divisa? DefaultDivisa { get; set; }
+        public decimal BalanceCache { get; set; }
     }
 }
