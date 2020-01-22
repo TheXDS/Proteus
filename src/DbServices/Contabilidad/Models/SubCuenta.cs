@@ -7,7 +7,7 @@ namespace TheXDS.Proteus.Models
     {
         public virtual Cuenta Parent { get; set; }
         public virtual List<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
-        public virtual Divisa? DefaultDivisa { get; set; }
+        public virtual Divisa? Divisa { get; set; }
         public decimal BalanceCache { get; set; }
     }
 }

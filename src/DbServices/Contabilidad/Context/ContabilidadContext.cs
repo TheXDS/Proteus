@@ -13,5 +13,8 @@ namespace TheXDS.Proteus.Context
         public DbSet<Cuenta> Cuentas { get; set; }
         public DbSet<CuentaMolde> CuentaMoldes { get; set; }
         public DbSet<Molde> Moldes { get; set; }
+        public DbSet<Divisa> Divisas { get; set; }
+        public DbSet<DocumentRef> DocumentRefs { get; set; }
+        public DbSet<DocumentKind> DocumentKinds { get; set; }
     }
 }

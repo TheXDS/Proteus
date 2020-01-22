@@ -14,12 +14,12 @@ namespace TheXDS.Proteus.Models
 
     public class DocumentRef : ModelBase<long>
     {
-        public string DocReference { get; set; }
         public virtual DocumentKind Kind { get; set; }
+        public string DocReference { get; set; }
         public string? FilePath { get; set; }
     }
 
-    public class DocumentKind : Nameable<byte>
+    public class DocumentKind : Nameable<int>
     {
         public virtual List<DocumentRef> Documents { get; set; } = new List<DocumentRef>();
     }

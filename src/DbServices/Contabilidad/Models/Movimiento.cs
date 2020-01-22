@@ -7,7 +7,6 @@ namespace TheXDS.Proteus.Models
         public virtual Partida Parent { get; set; }
         public virtual SubCuenta Cuenta { get; set; }
         public decimal RawValue { get; set; }
-        public virtual Divisa? Divisa { get; set; }
         public decimal? ExchangeRate { get; set; }
     }
 }

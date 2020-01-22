@@ -12,7 +12,7 @@ namespace TheXDS.Proteus.Models
 
         public override string ToString()
         {
-            return Timestamp.Year.ToString();
+            return Timestamp.ToString("MMMM yyyy");
         }
 
         public virtual List<Partida> Partidas { get; set; } = new List<Partida>();
