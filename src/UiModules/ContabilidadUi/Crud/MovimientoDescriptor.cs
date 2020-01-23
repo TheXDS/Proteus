@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using TheXDS.Proteus.ContabilidadUi.ViewModels;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
+using System.Windows;
 using TheXDS.Proteus.Models.Base;
 using static TheXDS.Proteus.Annotations.InteractionType;
+using System.Linq;
+using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
@@ -46,28 +48,49 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
 
     /// <summary>
     /// Describe las propiedades Crud para el modelo
-    /// <see cref="Entidad"/>.
+    /// <see cref="Empresa"/>.
     /// </summary>
-    public class EntidadDescriptor : CrudDescriptor<Entidad>
+    public class EmpresaDescriptor : CrudDescriptor<Empresa, EmpresaViewModel>
     {
         protected override void DescribeModel()
         {
             OnModuleMenu(AdminTool);
 
             Property(p => p.Name).AsName().AsListColumn();
+            this.DescribeAddress();
+            this.DescribeContact();
             ListProperty(p => p.Periodos).Creatable().Important("Periodos contables");
-            //ObjectProperty(p => p.Activo).Creatable().Important("Cuenta de activo").Required();
-            //ObjectProperty(p => p.Pasivo).Creatable().Important("Cuenta de pasivo").Required();
-            //ObjectProperty(p => p.Capital).Creatable().Important("Cuenta de patrimonio").Required();
             ShowAllInDetails();
-            BeforeSave(CreateRoot);
+
+            VmObjectProperty(p => p.FromMolde).Selectable()
+                .Bind(UIElement.IsEnabledProperty, nameof(EmpresaViewModel.CanAddMolde))
+                .Nullable()
+                .Label("Crear árbol contable desde plantilla");
+
+            VmBeforeSave(CreateRoot);
+
+            CustomAction("Abrir nuevo período", NewPeriod);
         }
 
-        private void CreateRoot(Entidad arg1, ModelBase arg2)
+        private void CreateRoot(EmpresaViewModel arg1, ModelBase arg2)
         {
-            arg1.Activo = new Cuenta() { Name = "Activo" };
-            arg1.Pasivo = new Cuenta() { Name = "Pasivo" };
-            arg1.Capital = new Cuenta() { Name = "Patrimonio" };
+            if (arg1.FromMolde is { } m)
+            {
+                arg1.Entity.Activo = m.Activo;
+                arg1.Entity.Pasivo = m.Pasivo;
+                arg1.Entity.Patrimonio = m.Patrimonio;
+            }
+            else
+            {
+                arg1.Entity.Activo = new Cuenta() { Name = "Activo" };
+                arg1.Entity.Pasivo = new Cuenta() { Name = "Pasivo" };
+                arg1.Entity.Patrimonio = new Cuenta() { Name = "Patrimonio" };
+            }
+        }
+
+        private void NewPeriod(Empresa obj)
+        {
+            
         }
     }
 
@@ -83,9 +106,9 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             FriendlyName("Molde de árbol contable");
 
             Property(p => p.Name).AsName().AsListColumn();
-            ObjectProperty(p => p.Activo).Creatable().Important("Cuenta de activo").Required();
-            ObjectProperty(p => p.Pasivo).Creatable().Important("Cuenta de pasivo").Required();
-            ObjectProperty(p => p.Capital).Creatable().Important("Cuenta de capital").Required();
+            ObjectProperty(p => p.Activo).Creatable().Important("Molde de cuenta de activo").Required();
+            ObjectProperty(p => p.Pasivo).Creatable().Important("Molde de cuenta de pasivo").Required();
+            ObjectProperty(p => p.Patrimonio).Creatable().Important("Molde de cuenta de capital").Required();
 
             ShowAllInDetails();
         }
@@ -100,10 +123,10 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         protected override void DescribeModel()
         {
             ObjectProperty(p => p.Cuenta).Selectable().Important("Cuenta afectada").Required().AsListColumn();
+            ObjectProperty(p => p.CostCenter).Selectable().Nullable().Label("Centro de costo afectado").AsListColumn().ShowInDetails();
             Property(p => p.RawValue).Important("Valor del movimiento").Validator<Movimiento>(CheckNotZero);
             VmProperty(p => p.Debe).Important("Valor del Debe");
             VmProperty(p => p.Haber).Important("Valor del Haber");
-
             VmProperty(p => p.RealValue).Label("Valor real").OnlyInDetails();
             VmProperty(p => p.LocalValue).Label("Valor en moneda local").OnlyInDetails();
             Property(p => p.ExchangeRate).Nullable().Label("Tasa de cambio").ShowInDetails();
@@ -119,14 +142,25 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
     /// Describe las propiedades Crud para el modelo
     /// <see cref="Partida"/>.
     /// </summary>
-    public class PartidaDescriptor : CrudDescriptor<Partida>
+    public class PartidaDescriptor : CrudDescriptor<Partida, PartidaViewModel>
     {
         protected override void DescribeModel()
         {
             DateProperty(p => p.Timestamp).WithTime().Important("Fecha/hora de partida").Default(DateTime.Now);
+            ObjectProperty(p => p.Entidad).Selectable().Nullable().Important("Entidad afectada");
             Property(p => p.Description).Important("Descripción").NotEmpty().Required();
-            ListProperty(p => p.Movimientos).Creatable().Important("Movimientos");
+            ListProperty(p => p.Movimientos).Creatable().Important("Movimientos").Validator<Partida>(ChkCuadrada);
+            VmProperty(p => p.Cuadre).Label("Valor de cuadre").ReadOnly();
             ListProperty(p => p.Documentos).Creatable().Important("Documentos de referencia");
+        }
+
+        private IEnumerable<ValidationError> ChkCuadrada(Partida partida, PropertyInfo prop)
+        {
+            var m = partida.Movimientos;
+            if (!m.Any()) yield return new NullValidationError(prop);
+            if (!m.) yield return new NullValidationError(prop);
+
+            if (m.Sum(p => p.RawValue) != 0m) yield return new ValidationError(prop,"Los movimientos no cuadran.");
         }
     }
 
@@ -143,6 +177,40 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         protected override void DescribeModel()
         {
             OnModuleMenu(Settings | Essential);
+            Property(p => p.Name).AsName();
+        }
+    }
+
+    /// <summary>
+    /// Describe las propiedades Crud para el modelo
+    /// <see cref="CostCenter"/>.
+    /// </summary>
+    public class CostCenterDescriptor : CrudDescriptor<CostCenter>
+    {
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="CostCenter"/>.
+        /// </summary>
+        protected override void DescribeModel()
+        {            
+            FriendlyName("Centro de costo");
+            Property(p => p.Name).AsName();
+        }
+    }
+
+    /// <summary>
+    /// Describe las propiedades Crud para el modelo
+    /// <see cref="Entidad"/>.
+    /// </summary>
+    public class EntidadDescriptor : CrudDescriptor<Entidad>
+    {
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Entidad"/>.
+        /// </summary>
+        protected override void DescribeModel()
+        {
+            OnModuleMenu(AdminTool);
             Property(p => p.Name).AsName();
         }
     }
@@ -167,7 +235,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 .Label("Archivo de referencia");
         }
     }
-
 
     /// <summary>
     /// Describe las propiedades Crud para el modelo

@@ -6,7 +6,7 @@ namespace TheXDS.Proteus.Models
 {
     public class Periodo : TimestampModel<int>, IVoidable
     {
-        public virtual Entidad Parent { get; set; }
+        public virtual Empresa Parent { get; set; }
 
         public DateTime? Void { get ; set; }
 

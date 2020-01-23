@@ -6,6 +6,6 @@ namespace TheXDS.Proteus.Models
     {
         public virtual CuentaMolde Activo { get; set; }
         public virtual CuentaMolde Pasivo { get; set; }
-        public virtual CuentaMolde Capital { get; set; }
+        public virtual CuentaMolde Patrimonio { get; set; }
     }
 }

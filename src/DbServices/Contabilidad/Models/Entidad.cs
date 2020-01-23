@@ -5,10 +5,8 @@ namespace TheXDS.Proteus.Models
 {
     public class Entidad : Nameable<int>
     {
-        public virtual List<Periodo> Periodos { get; set; } = new List<Periodo>();
-
-        public virtual Cuenta Activo { get; set; }
-        public virtual Cuenta Pasivo { get; set; }
-        public virtual Cuenta Capital { get; set; }
+        public virtual Empresa Parent { get; set; }
+        public virtual List<CostCenter> CostCenters { get; set; } = new List<CostCenter>();
+        public virtual List<Partida> Partidas { get; set; } = new List<Partida>();
     }
 }
