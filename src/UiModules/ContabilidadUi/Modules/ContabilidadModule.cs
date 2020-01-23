@@ -10,14 +10,15 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
 {
     public class ContabilidadModule : UiModule<ContabilidadService>
     {
-        public ContabilidadModule()
+        protected override void AfterInitialization()
         {
-            App.UiInvoke(SetupDashboard);
+            base.AfterInitialization();
+            App.UiInvoke(SetupDashboard);            
         }
 
         private void SetupDashboard()
         {
-            ModuleDashboard = new ContabMainMenuPage();
+            ModuleDashboard = new ContabMainMenuPage();            
         }
     }
 }

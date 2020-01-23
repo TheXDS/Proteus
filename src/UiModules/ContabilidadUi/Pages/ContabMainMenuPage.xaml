@@ -1,20 +1,43 @@
-﻿<UserControl x:Class="TheXDS.Proteus.ContabilidadUi.Pages.ContabMainMenuPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:TheXDS.Proteus.ContabilidadUi.Pages"
-      xmlns:api="clr-namespace:TheXDS.Proteus.Api;assembly=Contabilidad"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <WrapPanel>
-            <TextBlock>Empresa activa</TextBlock>
-            <ComboBox ItemsSource="{x:Static api:ContabilidadService.AllEmpresas}"/>
-        </WrapPanel>
-    </Grid>
+﻿<UserControl
+    x:Class="TheXDS.Proteus.ContabilidadUi.Pages.ContabMainMenuPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:TheXDS.Proteus.ContabilidadUi.Pages"
+    xmlns:api="clr-namespace:TheXDS.Proteus.Api;assembly=Contabilidad"
+    xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"    
+    mc:Ignorable="d" 
+    Margin="10"
+    d:DesignHeight="450" d:DesignWidth="800">
+    <controls:BusyContainer IsBusy="{Binding IsBusy, Mode=OneWay}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <UniformGrid Columns="2">
+                <TextBlock VerticalAlignment="Center">Empresa activa</TextBlock>
+                <ComboBox 
+                    IsEnabled="{Binding CanSelectEmpresa, Mode=OneWay}"
+                    ItemsSource="{Binding AllEmpresas, Mode=OneWay}" 
+                    SelectedItem="{Binding ActiveEmpresa}"/>
+                <TextBlock VerticalAlignment="Center">Entidad activa</TextBlock>
+                <ComboBox 
+                    IsEnabled="{Binding CanSelectEntidad, Mode=OneWay}"
+                    ItemsSource="{Binding ActiveEmpresa.Entidades, Mode=OneWay}" 
+                    SelectedItem="{Binding ActiveEntidad}"/>
+                <TextBlock VerticalAlignment="Center">Periodo activo</TextBlock>
+                <ComboBox 
+                    IsEnabled="{Binding CanSelectPeriodo, Mode=OneWay}"
+                    ItemsSource="{Binding ActiveEmpresa.Periodos, Mode=OneWay}" 
+                    SelectedItem="{Binding ActivePeriodo}"/>
+            </UniformGrid>
+            <ScrollViewer Grid.Row="1" Margin="0,10,0,0">
+                <StackPanel>
+                    <TextBlock>Placeholder de Dashboard</TextBlock>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </controls:BusyContainer>
 </UserControl>

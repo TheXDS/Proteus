@@ -18,5 +18,7 @@ namespace TheXDS.Proteus.Context
         public DbSet<Divisa> Divisas { get; set; }
         public DbSet<DocumentRef> DocumentRefs { get; set; }
         public DbSet<DocumentKind> DocumentKinds { get; set; }
+        public DbSet<AclEntry> AclEntries { get; set; }
+        public DbSet<AccessControlList> AccessControlLists { get; set; }
     }
 }

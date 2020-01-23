@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Threading.Tasks;
+using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Context;
-using TheXDS.Proteus.Models;
+using TheXDS.Proteus.ViewModels;
 
 namespace TheXDS.Proteus.Api
 {
     public class ContabilidadService : Service<ContabilidadContext>
     {
-        private static ContabilidadService Instance => Proteus.Service<ContabilidadService>();
-        public static IEnumerable<Empresa> AllEmpresas => Instance?.All<Empresa>().ToList();
+        public static ContabManagerViewModel ModuleStatus { get; private set; }
+        
+        protected override Task AfterInitialization(IStatusReporter reporter)
+        {            
+            ModuleStatus = new ContabManagerViewModel();
+            return ModuleStatus.InitViewModel();
+        }
     }
 }

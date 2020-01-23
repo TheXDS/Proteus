@@ -1,57 +1,9 @@
 ﻿using System.Globalization;
-using System.Linq;
 using TheXDS.MCART.ViewModel;
-using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.ContabilidadUi.ViewModels
 {
-
-    /// <summary>
-    /// Clase base personalizada para el ViewModel recompilado que se utilizará
-    /// dentro del Crud generado para el modelo
-    /// <see cref="Partida"/>.
-    /// </summary>
-    public class PartidaViewModel : ViewModel<Partida>
-    {
-        /// <summary>
-        /// Obtiene el valor de cuadre de la partida.
-        /// </summary>
-        public decimal Cuadre => Entity is { } e && e.Movimientos.Any() ? e.Movimientos.Sum(p => p.RawValue) : 0m;
-
-
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase
-        /// <see cref="PartidaViewModel"/>.
-        /// </summary>
-        public PartidaViewModel()
-        {
-            RegisterPropertyChangeBroadcast(nameof(Partida.Movimientos), nameof(Cuadre));
-        }
-    }
-
-
-    /// <summary>
-    /// Clase base personalizada para el ViewModel recompilado que se utilizará
-    /// dentro del Crud generado para el modelo
-    /// <see cref="Empresa"/>.
-    /// </summary>
-    public class EmpresaViewModel : ViewModel<Empresa>
-    {
-        /// <summary>
-        /// Permite seleccionar un molde opcional para generar el árbol
-        /// contable.
-        /// </summary>
-        public Molde? FromMolde { get; set; }
-
-        /// <summary>
-        /// Obtiene un valor que indica si es posible generar el árbol contable
-        /// para una nueva entidad.
-        /// </summary>
-        public bool CanAddMolde => Entity?.IsNew ?? false;
-    }
-
-
     /// <summary>
     /// ViewModel que gestiona propiedades avanzadas y calculadas del modelo
     /// <see cref="Movimiento"/>.
