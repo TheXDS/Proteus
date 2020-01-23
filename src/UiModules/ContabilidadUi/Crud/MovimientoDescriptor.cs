@@ -158,8 +158,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         {
             var m = partida.Movimientos;
             if (!m.Any()) yield return new NullValidationError(prop);
-            if (!m.) yield return new NullValidationError(prop);
-
             if (m.Sum(p => p.RawValue) != 0m) yield return new ValidationError(prop,"Los movimientos no cuadran.");
         }
     }

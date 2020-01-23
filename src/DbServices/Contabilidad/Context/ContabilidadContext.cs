@@ -19,5 +19,4 @@ namespace TheXDS.Proteus.Context
         public DbSet<DocumentRef> DocumentRefs { get; set; }
         public DbSet<DocumentKind> DocumentKinds { get; set; }
     }
-
 }
