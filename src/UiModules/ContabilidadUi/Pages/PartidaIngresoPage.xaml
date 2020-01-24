@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:TheXDS.Proteus.ContabilidadUi.Pages"
+        xmlns:proteus="clr-namespace:TheXDS.Proteus.Widgets;assembly=ProteusWorkstation"
     xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
     xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -15,30 +16,48 @@
         <StackPanel Style="{StaticResource Botonera}">
             <xctk:DateTimePicker Value="{Binding Entity.Timestamp}"/>
             <TextBox Text="{Binding Entity.Description}"/>
-            
 
 
-            <fw:AcrylicPopup>                
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBox/>
-                    <Button HorizontalAlignment="Right" Content="X"/>
-                    <TreeView 
-                        Grid.Row="1"
-                        Height="150"
-                        ItemsSource="{Binding CuentaResults, Mode=OneWay}"/>
-                    <UniformGrid Grid.Row="2" Rows="1">
-                        <Button>Seleccionar</Button>
-                        <Button>Cancelar</Button>
-                    </UniformGrid>
-                </Grid>
+
+            <fw:AcrylicPopup
+                AllowsTransparency="True"
+                IsOpen="{Binding CuentaSelectMode, Mode=OneWay}"
+                Placement="Relative">
             </fw:AcrylicPopup>
-            
-            
+                <controls:BusyContainer IsBusy="{Binding IsSearchingCuenta, Mode=OneWay}">
+                    <Grid MinWidth="200" MaxWidth="350" MinHeight="150">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox
+                            Text="{Binding CuentaSearchQuery}"
+                            proteus:ProteusProp.Watermark="Buscar cuenta..."
+                            proteus:ProteusProp.Icon="🔍" />
+                        <Button
+                            Content="{Binding CuentaSearchLabel, Mode=OneWay}"
+                            Command="{Binding CuentaSearchCommand, Mode=OneWay}"
+                            Grid.Column="1"/>
+                        <ListView
+                            ItemsSource="{Binding CuentaResults, Mode=OneWay}"
+                            SelectedItem="{Binding CuentaSelection}"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"/>
+                        <UniformGrid Rows="1" Grid.Row="2" Grid.ColumnSpan="2">
+                            <Button Command="{Binding OkSelectCuentaCommand, Mode=OneWay}">
+                                Seleccionar
+                            </Button>
+                            <Button Command="{Binding CancelSelectCuentaCommand, Mode=OneWay}">
+                                Cancelar
+                            </Button>
+                        </UniformGrid>
+                    </Grid>
+                </controls:BusyContainer>
         </StackPanel>
     </controls:BusyContainer>
 </Page>
