@@ -1,6 +1,4 @@
 ﻿using System.Windows.Controls;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.ViewModels;
 
 namespace TheXDS.Proteus.ContabilidadUi.Pages
 {
@@ -12,7 +10,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Pages
         public ContabMainMenuPage()
         {
             InitializeComponent();
-            DataContext = ContabilidadService.ModuleStatus;
         }
     }
 }

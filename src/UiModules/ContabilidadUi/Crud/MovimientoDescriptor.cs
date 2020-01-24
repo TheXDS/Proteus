@@ -11,6 +11,7 @@ using static TheXDS.Proteus.Annotations.InteractionType;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
+using TheXDS.Proteus.ContabilidadUi.Modules;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
@@ -73,9 +74,9 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             AfterSave(UpdateViewModel);
         }
 
-        private void UpdateViewModel(Empresa arg1, ModelBase arg2)
+        private async void UpdateViewModel(Empresa arg1, ModelBase arg2)
         {            
-            ContabilidadService.ModuleStatus.InitViewModel();
+            await ContabilidadModule.ModuleStatus.InitViewModel();
         }
 
         private void CreateRoot(EmpresaViewModel arg1, ModelBase arg2)

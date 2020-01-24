@@ -1,24 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TheXDS.Proteus.Api;
+﻿using TheXDS.Proteus.Api;
 using TheXDS.Proteus.ContabilidadUi.Pages;
-using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Plugins;
+using TheXDS.Proteus.ViewModels;
 
 namespace TheXDS.Proteus.ContabilidadUi.Modules
 {
     public class ContabilidadModule : UiModule<ContabilidadService>
     {
+        public static ContabManagerViewModel ModuleStatus { get; private set; }
+
         protected override void AfterInitialization()
         {
             base.AfterInitialization();
             App.UiInvoke(SetupDashboard);            
         }
 
-        private void SetupDashboard()
+        private async void SetupDashboard()
         {
-            ModuleDashboard = new ContabMainMenuPage();            
+            ModuleDashboard = new ContabMainMenuPage
+            {
+                DataContext = ModuleStatus = new ContabManagerViewModel()
+            };            
+            await ModuleStatus.InitViewModel();
         }
     }
 }
