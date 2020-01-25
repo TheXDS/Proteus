@@ -30,6 +30,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             ListProperty(p => p.Children).Creatable().Important("Cuentas hijas");
             ListProperty(p => p.SubCuentas).Creatable().Important("Sub-cuentas");
             ShowAllInDetails();
+            Template();
         }
     }
 
@@ -157,6 +158,8 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
     {
         protected override void DescribeModel()
         {
+            OnModuleMenu(Operation);
+
             DateProperty(p => p.Timestamp).WithTime().Important("Fecha/hora de partida").Default(DateTime.Now);
             ObjectProperty(p => p.Entidad)
                 .Selectable()
@@ -167,6 +170,20 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             ListProperty(p => p.Movimientos).Creatable().Important("Movimientos").Validator<Partida>(ChkCuadrada);
             VmProperty(p => p.Cuadre).Label("Valor de cuadre").ReadOnly();
             ListProperty(p => p.Documentos).Creatable().Important("Documentos de referencia");
+
+            BeforeSave(SetPeriod);
+        }
+
+        private void SetPeriod(Partida partida, ModelBase arg2)
+        {
+            if (arg2 is Periodo)
+            {
+                
+            }
+            else
+            {
+                partida.Parent = ContabilidadModule.ModuleStatus.ActivePeriodo;
+            }
         }
 
         private IEnumerable<ValidationError> ChkCuadrada(Partida partida, PropertyInfo prop)
@@ -272,7 +289,8 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         protected override void DescribeModel()
         {
             Property(p => p.Name).AsName();
-            ListProperty(p => p.Movimientos).Creatable().Label("Movimientos de la partida").Required().ShowInDetails();
+            //ListProperty(p => p.Movimientos).Creatable().Label("Movimientos de la partida").Required().ShowInDetails();
+            Template();
         }
     }
 

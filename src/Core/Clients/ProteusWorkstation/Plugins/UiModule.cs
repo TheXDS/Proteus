@@ -96,7 +96,7 @@ namespace TheXDS.Proteus.Plugins
 
         public void AutoRegisterMenu<T>() where T : Service, new()
         {
-            foreach (var j in Proteus.Service<T>().Models().Where(p=>!p.IsAbstract).Select(p=>p.ResolveToDefinedType()))
+            foreach (var j in Proteus.Service<T>()!.Models().Where(p=>!p.IsAbstract).Select(p=>p.ResolveToDefinedType()))
             {
                 var descr = Crud.CrudElement.GetDescription(j);
                 var type = descr?.OnModuleMenu;
