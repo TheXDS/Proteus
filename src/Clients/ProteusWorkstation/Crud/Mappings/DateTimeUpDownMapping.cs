@@ -21,16 +21,4 @@ namespace TheXDS.Proteus.Crud.Mappings
             }
         }
     }
-
-    public class DateTimeUpDownRangeMapping : XceedUpDownRangeMapping<DateTimePicker, DateTime>
-    {
-        public DateTimeUpDownRangeMapping(IPropertyDescription property) : base(property)
-        {
-            if (property is IPropertyDateDescription d)
-            {
-                _lower.Format = d.WithTime ? DateTimeFormat.FullDateTime : DateTimeFormat.LongDate;
-                _upper.Format = d.WithTime ? DateTimeFormat.FullDateTime : DateTimeFormat.LongDate;
-            }
-        }
-    }
 }
