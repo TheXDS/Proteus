@@ -6,17 +6,26 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:TheXDS.Proteus.ContabilidadUi.Pages"
     xmlns:api="clr-namespace:TheXDS.Proteus.Api;assembly=Contabilidad"
-    xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"    
+    xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     mc:Ignorable="d" 
     Margin="10"
     d:DesignHeight="450" d:DesignWidth="800">
     <controls:BusyContainer IsBusy="{Binding IsBusy, Mode=OneWay}">
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <UniformGrid Columns="2">
+            <StackPanel>
+                <TextBlock Style="{StaticResource Title}">Contabilidad</TextBlock>
+                <TextBlock> Menú principal</TextBlock>
+            </StackPanel>
+            <UniformGrid Columns="2" Grid.Column="1">
                 <TextBlock VerticalAlignment="Center">Empresa activa</TextBlock>
                 <ComboBox 
                     IsEnabled="{Binding CanSelectEmpresa, Mode=OneWay}"
@@ -33,11 +42,38 @@
                     ItemsSource="{Binding ActiveEmpresa.Periodos, Mode=OneWay}" 
                     SelectedItem="{Binding ActivePeriodo}"/>
             </UniformGrid>
-            <ScrollViewer Grid.Row="1" Margin="0,10,0,0">
-                <StackPanel>
-                    <TextBlock>Placeholder de Dashboard</TextBlock>
-                </StackPanel>
-            </ScrollViewer>
+            <controls:BusyContainer Grid.Row="1" IsBusy="True" Grid.ColumnSpan="2">
+                <ScrollViewer Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock>Placeholder de Dashboard</TextBlock>
+                        <controls:LightGraph
+                            Height="200"
+                            GraphDrawMode="Filled"
+                            GraphTitle="Placeholder"
+                            XLabel="Niveles"
+                            Y2Label="Menta"
+                            YLabel="Aqua">
+                            <controls:LightGraph.Graph>
+                                <system:Double>1</system:Double>
+                                <system:Double>2</system:Double>
+                                <system:Double>4</system:Double>
+                                <system:Double>0</system:Double>
+                                <system:Double>1</system:Double>
+                                <system:Double>4</system:Double>
+                            </controls:LightGraph.Graph>
+                            <controls:LightGraph.Graph2>
+                                <system:Double>3</system:Double>
+                                <system:Double>1</system:Double>
+                                <system:Double>0</system:Double>
+                                <system:Double>3</system:Double>
+                                <system:Double>4</system:Double>
+                                <system:Double>2</system:Double>
+                            </controls:LightGraph.Graph2>
+                        </controls:LightGraph>
+                        <controls:ProgressRing Width="200" HorizontalAlignment="Left" Value="33"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </controls:BusyContainer>
         </Grid>
     </controls:BusyContainer>
 </UserControl>

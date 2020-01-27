@@ -7,5 +7,10 @@ namespace TheXDS.Proteus.Models
         public virtual DocumentKind Kind { get; set; }
         public string DocReference { get; set; }
         public string? FilePath { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Kind} #{DocReference}";
+        }
     }
 }

@@ -12,5 +12,10 @@ namespace TheXDS.Proteus.Models
 
         public static implicit operator decimal(Movimiento mov) => mov.RawValue;
 
+        public override string ToString()
+        {
+            return $"{Cuenta}: {RawValue:C}";
+        }
+
     }
 }
