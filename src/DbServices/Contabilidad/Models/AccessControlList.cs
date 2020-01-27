@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
@@ -10,5 +11,10 @@ namespace TheXDS.Proteus.Models
         public AclValue? CostCenterDefault { get; set; }
 
         public virtual List<AclEntry> Entries { get; set; } = new List<AclEntry>();
+
+        public override string ToString()
+        {
+            return $"Control de acceso{Proteus.ResolveLink<User>(UserId)?.Name?.OrNull(" para {0}")}";
+        }
     }
 }

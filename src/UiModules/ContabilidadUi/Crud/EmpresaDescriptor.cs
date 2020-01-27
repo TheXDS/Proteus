@@ -45,14 +45,20 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             if (arg1.FromMolde is { } m)
             {
                 arg1.Entity.Activo = m.Activo;
+                arg1.Entity.Activo.Prefix = 1;
+
                 arg1.Entity.Pasivo = m.Pasivo;
+                arg1.Entity.Pasivo.Prefix = 2;
+
                 arg1.Entity.Patrimonio = m.Patrimonio;
+                arg1.Entity.Patrimonio.Prefix = 3;
             }
+
             else
             {
-                arg1.Entity.Activo = new Cuenta() { Name = "Activo" };
-                arg1.Entity.Pasivo = new Cuenta() { Name = "Pasivo" };
-                arg1.Entity.Patrimonio = new Cuenta() { Name = "Patrimonio" };
+                arg1.Entity.Activo = new Cuenta() { Name = "Activo", Prefix = 1 };
+                arg1.Entity.Pasivo = new Cuenta() { Name = "Pasivo", Prefix = 2 };
+                arg1.Entity.Patrimonio = new Cuenta() { Name = "Patrimonio", Prefix = 3 };
             }
         }
 

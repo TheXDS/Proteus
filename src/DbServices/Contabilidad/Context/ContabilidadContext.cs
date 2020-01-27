@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity;
 using TheXDS.Proteus.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TheXDS.Proteus.Context
 {

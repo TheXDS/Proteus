@@ -67,7 +67,8 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
         {
             RegisterLauncher(new Widgets.Launcher("Catálogo de cuentas", "Administra el catálogo de cuentas para la empresa activa.", () =>
             {
-                if (!(ModuleStatus.ActiveEmpresa is { } e)) return;
+                if (!CanOpen()) return;
+                var e = ModuleStatus.ActiveEmpresa!;
                 var q = new[]
                 {
                     e.Activo,
@@ -78,14 +79,16 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
                 Host.OpenPage(CrudPage.New<ContabilidadService>("Catálogo de cuentas", q, new[] { typeof(Cuenta), typeof(SubCuenta) }));
             }), InteractionType.Catalog.NameOf());
 
-            RegisterDictionary("Templates/Templates.xaml");
-
-
             ModuleDashboard = new ContabMainMenuPage
             {
                 DataContext = ModuleStatus = new ContabManagerViewModel()
             };            
             await ModuleStatus.InitViewModel();
+        }
+
+        public ContabilidadModule()
+        {
+            RegisterDictionary("Templates/Templates.xaml");
         }
     }
 }

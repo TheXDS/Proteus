@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TheXDS.Proteus.Models.Base;
 
@@ -16,10 +17,23 @@ namespace TheXDS.Proteus.Models
             return new Cuenta
             {
                 Name = molde.Name,
-                Children = molde.Children.Select(p => (Cuenta)p).ToList(),
+                Children = molde.Children.Select(ToCuenta).ToList(),
                 DefaultDivisa = molde.DefaultDivisa,
-                SubCuentas = molde.SubCuentas.Select(p => (SubCuenta)p).ToList()
+                SubCuentas = molde.SubCuentas.Select(ToCuenta).ToList()
             };
+        }
+
+        private static Cuenta ToCuenta(CuentaMolde p, int i)
+        {
+            var c = (Cuenta)p;
+            c.Prefix = (short)(i + 1);
+            return c;
+        }
+        private static SubCuenta ToCuenta(SubCuentaMolde p, int i)
+        {
+            var c = (SubCuenta)p;
+            c.Prefix = (short)(i + 1);
+            return c;
         }
 
         public static implicit operator CuentaMolde(string name)

@@ -1,5 +1,6 @@
 ﻿using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
@@ -14,6 +15,13 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             Property(p => p.Name).AsName();
             Property(p => p.Movimientos).OnlyInDetails("Movimientos de la partida");
             Template();
+            BeforeSave(SetPrefix);
+        }
+
+        private void SetPrefix(SubCuenta arg1, ModelBase arg2)
+        {
+            if (!(arg2 is Cuenta c)) return;
+            arg1.Prefix = c.FreeSubCuentaPrefix;
         }
     }
 }
