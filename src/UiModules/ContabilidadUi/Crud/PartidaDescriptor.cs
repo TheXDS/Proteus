@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TheXDS.Proteus.Api;
 using TheXDS.Proteus.ContabilidadUi.Modules;
 using TheXDS.Proteus.ContabilidadUi.ViewModels;
 using TheXDS.Proteus.Crud;
@@ -28,7 +29,9 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             VmProperty(p => p.Cuadre).Label("Valor de cuadre").ReadOnly();
             ListProperty(p => p.Documentos).Creatable().ShowInDetails().Label("Documentos de referencia");
             BeforeSave(SetPeriod);            
+         
             CanCreate(o => o is Periodo || ContabilidadModule.ModuleStatus.ActivePeriodo is { });
+            CanEdit(o => o.IsNew || (Proteus.Service<ContabilidadService>()?.CanRunService(SecurityFlags.Admin) ?? false));
         }
 
         private void SetPeriod(Partida partida, ModelBase arg2)

@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Reporting;
+using System;
 
 namespace TheXDS.Proteus.Models
 {
@@ -14,4 +17,5 @@ namespace TheXDS.Proteus.Models
 
         public string FullCode => $"{Parent?.FullCode.OrNull("{0}-")}{Prefix}";
     }
+
 }

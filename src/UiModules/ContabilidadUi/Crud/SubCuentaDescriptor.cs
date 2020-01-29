@@ -12,6 +12,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
     {
         protected override void DescribeModel()
         {
+            Property(p => p.FullCode).AsListColumn().ShowInDetails().Hidden();
             Property(p => p.Name).AsName();
             Property(p => p.Movimientos).OnlyInDetails("Movimientos de la partida");
             Template();
