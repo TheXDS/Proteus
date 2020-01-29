@@ -16,7 +16,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            Property(p => p.FullCode).Label("Código de cuenta").OnlyInDetails();
+            Property(p => p.FullCode).Label("Código de cuenta").AsListColumn().ShowInDetails().Hidden();
             Property(p => p.Name).AsName().AsListColumn();
             ListProperty(p => p.Children).Creatable().Important("Cuentas hijas");
             ListProperty(p => p.SubCuentas).Creatable().Important("Sub-cuentas");
