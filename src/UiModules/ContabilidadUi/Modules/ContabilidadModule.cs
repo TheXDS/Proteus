@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using TheXDS.MCART.Attributes;
+using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
@@ -8,6 +10,10 @@ using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Pages.Base;
 using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.ViewModels;
+using TheXDS.Proteus.Widgets;
+using TheXDS.Proteus.Reporting;
+using System.Windows.Documents;
+using System.Collections.Generic;
 
 namespace TheXDS.Proteus.ContabilidadUi.Modules
 {
@@ -59,26 +65,12 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
 
         protected override void AfterInitialization()
         {
-            base.AfterInitialization();            
-            App.UiInvoke(SetupDashboard);     
+            base.AfterInitialization();
+            App.UiInvoke(SetupDashboard);
         }
 
         private async void SetupDashboard()
         {
-            RegisterLauncher(new Widgets.Launcher("Catálogo de cuentas", "Administra el catálogo de cuentas para la empresa activa.", () =>
-            {
-                if (!CanOpen()) return;
-                var e = ModuleStatus.ActiveEmpresa!;
-                var q = new[]
-                {
-                    e.Activo,
-                    e.Pasivo,
-                    e.Patrimonio
-                }.AsQueryable();
-
-                Host.OpenPage(CrudPage.New<ContabilidadService>("Catálogo de cuentas", q, new[] { typeof(Cuenta), typeof(SubCuenta) }));
-            }), InteractionType.Catalog.NameOf());
-
             ModuleDashboard = new ContabMainMenuPage
             {
                 DataContext = ModuleStatus = new ContabManagerViewModel()
@@ -89,6 +81,47 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
         public ContabilidadModule()
         {
             RegisterDictionary("Templates/Templates.xaml");
+            RegisterLauncher(new Launcher("Catálogo de cuentas", "Administra el catálogo de cuentas para la empresa activa.", OpenAdminCatCuentas), InteractionType.Catalog.NameOf());
+            RegisterLauncher(new Launcher("Balance general", "Genera un balance general de la empresa y periodo activos.", MakeBalanceGeneral), InteractionType.Reports.NameOf());
+
+        }
+
+        private async void MakeBalanceGeneral()
+        {
+            var fd = ReportBuilder.MakeReport("Balance general");
+        }
+
+        private void Add2Table(Table tbl, Cuenta c, int lvl)
+        {
+            var r = new List<string>
+            {
+                $"{new string(' ', lvl)}{c.FullCode}: {c.Name}",
+                c.InitialCache.ToString("C"),
+                (c.BalanceCache - c.InitialCache).ToString("C")
+            };
+
+            if (c.BalanceCache < 0)
+            {
+                r.Add("");
+                r.Add((-c.BalanceCache).ToString("c"));
+            }
+            
+            tbl.AddRow(r).Bold();
+
+
+
+            foreach (var j in c.Children)
+            {
+                Add2Table(tbl, j, lvl + 1);
+            }
+        }
+
+        private void OpenAdminCatCuentas()
+        {
+            if (!CanOpen()) return;
+            var e = ModuleStatus.ActiveEmpresa!;
+            var q = new[] { e.Activo, e.Pasivo, e.Patrimonio }.AsQueryable();
+            Host.OpenPage(CrudPage.New<ContabilidadService>("Catálogo de cuentas", q, new[] { typeof(Cuenta), typeof(SubCuenta) }));
         }
     }
 }

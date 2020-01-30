@@ -12,6 +12,7 @@ namespace TheXDS.Proteus.Models
         public virtual List<SubCuenta> SubCuentas { get; set; } = new List<SubCuenta>();
         public virtual Cuenta? Parent { get; set; }
         public virtual Divisa? DefaultDivisa { get; set; }
+        public decimal InitialCache { get; set; }
         public decimal BalanceCache { get; set; }
 
         public IEnumerable<ModelBase> JointTree => Children.Cast<ModelBase>().Concat(SubCuentas);
