@@ -42,7 +42,7 @@
                     ItemsSource="{Binding ActiveEmpresa.Periodos, Mode=OneWay}" 
                     SelectedItem="{Binding ActivePeriodo}"/>
             </UniformGrid>
-            <controls:BusyContainer Grid.Row="1" IsBusy="True" Grid.ColumnSpan="2">
+            <controls:BusyContainer Grid.Row="1" Grid.ColumnSpan="2">
                 <ScrollViewer Margin="0,10,0,0">
                     <StackPanel>
                         <TextBlock>Placeholder de Dashboard</TextBlock>
@@ -59,6 +59,7 @@
                                 <system:Double>4</system:Double>
                                 <system:Double>0</system:Double>
                                 <system:Double>1</system:Double>
+                                <system:Double>1</system:Double>
                                 <system:Double>4</system:Double>
                             </controls:LightGraph.Graph>
                             <controls:LightGraph.Graph2>
@@ -67,10 +68,10 @@
                                 <system:Double>0</system:Double>
                                 <system:Double>3</system:Double>
                                 <system:Double>4</system:Double>
+                                <system:Double>4</system:Double>
                                 <system:Double>2</system:Double>
                             </controls:LightGraph.Graph2>
                         </controls:LightGraph>
-                        <controls:ProgressRing Width="200" HorizontalAlignment="Left" Value="33"/>
                     </StackPanel>
                 </ScrollViewer>
             </controls:BusyContainer>
