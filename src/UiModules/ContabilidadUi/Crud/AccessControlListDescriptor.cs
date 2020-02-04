@@ -16,7 +16,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            OnModuleMenu(Settings);
+            OnModuleMenu(Settings, Modules.ContabilidadModule.IsAdmin);
             FriendlyName("Controles de acceso");
 
             LinkProperty<User>(p => p.UserId).Required().Important("Usuario");

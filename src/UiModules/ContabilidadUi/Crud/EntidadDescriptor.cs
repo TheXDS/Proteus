@@ -20,10 +20,14 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            OnModuleMenu(AdminTool);
+            OnModuleMenu(AdminTool, ContabilidadModule.CanOpen);
             Property(p => p.Name).AsName();
             BeforeSave(SetParent);
-
+            ListProperty(p => p.CostCenters)
+                .Creatable()
+                .Required()
+                .Label("Centros de costo asociados")
+                .ShowInDetails();
             CanDelete(ChkNoPartidas);
         }
 
@@ -37,5 +41,4 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             arg1.Parent = arg2 as Empresa ?? ContabilidadModule.ModuleStatus.ActiveEmpresa ?? throw new Exception();
         }
     }
-
 }

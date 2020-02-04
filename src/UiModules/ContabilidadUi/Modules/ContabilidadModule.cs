@@ -1,7 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Documents;
 using TheXDS.MCART.Attributes;
-using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
@@ -9,11 +9,9 @@ using TheXDS.Proteus.ContabilidadUi.Pages;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Pages.Base;
 using TheXDS.Proteus.Plugins;
+using TheXDS.Proteus.Reporting;
 using TheXDS.Proteus.ViewModels;
 using TheXDS.Proteus.Widgets;
-using TheXDS.Proteus.Reporting;
-using System.Windows.Documents;
-using System.Collections.Generic;
 
 namespace TheXDS.Proteus.ContabilidadUi.Modules
 {
@@ -61,6 +59,22 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Obtiene un valor que determina si es posible realizar acciones 
+        /// administrativas sobre el servicio de contabilidad.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> si el usuario actual tiene acceso a
+        /// funciones administrativas del módulo de contabilidad,
+        /// <see langword="false"/> en caso contrario.
+        /// </returns>
+        public static bool IsAdmin()
+        {
+            var r = Proteus.Service<ContabilidadService>()!.CanRunService(SecurityFlags.Admin) ?? false;
+            if (!r) Proteus.MessageTarget?.Stop("Se necesitan permisos administrativos para realizar esta acción.");
+            return r;
         }
 
         protected override void AfterInitialization()
