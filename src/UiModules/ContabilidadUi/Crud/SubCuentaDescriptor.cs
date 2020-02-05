@@ -21,8 +21,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
 
         private void SetPrefix(SubCuenta arg1, ModelBase arg2)
         {
-            if (!(arg2 is Cuenta c)) return;
-            arg1.Prefix = c.FreeSubCuentaPrefix;
+            arg1.Prefix = (arg2 as Cuenta)?.FreeSubCuentaPrefix ?? 1;
         }
     }
 }

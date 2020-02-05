@@ -10,6 +10,9 @@ using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Context;
 using TheXDS.Proteus.ViewModels;
 using System.Linq;
+using TheXDS.MCART.Controls;
+using System.Windows.Media;
+using TheXDS.Proteus.ContabilidadUi.Modules;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -63,7 +66,11 @@ namespace TheXDS.Proteus.ViewModels
         public Periodo? ActivePeriodo
         {
             get => _activePeriodo;
-            set => Change(ref _activePeriodo, value);
+            set
+            {
+                if (!Change(ref _activePeriodo, value) || value is null) return;
+                UpdateGraph();
+            }
         }
 
         /// <summary>
@@ -94,6 +101,42 @@ namespace TheXDS.Proteus.ViewModels
         {
             get => _canSelectPeriodo;
             private set => Change(ref _canSelectPeriodo, value);
+        }
+
+        public LightGraph Graph { get; }
+
+        public ContabManagerViewModel()
+        {
+            Graph = new LightGraph
+            {
+                Margin = new System.Windows.Thickness(20, 50, 20, 20),
+                Height = 200,
+                GraphDrawMode = EnumGraphDrawMode.Bars | EnumGraphDrawMode.Filled,
+                GraphTitle = "Movimientos en cuentas (úlitmas 10 partidas)",
+                XLabel = "Cuenta",
+                YLabel = "Debe",
+                Y2Label = "Haber",
+                YMin = 0,
+                Y2Min= 0,
+                GraphStroke = Brushes.Green,
+                Graph2Stroke = Brushes.Red
+            };
+        }
+
+        private async void UpdateGraph()
+        {
+            IsBusy = Graph.Frozen = true;
+            Graph.Graph.Clear();
+            Graph.Graph2.Clear();
+            Graph.XLabels.Clear();
+            foreach (var j in await Task.Run(() => ContabilidadModule.ModuleStatus.ActivePeriodo!.Partidas.TakeLast(10).SelectMany(p => p.Movimientos).GroupBy(p => p.Cuenta)))
+            {
+                Graph.XLabels.Add(j.Key.ToString());
+                Graph.Graph.Add((double)j.Sum(p => p.RawValue > 0m ? p.RawValue : 0m));
+                Graph.Graph2.Add((double)j.Sum(p => p.RawValue < 0m ? -p.RawValue : 0m));
+            }
+            IsBusy = Graph.Frozen = false;
+            Graph.Redraw();
         }
 
         public IQueryable<Entidad> ActiveEntidades()

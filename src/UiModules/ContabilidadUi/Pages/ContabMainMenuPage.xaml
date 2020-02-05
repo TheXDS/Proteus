@@ -42,39 +42,23 @@
                     ItemsSource="{Binding ActiveEmpresa.Periodos, Mode=OneWay}" 
                     SelectedItem="{Binding ActivePeriodo}"/>
             </UniformGrid>
-            <controls:BusyContainer Grid.Row="1" Grid.ColumnSpan="2">
+            <controls:BusyContainer Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding ActivePeriodo, Mode=OneWay, Converter={StaticResource NotNullToVisibilityConverter}}">
                 <ScrollViewer Margin="0,10,0,0">
                     <StackPanel>
-                        <TextBlock>Placeholder de Dashboard</TextBlock>
-                        <controls:LightGraph
-                            Height="200"
-                            GraphDrawMode="Filled"
-                            GraphTitle="Placeholder"
-                            XLabel="Niveles"
-                            Y2Label="Menta"
-                            YLabel="Aqua">
-                            <controls:LightGraph.Graph>
-                                <system:Double>1</system:Double>
-                                <system:Double>2</system:Double>
-                                <system:Double>4</system:Double>
-                                <system:Double>0</system:Double>
-                                <system:Double>1</system:Double>
-                                <system:Double>1</system:Double>
-                                <system:Double>4</system:Double>
-                            </controls:LightGraph.Graph>
-                            <controls:LightGraph.Graph2>
-                                <system:Double>3</system:Double>
-                                <system:Double>1</system:Double>
-                                <system:Double>0</system:Double>
-                                <system:Double>3</system:Double>
-                                <system:Double>4</system:Double>
-                                <system:Double>4</system:Double>
-                                <system:Double>2</system:Double>
-                            </controls:LightGraph.Graph2>
-                        </controls:LightGraph>
+                        <ContentPresenter Content="{Binding Graph, Mode=OneWay}"/>
                     </StackPanel>
                 </ScrollViewer>
             </controls:BusyContainer>
+            <TextBlock
+                Margin="100,0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                TextWrapping="WrapWithOverflow"
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                Visibility="{Binding ActivePeriodo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">                
+                Para empezar, seleccione una empresa en la parte superior, o cree una desde el menú a la izquierda.
+            </TextBlock>
         </Grid>
     </controls:BusyContainer>
 </UserControl>

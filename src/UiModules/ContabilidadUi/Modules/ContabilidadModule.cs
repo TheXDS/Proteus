@@ -115,7 +115,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             RegisterDictionary("Templates/Templates.xaml");
             RegisterLauncher(new Launcher("Catálogo de cuentas", "Administra el catálogo de cuentas para la empresa activa.", OpenAdminCatCuentas), InteractionType.Catalog.NameOf());
             RegisterLauncher(new Launcher("Balance general", "Genera un balance general de la empresa y periodo activos.", MakeBalanceGeneral), InteractionType.Reports.NameOf());
-
         }
 
         private async void MakeBalanceGeneral()
@@ -123,14 +122,15 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             if (!CanOpen()) return;
             var sfd = new SaveFileDialog()
             {
-                Filter = "Archivo de Excel (*.xlsx)|*.xlsx|Todos los archivos|*.*"
+                Filter = "Archivo de Excel (*.xlsx)|*.xlsx|Todos los archivos|*.*",
+                FileName= $"Balance general - {ModuleStatus.ActivePeriodo!}.xlsx"
             };
             if (!(sfd.ShowDialog() ?? false)) return;
 
             var e = new ExcelPackage();
-            var ws = e.Workbook.Worksheets.Add("Balance general");
+            var ws = e.Workbook.Worksheets.Add($"Balance general - {ModuleStatus.ActivePeriodo!}");
             ws.Cells[1, 1].Value = ModuleStatus.ActiveEmpresa!.Name + ModuleStatus.ActiveEntidad?.Name.OrNull(", {0}");
-            ws.Cells[2, 1].Value = "Balance general";
+            ws.Cells[2, 1].Value = $"Balance general - {ModuleStatus.ActivePeriodo!}";
             ws.Cells[2, 1].Style.Font.Size *= 1.3f;
             ws.Cells[3, 1].Value = string.Format("Reporte generado el {0}", DateTime.Now);
             var lastCol = 0;
@@ -148,68 +148,45 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
                 ws.Cells[j, 1, j, lastCol].Merge = true;
             }
             var row = 5;
-            ProcessCuenta(ws, ModuleStatus.ActiveEmpresa.Activo, ref row);
-            ProcessCuenta(ws, ModuleStatus.ActiveEmpresa.Pasivo, ref row);
-            ProcessCuenta(ws, ModuleStatus.ActiveEmpresa.Patrimonio, ref row);
-            for (int k = 1; k <= lastCol; k++)
+            (Reporter ?? Proteus.CommonReporter)?.UpdateStatus("Procesando todos los movimientos del periodo...");
+            foreach (var j in await Task.Run(ModuleStatus.ActivePeriodo!.GetContabTree))
             {
-                ws.Column(k).AutoFit();
+                foreach (var k in j)
+                {
+                    ProcessCuenta(ws, k, ref row);
+                    row++;
+                }
             }
-            for (int k = 3; k <= 7; k++)
+            for (int j = 3; j <= 7; j++)
             {
-                ws.Column(k).Style.Numberformat.Format = "_-L* #,##0.00_-;-L* #,##0.00_-;_-L* \" - \"??_-;_-@_-";
+                ws.Column(j).Style.Numberformat.Format = "_-L* #,##0.00_-;-L* #,##0.00_-;_-L* \" - \"??_-;_-@_-";
             }
-            e.SaveAs(new FileInfo(sfd.FileName));
+            for (int j = 1; j <= lastCol; j++)
+            {
+                ws.Column(j).AutoFit();
+            }
+            (Reporter ?? Proteus.CommonReporter)?.UpdateStatus("Guardando reporte...");
+            await Task.Run(() => e.SaveAs(new FileInfo(sfd.FileName)));
+            (Reporter ?? Proteus.CommonReporter)?.Done();
         }
 
-        private void ProcessCuenta(ExcelWorksheet ws, Cuenta c, ref int row)
+        private void ProcessCuenta(ExcelWorksheet ws, Periodo.PeriodoContabTreeItem c, ref int row)
         {
             ws.Cells[row, 1].Value = c.FullCode;
-            ws.Cells[row, 2].Value = c.Name;
-            ws.Cells[row, 1, row, 2].Style.Font.Bold = true;
-            ws.Cells[row, 3].Value = c.InitialCache;
-            ws.Cells[row, 4].Value = c.BalanceCache - c.InitialCache;
-            ws.Cells[row, 5].Value = c.BalanceCache;            
+            ws.Cells[row, 2].Value = c.DisplayName;
+            ws.Cells[row, 1, row, 2].Style.Font.Bold = c.Bold;
+            //ws.Cells[row, 3].Value = c.InitialCache;
+            //ws.Cells[row, 4].Value = c.BalanceCache - c.InitialCache;
+            //ws.Cells[row, 5].Value = c.BalanceCache;
+            if (c.Value < 0m)
+                ws.Cells[row, 7].Value = -c.Value;
+            else
+                ws.Cells[row, 6].Value = c.Value;
 
             foreach (var j in c.Children)
             {
                 row++;
                 ProcessCuenta(ws, j, ref row);
-            }
-            foreach (var j in c.SubCuentas)
-            {
-                row++;
-                ws.Cells[row, 1].Value = j.FullCode;
-                ws.Cells[row, 2].Value = j.Name;
-                if (j.BalanceCache < 0m)                
-                    ws.Cells[row, 7].Value = -j.BalanceCache;
-                else
-                ws.Cells[row, 6].Value = j.BalanceCache;
-            }
-        }
-
-        private void Add2Table(Table tbl, Cuenta c, int lvl)
-        {
-            var r = new List<string>
-            {
-                $"{new string(' ', lvl)}{c.FullCode}: {c.Name}",
-                c.InitialCache.ToString("C"),
-                (c.BalanceCache - c.InitialCache).ToString("C")
-            };
-
-            if (c.BalanceCache < 0)
-            {
-                r.Add("");
-                r.Add((-c.BalanceCache).ToString("c"));
-            }
-            
-            tbl.AddRow(r).Bold();
-
-
-
-            foreach (var j in c.Children)
-            {
-                Add2Table(tbl, j, lvl + 1);
             }
         }
 
