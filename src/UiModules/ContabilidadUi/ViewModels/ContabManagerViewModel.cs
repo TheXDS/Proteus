@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using TheXDS.MCART.ViewModel;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Models;
 using System.Data.Entity;
-using TheXDS.Proteus.Component;
-using TheXDS.Proteus.Context;
-using TheXDS.Proteus.ViewModels;
 using System.Linq;
-using TheXDS.MCART.Controls;
+using System.Threading.Tasks;
 using System.Windows.Media;
+using TheXDS.MCART.Controls;
+using TheXDS.MCART.Types.Base;
+using TheXDS.Proteus.Api;
 using TheXDS.Proteus.ContabilidadUi.Modules;
+using TheXDS.Proteus.Models;
+using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.ViewModels
 {
-    public class ContabManagerViewModel : ViewModelBase
+    public class ContabManagerViewModel : ProteusViewModel, IAsyncRefreshable
     {
         private Empresa? _activeEmpresa;
         private Entidad? _activeEntidad;
@@ -109,31 +106,37 @@ namespace TheXDS.Proteus.ViewModels
         {
             Graph = new LightGraph
             {
+                SpotLabels = SpotLabelsDrawMode.YValues,
                 Margin = new System.Windows.Thickness(20, 50, 20, 20),
-                Height = 200,
-                GraphDrawMode = EnumGraphDrawMode.Bars | EnumGraphDrawMode.Filled,
+                Height = 500,
+                GraphDrawMode = EnumGraphDrawMode.Histogram,
                 GraphTitle = "Movimientos en cuentas (úlitmas 10 partidas)",
                 XLabel = "Cuenta",
                 YLabel = "Debe",
                 Y2Label = "Haber",
-                YMin = 0,
-                Y2Min= 0,
                 GraphStroke = Brushes.Green,
                 Graph2Stroke = Brushes.Red
             };
         }
 
-        private async void UpdateGraph()
+        private async Task UpdateGraph()
         {
             IsBusy = Graph.Frozen = true;
             Graph.Graph.Clear();
             Graph.Graph2.Clear();
             Graph.XLabels.Clear();
-            foreach (var j in await Task.Run(() => ContabilidadModule.ModuleStatus.ActivePeriodo!.Partidas.TakeLast(10).SelectMany(p => p.Movimientos).GroupBy(p => p.Cuenta)))
+
+            var m = await Task.Run(() => ContabilidadModule.ModuleStatus.ActivePeriodo!.Partidas.TakeLast(10).SelectMany(p => p.Movimientos).GroupBy(p => p.Cuenta));
+            if (m.Any())
             {
-                Graph.XLabels.Add(j.Key.ToString());
-                Graph.Graph.Add((double)j.Sum(p => p.RawValue > 0m ? p.RawValue : 0m));
-                Graph.Graph2.Add((double)j.Sum(p => p.RawValue < 0m ? -p.RawValue : 0m));
+                Graph.Y2Max = Graph.YMax = (double)m.SelectMany(p => p).Max(p => p.RawValue) * 1.1;
+                Graph.Y2Min = 0.0;// Graph.YMin = (double)m.SelectMany(p => p).Min(p => p.RawValue) * 1.1;
+                foreach (var j in m)
+                {
+                    Graph.XLabels.Add(j.Key.ToString());
+                    Graph.Graph.Add((double)j.Sum(p => p.RawValue > 0m ? p.RawValue : 0m));
+                    Graph.Graph2.Add((double)j.Sum(p => p.RawValue < 0m ? -p.RawValue : 0m));
+                }
             }
             IsBusy = Graph.Frozen = false;
             Graph.Redraw();
@@ -167,7 +170,7 @@ namespace TheXDS.Proteus.ViewModels
             r.AddRange(c.SubCuentas);
             return r;
         }
-        private async void CrunchData()
+        private async Task CrunchData()
         {
             IsBusy = true;
             ActivePeriodo = ActiveEmpresa?.Periodos.FirstOrDefault(p => p.Void == null) ?? ActiveEmpresa?.Periodos.LastOrDefault();
@@ -204,6 +207,13 @@ namespace TheXDS.Proteus.ViewModels
             }
 
             IsBusy = false;
+        }
+
+        /// <inheritdoc/>
+        public Task RefreshAsync()
+        {
+            //await CrunchData();
+            return UpdateGraph();
         }
     }
 }

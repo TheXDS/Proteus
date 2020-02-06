@@ -1,7 +1,5 @@
-﻿using System;
-using TheXDS.Proteus.Crud.Base;
+﻿using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
-using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
@@ -22,15 +20,16 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             ListProperty(p => p.SubCuentas).Creatable().Important("Sub-cuentas");
             ShowAllInDetails();
             Template();
-            BeforeSave(SetPrefix);
+            BeforeSave<Cuenta>(SetPrefix);
 
             CanDelete(c => c.Parent is { } && c.Children.Count == 0 && c.SubCuentas.Count == 0);
         }
 
-        private void SetPrefix(Cuenta arg1, ModelBase arg2)
+        private void SetPrefix(Cuenta arg1, Cuenta? arg2)
         {
-            if (!(arg2 is Cuenta c)) return;
-            arg1.Prefix = c.FreeCuentaPrefix;
+            if (!arg1.IsNew) return;
+            arg1.Prefix = arg2?.FreeCuentaPrefix ?? 1;
+            arg1.Parent ??= arg2;
         }
     }
 }

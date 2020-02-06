@@ -9,6 +9,8 @@ using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels;
+using TheXDS.Proteus.ViewModels.Base;
 using static TheXDS.Proteus.Annotations.InteractionType;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
@@ -28,10 +30,16 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             ListProperty(p => p.Movimientos).Creatable().ShowInDetails().Label("Movimientos").Validator<Partida>(ChkCuadrada);
             VmProperty(p => p.Cuadre).Label("Valor de cuadre").ReadOnly();
             ListProperty(p => p.Documentos).Creatable().ShowInDetails().Label("Documentos de referencia");
-            BeforeSave(SetPeriod);            
-         
+            BeforeSave(SetPeriod);
+
+            AfterSave(BroadcastChanges);
             CanCreate(o => o is Periodo || ContabilidadModule.ModuleStatus.ActivePeriodo is { });
             CanEdit(o => o.IsNew || (Proteus.Service<ContabilidadService>()?.CanRunService(SecurityFlags.Admin) ?? false));
+        }
+
+        private async void BroadcastChanges(Partida arg1, ModelBase arg2)
+        {
+            await ProteusViewModel.FullRefreshVmAsync<ContabManagerViewModel>();
         }
 
         private void SetPeriod(Partida partida, ModelBase arg2)
