@@ -6,12 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
+using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Resources;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.ContabilidadUi.Pages;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.Pages.Base;
 using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.ViewModels;
@@ -24,7 +26,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
     public class ContabilidadModule : UiModule<ContabilidadService>
     {
         public static ContabManagerViewModel ModuleStatus { get; private set; }
-
+               
         public static bool CanOpen()
         {
             if (ModuleStatus.ActivePeriodo is null)
@@ -82,6 +84,14 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             return r;
         }
 
+
+        [InteractionItem, Essential, InteractionType(InteractionType.Operation), Name("Nueva partida")]
+        public void NewPartida(object sender, EventArgs e)
+        {
+            if (!CanOpen()) return;
+            Host.OpenPage(QuickCrudPage.BulkNew<Partida>());
+        }
+
         protected override void AfterInitialization()
         {
             base.AfterInitialization();
@@ -100,9 +110,9 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
         public ContabilidadModule()
         {
             RegisterDictionary("Templates/Templates.xaml");
-            RegisterLauncher(new Launcher("Catálogo de cuentas", "Administra el catálogo de cuentas para la empresa activa.", OpenAdminCatCuentas), InteractionType.Catalog.NameOf());
-            RegisterLauncher(new Launcher("Balance general", "Genera un balance general de la empresa y periodo activos.", MakeBalanceGeneral), InteractionType.Reports.NameOf());
-            RegisterLauncher(new Launcher("Cierre de período", "Cierra el periodo actual y creao uno nuevo", DoNewPeriod), InteractionType.Operation.NameOf());
+            RegisterLauncher(new Launcher("Catálogo de cuentas", "Administra el catálogo de cuentas para la empresa activa.", OpenAdminCatCuentas), InteractionType.Catalog);
+            RegisterLauncher(new Launcher("Balance general", "Genera un balance general de la empresa y periodo activos.", MakeBalanceGeneral), InteractionType.Reports);
+            RegisterLauncher(new Launcher("Cierre de período", "Cierra el periodo actual y creao uno nuevo", DoNewPeriod), InteractionType.Operation);
         }
 
         private async void DoNewPeriod()
@@ -144,7 +154,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             (Reporter ?? Proteus.CommonReporter)?.Done();
         }
 
-        private async Task ProcessDivisa(ExcelPackage e, Entidad? entidad, IGrouping<Divisa, Periodo.PeriodoContabTreeItem> tree)
+        private void ProcessDivisa(ExcelPackage e, Entidad? entidad, IGrouping<Divisa, Periodo.PeriodoContabTreeItem> tree)
         {
             var symbol = tree.Key?.Region.CurrencySymbol ?? System.Globalization.RegionInfo.CurrentRegion.CurrencySymbol;
             var ws = e.Workbook.Worksheets.Add($"{entidad?.Name ?? "Balance general"}{tree.Key?.Region.CurrencySymbol.OrNull(" divisa {0}")}");
@@ -195,7 +205,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
         {
             foreach (var j in await Task.Run(ModuleStatus.ActivePeriodo!.GetContabTree))
             {
-                await ProcessDivisa(e, entidad, j);
+                ProcessDivisa(e, entidad, j);
             }
         }
 

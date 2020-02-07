@@ -23,7 +23,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
     {
         protected override void DescribeModel()
         {
-            OnModuleMenu(Operation | Essential, ContabilidadModule.CanOpen);
+            OnModuleMenu(Operation, ContabilidadModule.CanOpen);
 
             DateProperty(p => p.Timestamp).WithTime().Important("Fecha/hora de partida").Default(DateTime.Now);
             Property(p => p.Description).Important("Descripción").NotEmpty().Required();
