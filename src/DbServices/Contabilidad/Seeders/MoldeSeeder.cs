@@ -115,7 +115,7 @@ namespace TheXDS.Proteus.Seeders
                     Name = "Patrimonio",
                     Children =
                     {
-                        "Aportaciones de socios"
+                        "Aportaciones de socios"                        
                     }
                 }
             };

@@ -115,6 +115,16 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             RegisterDictionary("Templates/Templates.xaml");
             RegisterLauncher(new Launcher("Catálogo de cuentas", "Administra el catálogo de cuentas para la empresa activa.", OpenAdminCatCuentas), InteractionType.Catalog.NameOf());
             RegisterLauncher(new Launcher("Balance general", "Genera un balance general de la empresa y periodo activos.", MakeBalanceGeneral), InteractionType.Reports.NameOf());
+            RegisterLauncher(new Launcher("Cierre de período", "Cierra el periodo actual y creao uno nuevo", DoNewPeriod), InteractionType.Operation.NameOf());
+        }
+
+        private async void DoNewPeriod()
+        {
+            if (!CanOpen()) return;
+            (Reporter ?? Proteus.CommonReporter)?.UpdateStatus("Abriendo nuevo periodo...");
+            await Service!.NewPeriod(ModuleStatus.ActiveEmpresa!);
+            await ProteusViewModel.FullRefreshVmAsync<ContabManagerViewModel>();
+            (Reporter ?? Proteus.CommonReporter)?.Done();
         }
 
         private async void MakeBalanceGeneral()
