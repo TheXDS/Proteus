@@ -19,11 +19,9 @@ namespace TheXDS.Proteus.Models
 
         public virtual List<Partida> Partidas { get; set; } = new List<Partida>();
 
-        public IEnumerable<IGrouping<Divisa, PeriodoContabTreeItem>> GetContabTree()
+        public IEnumerable<IGrouping<Divisa?, PeriodoContabTreeItem>> GetContabTree()
         {
-            var ld = new Divisa() { Name = "Divisa local", Id = "es-HN" };
-
-            foreach (var j in Partidas.SelectMany(p => p.Movimientos).GroupBy(q => q.Cuenta.Divisa ?? ld))
+            foreach (var j in Partidas.SelectMany(p => p.Movimientos).GroupBy(q => q.Cuenta.Divisa))
             {
                 var lst = new List<PeriodoContabTreeItem>();
                 foreach (var k in j)
@@ -54,8 +52,8 @@ namespace TheXDS.Proteus.Models
                     {
                         parent.Children.Add(k);
                     }
-                }
-                yield return new Grouping<Divisa, PeriodoContabTreeItem>(j.Key, lst.Where(p=>p.ParentCode == null));
+                }                
+                yield return new Grouping<Divisa?, PeriodoContabTreeItem>(j.Key, lst.OrderBy(p=>p.FullCode).Where(p=>p.ParentCode == null));
             }
         }
 

@@ -157,11 +157,12 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             (Reporter ?? Proteus.CommonReporter)?.Done();
         }
 
-        private async Task ProcessEntidad(ExcelPackage e, Entidad? entidad)
+        private async Task ProcessDivisa(ExcelPackage e, Entidad? entidad, IGrouping<Divisa, Periodo.PeriodoContabTreeItem> tree)
         {
-            var ws = e.Workbook.Worksheets.Add($"Balance general{entidad?.Name.OrNull(" {0}")}");
+            var symbol = tree.Key?.Region.CurrencySymbol ?? System.Globalization.RegionInfo.CurrentRegion.CurrencySymbol;
+            var ws = e.Workbook.Worksheets.Add($"{entidad?.Name ?? "Balance general"}{tree.Key?.Region.CurrencySymbol.OrNull(" divisa {0}")}");
             ws.Cells[1, 1].Value = ModuleStatus.ActiveEmpresa!.Name + entidad?.Name.OrNull(", {0}");
-            ws.Cells[2, 1].Value = $"Balance general - {ModuleStatus.ActivePeriodo!}";
+            ws.Cells[2, 1].Value = $"Balance general - {ModuleStatus.ActivePeriodo!}{tree.Key?.Name.OrNull(" en divisa {0}")}";
             ws.Cells[2, 1].Style.Font.Size *= 1.3f;
             ws.Cells[3, 1].Value = string.Format("Reporte generado el {0}", DateTime.Now);
             var lastCol = 0;
@@ -171,13 +172,10 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
                 ws.Cells[4, lastCol].Value = i;
             }
             var row = 5;
-            foreach (var j in await Task.Run(ModuleStatus.ActivePeriodo!.GetContabTree))
+            foreach (var k in tree)
             {
-                foreach (var k in j)
-                {
-                    ProcessCuenta(ws, k, ref row, 3, ref lastCol);
-                    row++;
-                }
+                ProcessCuenta(ws, k, ref row, 3, ref lastCol);
+                row++;
             }
             lastCol++;
             ws.Cells[4, 1, 4, lastCol].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -199,11 +197,18 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
                     ws.Column(j).Style.Border.Left.Style = ExcelBorderStyle.Medium;
                     ws.Cells[4, j].Value = "Debe";
                 }
-                ws.Column(j).Style.Numberformat.Format = "_-L* #,##0.00_-;-L* #,##0.00_-;_-L* \" - \"??_-;_-@_-";
+                ws.Column(j).Style.Numberformat.Format = $"_-{symbol}* #,##0.00_-;-{symbol}* #,##0.00_-;_-{symbol}* \" - \"??_-;_-@_-";
             }
             for (int j = 1; j <= lastCol; j++)
             {
                 ws.Column(j).AutoFit();
+            }
+        }
+        private async Task ProcessEntidad(ExcelPackage e, Entidad? entidad)
+        {
+            foreach (var j in await Task.Run(ModuleStatus.ActivePeriodo!.GetContabTree))
+            {
+                await ProcessDivisa(e, entidad, j);
             }
         }
 
