@@ -120,7 +120,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
 
         private async void DoNewPeriod()
         {
-            if (!CanOpen()) return;
+            if (!CanOpen() || !IsAdmin()) return;
             (Reporter ?? Proteus.CommonReporter)?.UpdateStatus("Abriendo nuevo periodo...");
             await Service!.NewPeriod(ModuleStatus.ActiveEmpresa!);
             await ProteusViewModel.FullRefreshVmAsync<ContabManagerViewModel>();
@@ -138,17 +138,48 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             if (!(sfd.ShowDialog() ?? false)) return;
 
             var e = new ExcelPackage();
-            var ws = e.Workbook.Worksheets.Add($"Balance general - {ModuleStatus.ActivePeriodo!}");
-            ws.Cells[1, 1].Value = ModuleStatus.ActiveEmpresa!.Name + ModuleStatus.ActiveEntidad?.Name.OrNull(", {0}");
+
+            var ent = await Service!.All<Partida>()
+                .Where(p => p.Parent.Id == ModuleStatus.ActivePeriodo!.Id)
+                .Select(p => p.Entidad)
+                .Distinct()
+                .ToListAsync();
+
+            var c = 0;
+            foreach (var entidad in ent)
+            {
+                (Reporter ?? Proteus.CommonReporter)?.UpdateStatus(c/ent.Count, $"Procesando todos los movimientos {entidad?.Name.OrNull("de {0}") ?? "generales"} del periodo {ModuleStatus.ActivePeriodo!}...");
+                await ProcessEntidad(e, entidad);
+            }
+
+            (Reporter ?? Proteus.CommonReporter)?.UpdateStatus("Guardando reporte...");
+            await Task.Run(() => e.SaveAs(new FileInfo(sfd.FileName)));
+            (Reporter ?? Proteus.CommonReporter)?.Done();
+        }
+
+        private async Task ProcessEntidad(ExcelPackage e, Entidad? entidad)
+        {
+            var ws = e.Workbook.Worksheets.Add($"Balance general{entidad?.Name.OrNull(" {0}")}");
+            ws.Cells[1, 1].Value = ModuleStatus.ActiveEmpresa!.Name + entidad?.Name.OrNull(", {0}");
             ws.Cells[2, 1].Value = $"Balance general - {ModuleStatus.ActivePeriodo!}";
             ws.Cells[2, 1].Style.Font.Size *= 1.3f;
             ws.Cells[3, 1].Value = string.Format("Reporte generado el {0}", DateTime.Now);
             var lastCol = 0;
-            foreach (var i in new[] { "Código", "Nombre de cuenta", "Saldo inicial", "Cambio neto", "Saldo final", "Debe", "Haber" })
+            foreach (var i in new[] { "Código", "Nombre de cuenta" })
             {
                 lastCol++;
                 ws.Cells[4, lastCol].Value = i;
             }
+            var row = 5;
+            foreach (var j in await Task.Run(ModuleStatus.ActivePeriodo!.GetContabTree))
+            {
+                foreach (var k in j)
+                {
+                    ProcessCuenta(ws, k, ref row, 3, ref lastCol);
+                    row++;
+                }
+            }
+            lastCol++;
             ws.Cells[4, 1, 4, lastCol].Style.Fill.PatternType = ExcelFillStyle.Solid;
             var backgroundColor = ws.Cells[4, 1, 4, lastCol].Style.Fill.BackgroundColor;
             var lightSlateGray = Colors.LightSlateGray;
@@ -157,46 +188,41 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             {
                 ws.Cells[j, 1, j, lastCol].Merge = true;
             }
-            var row = 5;
-            (Reporter ?? Proteus.CommonReporter)?.UpdateStatus("Procesando todos los movimientos del periodo...");
-            foreach (var j in await Task.Run(ModuleStatus.ActivePeriodo!.GetContabTree))
+            for (int j = 3; j <= lastCol; j++)
             {
-                foreach (var k in j)
+                if (j % 2 == 0)
                 {
-                    ProcessCuenta(ws, k, ref row);
-                    row++;
+                    ws.Cells[4, j].Value = "Haber";
                 }
-            }
-            for (int j = 3; j <= 7; j++)
-            {
+                else
+                {
+                    ws.Column(j).Style.Border.Left.Style = ExcelBorderStyle.Medium;
+                    ws.Cells[4, j].Value = "Debe";
+                }
                 ws.Column(j).Style.Numberformat.Format = "_-L* #,##0.00_-;-L* #,##0.00_-;_-L* \" - \"??_-;_-@_-";
             }
             for (int j = 1; j <= lastCol; j++)
             {
                 ws.Column(j).AutoFit();
             }
-            (Reporter ?? Proteus.CommonReporter)?.UpdateStatus("Guardando reporte...");
-            await Task.Run(() => e.SaveAs(new FileInfo(sfd.FileName)));
-            (Reporter ?? Proteus.CommonReporter)?.Done();
         }
 
-        private void ProcessCuenta(ExcelWorksheet ws, Periodo.PeriodoContabTreeItem c, ref int row)
+        private void ProcessCuenta(ExcelWorksheet ws, Periodo.PeriodoContabTreeItem c, ref int row, int lvl, ref int maxlvl)
         {
+            if (lvl > maxlvl) maxlvl = lvl;
+
             ws.Cells[row, 1].Value = c.FullCode;
             ws.Cells[row, 2].Value = c.DisplayName;
             ws.Cells[row, 1, row, 2].Style.Font.Bold = c.Bold;
-            //ws.Cells[row, 3].Value = c.InitialCache;
-            //ws.Cells[row, 4].Value = c.BalanceCache - c.InitialCache;
-            //ws.Cells[row, 5].Value = c.BalanceCache;
             if (c.Value < 0m)
-                ws.Cells[row, 7].Value = -c.Value;
+                ws.Cells[row, lvl + 1].Value = -c.Value;
             else
-                ws.Cells[row, 6].Value = c.Value;
+                ws.Cells[row, lvl].Value = c.Value;
 
             foreach (var j in c.Children)
             {
                 row++;
-                ProcessCuenta(ws, j, ref row);
+                ProcessCuenta(ws, j, ref row, lvl + 2, ref maxlvl);
             }
         }
 
