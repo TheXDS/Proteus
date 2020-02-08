@@ -91,6 +91,13 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             if (!CanOpen()) return;
             Host.OpenPage(QuickCrudPage.BulkNew<Partida>());
         }
+        [InteractionItem, Essential, InteractionType(InteractionType.AdminTool), Name("Periodo Actual")]
+        public void EditPeriodoActual(object sender, EventArgs e)
+        {
+            if (!CanOpen()) return;
+            Host.OpenPage(QuickCrudPage.Edit(ModuleStatus.ActivePeriodo!));
+        }
+
 
         protected override void AfterInitialization()
         {
@@ -126,18 +133,22 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
 
         private async void MakeBalanceGeneral()
         {
+            await MakeBalanceGeneral(ModuleStatus.ActivePeriodo);
+        }
+        public async Task MakeBalanceGeneral(Periodo? periodo)
+        {
             if (!CanOpen()) return;
             var sfd = new SaveFileDialog()
             {
                 Filter = "Archivo de Excel (*.xlsx)|*.xlsx|Todos los archivos|*.*",
-                FileName= $"Balance general - {ModuleStatus.ActivePeriodo!}.xlsx"
+                FileName = $"Balance general - {periodo}.xlsx"
             };
             if (!(sfd.ShowDialog() ?? false)) return;
 
             var e = new ExcelPackage();
 
             var ent = await Service!.All<Partida>()
-                .Where(p => p.Parent.Id == ModuleStatus.ActivePeriodo!.Id)
+                .Where(p => p.Parent.Id == periodo!.Id)
                 .Select(p => p.Entidad)
                 .Distinct()
                 .ToListAsync();
@@ -145,8 +156,8 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             var c = 0;
             foreach (var entidad in ent)
             {
-                (Reporter ?? Proteus.CommonReporter)?.UpdateStatus(c/ent.Count, $"Procesando todos los movimientos {entidad?.Name.OrNull("de {0}") ?? "generales"} del periodo {ModuleStatus.ActivePeriodo!}...");
-                await ProcessEntidad(e, entidad);
+                (Reporter ?? Proteus.CommonReporter)?.UpdateStatus(c / ent.Count, $"Procesando todos los movimientos {entidad?.Name.OrNull("de {0}") ?? "generales"} del periodo {periodo}...");
+                await ProcessEntidad(e, entidad, periodo!);
             }
 
             (Reporter ?? Proteus.CommonReporter)?.UpdateStatus("Guardando reporte...");
@@ -154,12 +165,12 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             (Reporter ?? Proteus.CommonReporter)?.Done();
         }
 
-        private void ProcessDivisa(ExcelPackage e, Entidad? entidad, IGrouping<Divisa, Periodo.PeriodoContabTreeItem> tree)
+        private void ProcessDivisa(ExcelPackage e, Entidad? entidad, IGrouping<Divisa, Periodo.PeriodoContabTreeItem> tree, Periodo periodo)
         {
             var symbol = tree.Key?.Region.CurrencySymbol ?? System.Globalization.RegionInfo.CurrentRegion.CurrencySymbol;
             var ws = e.Workbook.Worksheets.Add($"{entidad?.Name ?? "Balance general"}{tree.Key?.Region.CurrencySymbol.OrNull(" divisa {0}")}");
             ws.Cells[1, 1].Value = ModuleStatus.ActiveEmpresa!.Name + entidad?.Name.OrNull(", {0}");
-            ws.Cells[2, 1].Value = $"Balance general - {ModuleStatus.ActivePeriodo!}{tree.Key?.Name.OrNull(" en divisa {0}")}";
+            ws.Cells[2, 1].Value = $"Balance general - {periodo}{tree.Key?.Name.OrNull(" en divisa {0}")}";
             ws.Cells[2, 1].Style.Font.Size *= 1.3f;
             ws.Cells[3, 1].Value = string.Format("Reporte generado el {0}", DateTime.Now);
             var lastCol = 0;
@@ -201,11 +212,12 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
                 ws.Column(j).AutoFit();
             }
         }
-        private async Task ProcessEntidad(ExcelPackage e, Entidad? entidad)
+
+        private async Task ProcessEntidad(ExcelPackage e, Entidad? entidad, Periodo periodo)
         {
-            foreach (var j in await Task.Run(ModuleStatus.ActivePeriodo!.GetContabTree))
+            foreach (var j in await Task.Run(periodo.GetContabTree))
             {
-                ProcessDivisa(e, entidad, j);
+                ProcessDivisa(e, entidad, j, periodo);
             }
         }
 
