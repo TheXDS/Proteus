@@ -30,11 +30,16 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             ListProperty(p => p.Movimientos).Creatable().ShowInDetails().Label("Movimientos").Validator<Partida>(ChkCuadrada);
             VmProperty(p => p.Cuadre).Label("Valor de cuadre").ReadOnly();
             ListProperty(p => p.Documentos).Creatable().ShowInDetails().Label("Documentos de referencia");
-            BeforeSave(SetPeriod);
+            BeforeSave(SetPeriod).Then(SetEntity);
 
             AfterSave(BroadcastChanges);
             CanCreate(o => o is Periodo || ContabilidadModule.ModuleStatus.ActivePeriodo is { });
             CanEdit(o => o.IsNew || (Proteus.Service<ContabilidadService>()?.CanRunService(SecurityFlags.Admin) ?? false));
+        }
+
+        private void SetEntity(Partida partida, ModelBase arg2)
+        {
+            partida.Entidad = arg2 as Entidad ?? ContabilidadModule.ModuleStatus.ActiveEntidad ?? throw new Exception();
         }
 
         private async void BroadcastChanges(Partida arg1, ModelBase arg2)
