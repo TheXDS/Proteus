@@ -1,9 +1,17 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Api;
 using TheXDS.Proteus.ContabilidadUi.Modules;
 using TheXDS.Proteus.ContabilidadUi.ViewModels;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels;
+using TheXDS.Proteus.ViewModels.Base;
 using static TheXDS.Proteus.Annotations.InteractionType;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
@@ -62,9 +70,13 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             }
         }
 
-        private void NewPeriod(Empresa obj)
+        private async void NewPeriod(Empresa obj, NotifyPropertyChangeBase vm)
         {
-            
+            App.Module<ContabilidadModule>()!.Reporter?.UpdateStatus("Abriendo nuevo periodo contable...");
+            await Proteus.Service<ContabilidadService>()!.NewPeriod(obj);
+            await ProteusViewModel.FullRefreshVmAsync<ContabManagerViewModel>();
+            App.Module<ContabilidadModule>()!.Reporter?.Done();
+
         }
     }
 }

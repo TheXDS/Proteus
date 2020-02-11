@@ -23,18 +23,23 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
     {
         protected override void DescribeModel()
         {
-            OnModuleMenu(Operation | Essential, ContabilidadModule.CanOpen);
+            OnModuleMenu(Operation, ContabilidadModule.CanOpen);
 
             DateProperty(p => p.Timestamp).WithTime().Important("Fecha/hora de partida").Default(DateTime.Now);
             Property(p => p.Description).Important("Descripción").NotEmpty().Required();
             ListProperty(p => p.Movimientos).Creatable().ShowInDetails().Label("Movimientos").Validator<Partida>(ChkCuadrada);
             VmProperty(p => p.Cuadre).Label("Valor de cuadre").ReadOnly();
             ListProperty(p => p.Documentos).Creatable().ShowInDetails().Label("Documentos de referencia");
-            BeforeSave(SetPeriod);
+            BeforeSave(SetPeriod).Then(SetEntity);
 
             AfterSave(BroadcastChanges);
             CanCreate(o => o is Periodo || ContabilidadModule.ModuleStatus.ActivePeriodo is { });
             CanEdit(o => o.IsNew || (Proteus.Service<ContabilidadService>()?.CanRunService(SecurityFlags.Admin) ?? false));
+        }
+
+        private void SetEntity(Partida partida, ModelBase arg2)
+        {
+            partida.Entidad = arg2 as Entidad ?? ContabilidadModule.ModuleStatus.ActiveEntidad ?? throw new Exception();
         }
 
         private async void BroadcastChanges(Partida arg1, ModelBase arg2)
