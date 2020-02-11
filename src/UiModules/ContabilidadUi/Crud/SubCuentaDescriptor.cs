@@ -1,5 +1,11 @@
-﻿using TheXDS.Proteus.Crud.Base;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TheXDS.MCART.Types;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.ContabilidadUi.Modules;
+using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.ViewModels;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
@@ -45,9 +51,42 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             TextProperty(p => p.Rtn).Mask("9999-9999-999999").Required().Important("RTN");
             this.DescribeContact();
             this.DescribeAddress();
-            ObjectProperty(p => p.DebitoCuenta).Selectable().Required().Important("Auxiliar de gastos pagados por anticipado");
+            ListProperty(p => p.Empresas)
+                .Creatable()
+                .Required()
+                .Label("Cuentas contables por empresa")
+                .ShowInDetails();
+        }
+    }
+
+    /// <summary>
+    /// Describe las propiedades Crud para el modelo
+    /// <see cref="ProveedorXEmpresa"/>.
+    /// </summary>
+    public class ProveedorXEmpresaDescriptor : CrudDescriptor<ProveedorXEmpresa, ProveedorXEmpresaViewModel>
+    {
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="ProveedorXEmpresa"/>.
+        /// </summary>
+        protected override void DescribeModel()
+        {
+            //ObjectProperty(p => p.Proveedor).Selectable();
+            ObjectProperty(p => p.Empresa).Selectable().Default(ContabilidadModule.ModuleStatus.ActiveEmpresa!);
+            ObjectProperty(p => p.DebitoCuenta).Selectable().VmSource<ProveedorXEmpresaViewModel>(p=>p.CurrentSubCuentas).Required().Important("Auxiliar de gastos pagados por anticipado");
             ObjectProperty(p => p.CreditoCuenta).Selectable().Required().Important("Auxiliar de cuentas por pagar");
         }
+        private static ObservableListWrap<SubCuenta> CurrentSubCuentas()
+        {
+            var e = ContabilidadModule.ModuleStatus.ActiveEmpresa!;
+            //return Flatten(e.Activo)
+            //    .Concat(Flatten(e.Pasivo))
+            //    .Concat(Flatten(e.Patrimonio))
+            //    .AsQueryable();
+            return null;
+        }
+
+
     }
 
     /// <summary>

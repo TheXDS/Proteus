@@ -6,14 +6,61 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using TheXDS.MCART.Controls;
+using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.ContabilidadUi.Modules;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.ViewModels
 {
+    /// <summary>
+    /// Clase base personalizada para el ViewModel recompilado que se utilizará
+    /// dentro del Crud generado para el modelo
+    /// <see cref="ProveedorXEmpresa"/>.
+    /// </summary>
+    public class ProveedorXEmpresaViewModel : ViewModel<ProveedorXEmpresa>
+    {
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ProveedorXEmpresaViewModel"/>.
+        /// </summary>
+        public ProveedorXEmpresaViewModel()
+        {
+        }
+
+        public ObservableListWrap<ModelBase> CurrentSubCuentas { get; } = new ObservableListWrap<ModelBase>();
+
+
+        private Empresa _selectedEmpresa;
+
+        /// <summary>
+        ///     Obtiene o establece el valor SelectedEmpresa.
+        /// </summary>
+        /// <value>El valor de SelectedEmpresa.</value>
+        public Empresa SelectedEmpresa
+        {
+            get => _selectedEmpresa;
+            set
+            {
+                if (!Change(ref _selectedEmpresa, value)) return;
+                CurrentSubCuentas
+                    .Substitute(Flatten(value.Activo)
+                    .Concat(Flatten(value.Pasivo))
+                    .Concat(Flatten(value.Patrimonio))
+                    .Cast<ModelBase>().ToList());
+            }
+        }
+
+        private static IEnumerable<SubCuenta> Flatten(Cuenta c)
+        {
+            return c.Children.SelectMany(Flatten).Concat(c.SubCuentas);
+        }
+    }
+
     public class ContabManagerViewModel : ProteusViewModel, IAsyncRefreshable
     {
         private Empresa? _activeEmpresa;
