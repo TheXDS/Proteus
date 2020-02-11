@@ -14,6 +14,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             Property(p => p.FullCode).Label("Código de cuenta").AsListColumn().ShowInDetails().Hidden();
             Property(p => p.Name).AsName();
             Property(p => p.Movimientos).OnlyInDetails("Movimientos de la partida");
+            ObjectProperty(p => p.Divisa).Selectable().Nullable().ShowInDetails().Label("Divisa de la cuenta");
             Template();
             BeforeSave<Cuenta>(SetPrefix);
         }

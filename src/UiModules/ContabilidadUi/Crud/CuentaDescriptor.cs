@@ -18,6 +18,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             Property(p => p.Name).AsName().AsListColumn();
             ListProperty(p => p.Children).Creatable().Important("Cuentas hijas");
             ListProperty(p => p.SubCuentas).Creatable().Important("Sub-cuentas");
+            ObjectProperty(p => p.DefaultDivisa).Selectable().Nullable().ShowInDetails().Label("Divisa de la cuenta");
             ShowAllInDetails();
             Template();
             BeforeSave<Cuenta>(SetPrefix);

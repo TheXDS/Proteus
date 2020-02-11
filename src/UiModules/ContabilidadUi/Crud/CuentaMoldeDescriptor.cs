@@ -12,11 +12,10 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         protected override void DescribeModel()
         {
             Property(p => p.Name).AsName().AsListColumn();
-            ListProperty(p => p.Children).Creatable().Important("Cuentas hijas");
+            ListProperty(p => p.Children).Creatable().ShowInDetails().Label("Cuentas hijas");
+            ListProperty(p => p.SubCuentas).Creatable().ShowInDetails().Label("Auxiliares");
             ShowAllInDetails();
-            CanDelete(c => c.Parent is { } || c.Children.Count == 0);
-
+            CanDelete(c => c.Children.Count == 0 && c.SubCuentas.Count == 0);
         }
     }
-
 }

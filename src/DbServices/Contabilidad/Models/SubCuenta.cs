@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using TheXDS.Proteus.Models.Base;
 using TheXDS.MCART.Types.Extensions;
-using TheXDS.Proteus.Component;
-using TheXDS.Proteus.Reporting;
-using System;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
 {
