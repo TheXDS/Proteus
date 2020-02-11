@@ -22,5 +22,7 @@ namespace TheXDS.Proteus.Context
         public DbSet<DocumentKind> DocumentKinds { get; set; }
         public DbSet<AclEntry> AclEntries { get; set; }
         public DbSet<AccessControlList> AccessControlLists { get; set; }
+        public DbSet<Proveedor> Proveedores { get; set; }
+        public DbSet<CtaXPagar> CtasXPagar { get; set; }
     }
 }

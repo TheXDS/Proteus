@@ -32,7 +32,7 @@ namespace TheXDS.Proteus.Models
         public string RefNum { get; set; }
         public decimal Total { get; set; }
         public bool Paid { get; set; }
+        public virtual Partida CreationPartida { get; set; }
+        public virtual Partida? PaymentPartida { get; set; }
     }
-
-
 }

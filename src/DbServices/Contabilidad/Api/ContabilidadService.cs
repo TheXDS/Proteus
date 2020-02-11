@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,6 +63,24 @@ namespace TheXDS.Proteus.Api
             }
             lastPeriodo.Parent.Periodos.Add(newPeriodo);
             return await InternalSaveAsync();
+        }
+
+        public static IQueryable<CtaXPagar> Pendientes
+        {
+            get
+            {
+                return Proteus.Service<ContabilidadService>()!.All<CtaXPagar>()
+                    .Where(p => p.Paid == false);
+            }
+        }
+
+        public static IEnumerable<CtaXPagar> Vencidas
+        {
+            get
+            {
+                return Pendientes.ToList()
+                    .Where(p => DateTime.Today > p.Timestamp + TimeSpan.FromDays(p.Proveedor.DaysDue));
+            }
         }
     }
 }

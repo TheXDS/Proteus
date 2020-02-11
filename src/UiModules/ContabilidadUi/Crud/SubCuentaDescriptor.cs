@@ -66,7 +66,9 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             Property(p => p.Timestamp).Important("Fecha de emisión");
             Property(p => p.RefNum).Required().Important("# de ref. de factura/cuenta");
             NumericProperty(p => p.Total).Positive().Important("Total a pagar");
-            Property(p => p.Paid).Label("Pagada").AsListColumn().ShowInDetails().Hidden();
+            Property(p => p.Paid).Important("Pagada").Hidden();
+            ObjectProperty(p => p.CreationPartida).Creatable().Required().Important("Partida de costo");
+            ObjectProperty(p => p.PaymentPartida).Creatable().Nullable().Important("Partida de pago");
         }
     }
 
