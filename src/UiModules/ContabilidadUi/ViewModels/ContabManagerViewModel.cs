@@ -47,6 +47,7 @@ namespace TheXDS.Proteus.ViewModels
             set
             {
                 if (!Change(ref _selectedEmpresa, value)) return;
+                Entity.Empresa = value;
                 CurrentSubCuentas
                     .Substitute(Flatten(value.Activo)
                     .Concat(Flatten(value.Pasivo))

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using TheXDS.MCART.Types;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.ContabilidadUi.Modules;
+﻿using TheXDS.Proteus.ContabilidadUi.Modules;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.ViewModels;
@@ -71,22 +67,18 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            //ObjectProperty(p => p.Proveedor).Selectable();
-            ObjectProperty(p => p.Empresa).Selectable().Default(ContabilidadModule.ModuleStatus.ActiveEmpresa!);
-            ObjectProperty(p => p.DebitoCuenta).Selectable().VmSource<ProveedorXEmpresaViewModel>(p=>p.CurrentSubCuentas).Required().Important("Auxiliar de gastos pagados por anticipado");
-            ObjectProperty(p => p.CreditoCuenta).Selectable().Required().Important("Auxiliar de cuentas por pagar");
+            VmObjectProperty(p => p.SelectedEmpresa).Selectable();
+            ObjectProperty(p => p.DebitoCuenta)
+                .Selectable()
+                .VmSource<ProveedorXEmpresaViewModel>(p => p.CurrentSubCuentas)
+                .Required()
+                .Important("Auxiliar de gastos pagados por anticipado");
+            ObjectProperty(p => p.CreditoCuenta)
+                .Selectable()
+                .VmSource<ProveedorXEmpresaViewModel>(p => p.CurrentSubCuentas)
+                .Required()
+                .Important("Auxiliar de cuentas por pagar");
         }
-        private static ObservableListWrap<SubCuenta> CurrentSubCuentas()
-        {
-            var e = ContabilidadModule.ModuleStatus.ActiveEmpresa!;
-            //return Flatten(e.Activo)
-            //    .Concat(Flatten(e.Pasivo))
-            //    .Concat(Flatten(e.Patrimonio))
-            //    .AsQueryable();
-            return null;
-        }
-
-
     }
 
     /// <summary>
