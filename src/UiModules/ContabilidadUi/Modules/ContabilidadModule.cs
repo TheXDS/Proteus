@@ -244,7 +244,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
         {
             if (!CanOpen()) return;
             var e = ModuleStatus.ActiveEmpresa!;
-            var q = new[] { e.Activo, e.Pasivo, e.Patrimonio }.AsQueryable();
+            var q = new[] { e.Activo, e.Pasivo, e.Patrimonio, e.Ingresos, e.Costos, e.Gastos }.AsQueryable();
             Host.OpenPage(CrudPage.New<ContabilidadService>("Catálogo de cuentas", q, new[] { typeof(Cuenta), typeof(SubCuenta) }));
         }
     }

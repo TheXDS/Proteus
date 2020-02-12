@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
 using TheXDS.Proteus.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TheXDS.Proteus.Context
 {
@@ -24,5 +23,6 @@ namespace TheXDS.Proteus.Context
         public DbSet<AccessControlList> AccessControlLists { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<CtaXPagar> CtasXPagar { get; set; }
+        public DbSet<ProveedorXEmpresa> ProveedorXEmpresas { get; set; }
     }
 }

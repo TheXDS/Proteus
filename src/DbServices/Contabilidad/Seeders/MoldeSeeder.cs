@@ -20,10 +20,16 @@ namespace TheXDS.Proteus.Seeders
         /// </returns>
         protected override IEnumerable<Molde> GenerateEntities()
         {
-            var usd = Proteus.Service<ContabilidadService>()!.Get<Divisa>("en-US");
-            yield return new Molde
+            var usd = Proteus.Service<ContabilidadService>()!.Get<Divisa>("en-US")!;
+            yield return FakeMolde(usd,1);
+            yield return FakeMolde(usd,2);
+        }
+
+        private Molde FakeMolde(Divisa usd, int index)
+        {
+            return new Molde
             {
-                Name = "Catálogo de cuentas de prueba",
+                Name = $"Catálogo de cuentas de prueba #{index}",
                 Activo = new CuentaMolde
                 {
                     Name = "Activo",
@@ -36,10 +42,10 @@ namespace TheXDS.Proteus.Seeders
                             {
                                 new CuentaMolde
                                 {
-                                    Name = "Efectivo y equivalentes", 
+                                    Name = "Efectivo y equivalentes",
                                     SubCuentas =
                                     {
-                                        "Caja chica"
+                                        $"Caja chica #{index}"
                                     }
                                 },
                                 new CuentaMolde
@@ -52,8 +58,8 @@ namespace TheXDS.Proteus.Seeders
                                             Name = "Moneda nacional",
                                             SubCuentas =
                                             {
-                                                "Banco X, L #123-456789-012",
-                                                "Banco Y, L #987-654321-098",
+                                                $"Banco X #{index}, L #123-456789-012",
+                                                $"Banco Y #{index}, L #987-654321-098",
                                             }
                                         },
                                         new CuentaMolde
@@ -63,7 +69,7 @@ namespace TheXDS.Proteus.Seeders
                                             {
                                                 new SubCuentaMolde
                                                 {
-                                                    Name = "Banco X, $ #456-789012-345",
+                                                    Name = $"Banco X #{index}, $ #456-789012-345",
                                                     DefaultDivisa = usd
                                                 }
                                             }
@@ -80,20 +86,36 @@ namespace TheXDS.Proteus.Seeders
                                             Name = "Eidficios",
                                             SubCuentas =
                                             {
-                                                "Edificio X",
-                                                "Local Y",
-                                                "Local Z"
+                                                $"Edificio X #{index}",
+                                                $"Local Y #{index}",
+                                                $"Local Z #{index}"
                                             }
                                         },
                                         "Terrenos",
                                         "Muebles",
                                         "Equipo de oficina",
                                         "Maquinaria",
-                                        "Vehículos"                                        
+                                        "Vehículos"
                                     }
                                 },
                                 "Inventario",
-                                "Gastos pagados por anticipado",
+                                new CuentaMolde
+                                {
+                                    Name = "Gastos pagados por anticipado",
+                                    Children =
+                                    {
+                                        new CuentaMolde
+                                        {
+                                            Name = "Servicios públicos",
+                                            SubCuentas =
+                                            {
+                                                $"ENEE #{index}",
+                                                $"SANAA #{index}",
+                                                $"Hondutel #{index}"
+                                            }
+                                        }
+                                    }
+                                },
                                 "Cuentas por cobrar"
                             }
                         },
@@ -142,9 +164,9 @@ namespace TheXDS.Proteus.Seeders
                                             Name = "Servicios públicos",
                                             SubCuentas =
                                             {
-                                                "ENEE",
-                                                "SANAA",
-                                                "Hondutel"
+                                                $"ENEE #{index}",
+                                                $"SANAA #{index}",
+                                                $"Hondutel #{index}"
                                             }
                                         }
                                     }
@@ -178,9 +200,9 @@ namespace TheXDS.Proteus.Seeders
                                     Name = "Aportaciones moneda nacional",
                                     SubCuentas =
                                     {
-                                        "Socio X",
-                                        "Socio Y",
-                                        "Socio Z"
+                                        $"Socio X #{index}",
+                                        $"Socio Y #{index}",
+                                        $"Socio Z #{index}"
                                     }
                                 },
                                 new CuentaMolde
@@ -190,21 +212,147 @@ namespace TheXDS.Proteus.Seeders
                                     {
                                         new SubCuentaMolde
                                         {
-                                            Name = "Socio X, $",
+                                            Name = $"Socio X #{index}, $",
                                             DefaultDivisa = usd
                                         },
                                         new SubCuentaMolde
                                         {
-                                            Name = "Socio Y, $",
+                                            Name = $"Socio Y #{index}, $",
                                             DefaultDivisa = usd
                                         },
                                         new SubCuentaMolde
                                         {
-                                            Name = "Socio Z, $",
+                                            Name = $"Socio Z #{index}, $",
                                             DefaultDivisa = usd
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+                },
+                Ingresos = new CuentaMolde
+                {
+                    Name = "Ingresos",
+                    Children =
+                    {
+                        new CuentaMolde
+                        {
+                            Name = "Ingresos ordinarios",
+                            Children =
+                            {
+                                new CuentaMolde
+                                {
+                                    Name = "Ingresos por ventas",
+                                    SubCuentas =
+                                    {
+                                        $"Ingresos por ventas #{index}",
+                                        $"Devoluciones en ventas #{index}",
+                                        $"Descuentos en ventas #{index}"
+                                    }
+                                },
+                            },
+                            SubCuentas =
+                            {
+                                $"Ingresos por servicios #{index}"
+                            }
+                        },
+                        new CuentaMolde
+                        {
+                            Name = "Ingresos extraordinarios",
+                            SubCuentas =
+                            {
+                                $"Intereses ganados #{index}",
+                                $"Ingresos por comisiones #{index}",
+                                $"Otros ingresos #{index}",
+                                $"Ganancias en venta de activos fijos #{index}",
+                            }
+                        }
+                    }
+                },
+                Costos = new CuentaMolde
+                {
+                    Name = "Costos",
+                    Children =
+                    {
+                        new CuentaMolde
+                        {
+                            Name = "Costos de ventas",
+                            SubCuentas =
+                            {
+                                $"Compra de mercancía #{index}",
+                                $"Devoluciones en compras #{index}",
+                                $"Descuentos en compras #{index}"
+                            }
+                        },
+                    },
+                    SubCuentas =
+                    {
+                        $"Fletes en compras #{index}"
+                    }
+                },
+                Gastos = new CuentaMolde
+                {
+                    Name ="Gastos",
+                    Children =
+                    {
+                        new CuentaMolde
+                        {
+                            Name = "Gastos de ventas",
+                            SubCuentas =
+                            {
+                                $"Gastos de comisiones sobre ventas #{index}",
+                                $"Gastos de publicidad #{index}",
+                                $"Cuentas incobrables #{index}",
+                                $"Gastos de mercadeo #{index}",
+                                $"Gastos de transporte #{index}"
+                            }
+                        },
+                        new CuentaMolde
+                        {
+                            Name = "Gastos administrativos",
+                            Children =
+                            {
+                                new CuentaMolde
+                                {
+                                    Name = "Servicios públicos",
+                                    SubCuentas = {
+                                        $"ENEE #{index}",
+                                        $"SANAA #{index}",
+                                        $"Hondutel #{index}",
+                                        $"Millicom Cable #{index}",
+                                        $"Cable Color #{index}",
+                                        $"Claro #{index}"
+                                    }
+                                }
+                            },
+                            SubCuentas =
+                            {
+                                $"Sueldos #{index}",
+                                $"Seguros #{index}",
+                                $"Suministros de oficina #{index}",
+                                $"Depreciación #{index}",
+                                $"Combustible de transporte de personal #{index}",
+                                $"Reparación #{index}",
+                                $"Organización de la empresa #{index}",
+                                $"Instalación de la empresa #{index}",
+                                $"Alquiler"
+                            }
+                        },
+                        new CuentaMolde
+                        {
+                            Name = "Gastos financieros",
+                            SubCuentas = {
+                                $"Interés sobre préstamos #{index}",
+                                $"Comisiones sobre préstamos #{index}",
+                                $"Servicios bancarios #{index}"
+                            }
+                        },
+                        new CuentaMolde
+                        {
+                            Name = "Otros gastos",
+                            SubCuentas = {
+                                $"Pérdida sobre venta de activos fijos #{index}"
                             }
                         }
                     }

@@ -1,13 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using TheXDS.MCART.Types;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.ContabilidadUi.Modules;
-using TheXDS.Proteus.Crud.Base;
+﻿using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.ViewModels;
-using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
@@ -34,85 +26,4 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             arg1.Parent ??= arg2;
         }
     }
-
-
-    /// <summary>
-    /// Describe las propiedades Crud para el modelo
-    /// <see cref="Proveedor"/>.
-    /// </summary>
-    public class ProveedorDescriptor : CrudDescriptor<Proveedor>
-    {
-        /// <summary>
-        /// Describe las propiedades Crud para el modelo
-        /// <see cref="Proveedor"/>.
-        /// </summary>
-        protected override void DescribeModel()
-        {
-            OnModuleMenu(Annotations.InteractionType.AdminTool);
-            Property(p => p.Name).AsName();
-            TextProperty(p => p.Rtn).Mask("9999-9999-999999").Required().Important("RTN");
-            this.DescribeContact();
-            this.DescribeAddress();
-            ListProperty(p => p.Empresas)
-                .Creatable()
-                .Required()
-                .Label("Cuentas contables por empresa")
-                .ShowInDetails();
-        }
-    }
-
-    /// <summary>
-    /// Describe las propiedades Crud para el modelo
-    /// <see cref="ProveedorXEmpresa"/>.
-    /// </summary>
-    public class ProveedorXEmpresaDescriptor : CrudDescriptor<ProveedorXEmpresa, ProveedorXEmpresaViewModel>
-    {
-        /// <summary>
-        /// Describe las propiedades Crud para el modelo
-        /// <see cref="ProveedorXEmpresa"/>.
-        /// </summary>
-        protected override void DescribeModel()
-        {
-            VmObjectProperty(p => p.SelectedEmpresa).Selectable();
-            ObjectProperty(p => p.DebitoCuenta)
-                .Selectable()
-                .VmSource<ProveedorXEmpresaViewModel>(GetObservable)
-                .Required()
-                .Important("Auxiliar de gastos pagados por anticipado");
-            ObjectProperty(p => p.CreditoCuenta)
-                .Selectable()
-                .VmSource<ProveedorXEmpresaViewModel>(GetObservable)
-                .Required()
-                .Important("Auxiliar de cuentas por pagar");
-        }
-
-        private ObservableListWrap<ModelBase> GetObservable(ProveedorXEmpresaViewModel p, CrudViewModelBase v)
-        {
-            return p.GetCurrentSubCuentas(v as ISearchViewModel);
-        }
-    }
-
-    /// <summary>
-    /// Describe las propiedades Crud para el modelo
-    /// <see cref="CtaXPagar"/>.
-    /// </summary>
-    public class CtaXPagarDescriptor : CrudDescriptor<CtaXPagar>
-    {
-        /// <summary>
-        /// Describe las propiedades Crud para el modelo
-        /// <see cref="CtaXPagar"/>.
-        /// </summary>
-        protected override void DescribeModel()
-        {
-            FriendlyName("Cuenta por pagar");
-            ObjectProperty(p => p.Proveedor).Selectable().Important();
-            Property(p => p.Timestamp).Important("Fecha de emisión");
-            Property(p => p.RefNum).Required().Important("# de ref. de factura/cuenta");
-            NumericProperty(p => p.Total).Positive().Important("Total a pagar");
-            Property(p => p.Paid).Important("Pagada").Hidden();
-            ObjectProperty(p => p.CreationPartida).Creatable().Required().Important("Partida de costo");
-            ObjectProperty(p => p.PaymentPartida).Creatable().Nullable().Important("Partida de pago");
-        }
-    }
-
 }

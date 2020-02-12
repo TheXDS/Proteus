@@ -1,4 +1,5 @@
-﻿using TheXDS.Proteus.Crud.Base;
+﻿using System.Globalization;
+using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 using static TheXDS.Proteus.Annotations.InteractionType;
 
@@ -17,6 +18,8 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         protected override void DescribeModel()
         {
             OnModuleMenu(Settings);
+
+            RegisterReadOnlyPresenter(p => p?.Name ?? RegionInfo.CurrentRegion.CurrencyNativeName);
 
             Property(p => p.Id).Id("Código ISO 3166 regional");
             Property(p => p.Name).AsName();

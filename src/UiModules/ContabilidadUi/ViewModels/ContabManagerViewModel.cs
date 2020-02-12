@@ -41,30 +41,32 @@ namespace TheXDS.Proteus.ViewModels
             return CurrentSubCuentas;
         }
 
-        private Empresa _selectedEmpresa;
-
         /// <summary>
         ///     Obtiene o establece el valor SelectedEmpresa.
         /// </summary>
         /// <value>El valor de SelectedEmpresa.</value>
         public Empresa SelectedEmpresa
         {
-            get => _selectedEmpresa;
+            get =>  Entity.Empresa;
             set
             {
-                if (!Change(ref _selectedEmpresa, value)) return;
+                //if (!Change(ref _selectedEmpresa, value)) return;
+                Entity.Empresa = value;
                 CurrentSubCuentas
-                    .Substitute(Flatten(value.Activo)
-                    .Concat(Flatten(value.Pasivo))
-                    .Concat(Flatten(value.Patrimonio))
+                    .Substitute(Flatten(value?.Activo)
+                    .Concat(Flatten(value?.Pasivo))
+                    .Concat(Flatten(value?.Patrimonio))
+                    .Concat(Flatten(value?.Ingresos))
+                    .Concat(Flatten(value?.Costos))
+                    .Concat(Flatten(value?.Gastos))
                     .Cast<ModelBase>().ToList());
                 _vm.ClearSearch();
             }
         }
 
-        private static IEnumerable<SubCuenta> Flatten(Cuenta c)
+        private static IEnumerable<SubCuenta> Flatten(Cuenta? c)
         {
-            return c.Children.SelectMany(Flatten).Concat(c.SubCuentas);
+            return c?.Children.SelectMany(Flatten).Concat(c?.SubCuentas) ?? Array.Empty<SubCuenta>();
         }
     }
 
