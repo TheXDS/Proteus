@@ -14,7 +14,7 @@ namespace TheXDS.Proteus.Models
 
         public override string ToString()
         {
-            return $"{Cuenta}: {RawValue:C}";
+            return $"{Cuenta?.FullCode} - {Cuenta?.Name}: {RawValue:C}";
         }
 
     }

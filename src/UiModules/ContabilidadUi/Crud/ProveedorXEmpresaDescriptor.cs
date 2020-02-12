@@ -30,6 +30,12 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 .VmSource<ProveedorXEmpresaViewModel>(GetObservable)
                 .Required()
                 .Important("Auxiliar de cuentas por pagar");
+            ObjectProperty(p => p.GastoCuenta)
+                .Selectable()
+                .VmSource<ProveedorXEmpresaViewModel>(GetObservable)
+                .Required()
+                .Important("Cuenta de gasto");
+
         }
 
         private ObservableListWrap<ModelBase> GetObservable(ProveedorXEmpresaViewModel p, CrudViewModelBase v)

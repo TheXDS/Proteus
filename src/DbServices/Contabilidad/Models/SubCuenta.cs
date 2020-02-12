@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models.Base;
 
@@ -13,5 +14,12 @@ namespace TheXDS.Proteus.Models
         public decimal BalanceCache { get; set; }
 
         public string FullCode => $"{Parent?.FullCode.OrNull("{0}-")}{Prefix}";
+
+        public virtual Cuenta FindRoot()
+        {
+            var c = Parent ?? throw new InvalidOperationException();
+            while (c.Parent is { }) c = c.Parent;
+            return c;
+        }
     }
 }
