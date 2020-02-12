@@ -24,6 +24,7 @@ namespace TheXDS.Proteus.ViewModels
     /// </summary>
     public class ProveedorXEmpresaViewModel : ViewModel<ProveedorXEmpresa>
     {
+        private ISearchViewModel _vm;
         /// <summary>
         /// Inicializa una nueva instancia de la clase
         /// <see cref="ProveedorXEmpresaViewModel"/>.
@@ -34,6 +35,11 @@ namespace TheXDS.Proteus.ViewModels
 
         public ObservableListWrap<ModelBase> CurrentSubCuentas { get; } = new ObservableListWrap<ModelBase>();
 
+        public ObservableListWrap<ModelBase> GetCurrentSubCuentas(ISearchViewModel vm)
+        {
+            _vm = vm;
+            return CurrentSubCuentas;
+        }
 
         private Empresa _selectedEmpresa;
 
@@ -52,6 +58,7 @@ namespace TheXDS.Proteus.ViewModels
                     .Concat(Flatten(value.Pasivo))
                     .Concat(Flatten(value.Patrimonio))
                     .Cast<ModelBase>().ToList());
+                _vm.ClearSearch();
             }
         }
 
