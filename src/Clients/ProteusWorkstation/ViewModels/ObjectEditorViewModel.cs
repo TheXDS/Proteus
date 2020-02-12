@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using TheXDS.MCART;
+using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
@@ -212,7 +213,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(IObjectPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), description, models) { }
+        public ObjectEditorViewModel(IObjectPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.Source), description, models) { }
 
         private void OnCancelSelect()
         {
@@ -247,15 +248,9 @@ namespace TheXDS.Proteus.ViewModels
             FieldIcon = description.Icon;
             CanSelect = description.Selectable;
             ShowEditControls = description.Creatable;
-
-            SelectionSource = selectionSource;
             SelectCommand = new SimpleCommand(OnSelect);
             OkSelectCommand = new SimpleCommand(OnOkSelect);
             CancelSelectCommand = new SimpleCommand(OnCancelSelect);
-
-            RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
-            RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
-            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));            
 
             SelectableModels = description.ChildModels?.ToList()
                 ?? description.PropertyType.Derivates().Select(p => p.ResolveToDefinedType()!).Distinct().Where(TypeExtensions.IsInstantiable).OrNull()?.ToList()
@@ -263,6 +258,12 @@ namespace TheXDS.Proteus.ViewModels
 
             ModelLabel = description.Label;
             ActiveModel = SelectableModels.FirstOrDefault();
+            SelectionSource = description.VmSource(SelectedElement.ViewModel) ?? selectionSource;
+
+            RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
+            RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
+            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));
+
             SearchCommand = new ObservingCommand(this, OnSearch);
             SearchCommand.ListensToProperty(() => SearchQuery!);
             SearchCommand.ListensToProperty(() => ActiveModel);
