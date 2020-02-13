@@ -40,12 +40,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
 
             VmBeforeSave(CreateRoot);
             CustomAction("Abrir nuevo período", NewPeriod);
-            AfterSave(UpdateViewModel);
-        }
-
-        private async void UpdateViewModel(Empresa arg1, ModelBase arg2)
-        {            
-            await ContabilidadModule.ModuleStatus.InitViewModel();
+            AfterSave(async ()=> await ContabilidadModule.ModuleStatus.InitViewModel());
         }
 
         private void CreateRoot(EmpresaViewModel arg1, ModelBase arg2)
@@ -76,7 +71,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             await Proteus.Service<ContabilidadService>()!.NewPeriod(obj);
             await ProteusViewModel.FullRefreshVmAsync<ContabManagerViewModel>();
             App.Module<ContabilidadModule>()!.Reporter?.Done();
-
         }
     }
 }

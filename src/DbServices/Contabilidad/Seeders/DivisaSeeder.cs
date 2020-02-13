@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using TheXDS.MCART.Attributes;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Models;
 
@@ -9,7 +10,7 @@ namespace TheXDS.Proteus.Seeders
     /// Define una función de semilla de inicialización para el modelo
     /// <see cref="Divisa"/>.
     /// </summary>
-    [SeederFor(typeof(ContabilidadService))]
+    [SeederFor(typeof(ContabilidadService)), Priority(0)]
     public class DivisaSeeder : AsyncDbSeeder<Divisa>
     {
         /// <summary>

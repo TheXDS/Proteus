@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using TheXDS.MCART.Controls;
 using TheXDS.MCART.Types.Base;
@@ -137,10 +138,30 @@ namespace TheXDS.Proteus.ViewModels
                     Graph.Graph.Add((double)j.Sum(p => p.RawValue > 0m ? p.RawValue : 0m));
                     Graph.Graph2.Add((double)j.Sum(p => p.RawValue < 0m ? -p.RawValue : 0m));
                 }
+                GraphVisible = Visibility.Visible;
+            }
+            else
+            { 
+                GraphVisible = Visibility.Collapsed;
             }
             IsBusy = Graph.Frozen = false;
             Graph.Redraw();
         }
+
+
+        private Visibility _graphVisible;
+
+        /// <summary>
+        ///     Obtiene o establece el valor GraphVisible.
+        /// </summary>
+        /// <value>El valor de GraphVisible.</value>
+        public Visibility GraphVisible
+        {
+            get => _graphVisible;
+            set => Change(ref _graphVisible, value);
+        }
+
+
 
         public IQueryable<Entidad> ActiveEntidades()
         {
