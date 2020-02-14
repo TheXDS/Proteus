@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models.Base;
 
@@ -13,31 +14,12 @@ namespace TheXDS.Proteus.Models
         public decimal BalanceCache { get; set; }
 
         public string FullCode => $"{Parent?.FullCode.OrNull("{0}-")}{Prefix}";
-    }
 
-    public class Proveedor : Addressable<int>
-    {
-        public string Rtn { get; set; }
-        public int DaysDue { get; set; } = 30;
-        public virtual List<ProveedorXEmpresa> Empresas { get; set; } = new List<ProveedorXEmpresa>();
-    }
-
-    public class ProveedorXEmpresa : ModelBase<int>
-    {
-        public virtual Proveedor Proveedor { get; set; }
-        public virtual Empresa Empresa { get; set; }
-        public virtual SubCuenta DebitoCuenta { get; set; }
-        public virtual SubCuenta CreditoCuenta { get; set; }
-
-    }
-
-    public class CtaXPagar : TimestampModel<long>
-    {
-        public virtual Proveedor Proveedor { get; set; }
-        public string RefNum { get; set; }
-        public decimal Total { get; set; }
-        public bool Paid { get; set; }
-        public virtual Partida CreationPartida { get; set; }
-        public virtual Partida? PaymentPartida { get; set; }
+        public virtual Cuenta FindRoot()
+        {
+            var c = Parent ?? throw new InvalidOperationException();
+            while (c.Parent is { }) c = c.Parent;
+            return c;
+        }
     }
 }

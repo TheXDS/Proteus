@@ -1,7 +1,6 @@
 ﻿using TheXDS.Proteus.ContabilidadUi.Modules;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
-using TheXDS.Proteus.ViewModels;
 
 namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
@@ -29,41 +28,33 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         }
     }
 
-
     /// <summary>
     /// Describe las propiedades Crud para el modelo
-    /// <see cref="Proveedor"/>.
+    /// <see cref="Banco"/>.
     /// </summary>
-    public class ProveedorDescriptor : CrudDescriptor<Proveedor>
+    public class BancoCrudDescriptor : CrudDescriptor<Banco>
     {
         /// <summary>
         /// Describe las propiedades Crud para el modelo
-        /// <see cref="Proveedor"/>.
+        /// <see cref="Banco"/>.
         /// </summary>
         protected override void DescribeModel()
         {
-            OnModuleMenu(Annotations.InteractionType.AdminTool);
             Property(p => p.Name).AsName();
-            TextProperty(p => p.Rtn).Mask("9999-9999-999999").Required().Important("RTN");
             this.DescribeContact();
-            this.DescribeAddress();
-            ListProperty(p => p.Empresas)
-                .Creatable()
-                .Required()
-                .Label("Cuentas contables por empresa")
-                .ShowInDetails();
+            ListProperty(p => p.Cuentas).Creatable().Required().ShowInDetails();
         }
     }
 
     /// <summary>
     /// Describe las propiedades Crud para el modelo
-    /// <see cref="ProveedorXEmpresa"/>.
+    /// <see cref="CuentaBanco"/>.
     /// </summary>
-    public class ProveedorXEmpresaDescriptor : CrudDescriptor<ProveedorXEmpresa, ProveedorXEmpresaViewModel>
+    public class CuentaBancoCrudDescriptor : CrudDescriptor<CuentaBanco>
     {
         /// <summary>
         /// Describe las propiedades Crud para el modelo
-        /// <see cref="ProveedorXEmpresa"/>.
+        /// <see cref="CuentaBanco"/>.
         /// </summary>
         protected override void DescribeModel()
         {

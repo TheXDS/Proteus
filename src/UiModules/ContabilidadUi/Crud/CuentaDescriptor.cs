@@ -24,6 +24,8 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             BeforeSave<Cuenta>(SetPrefix);
 
             CanDelete(c => c.Parent is { } && c.Children.Count == 0 && c.SubCuentas.Count == 0);
+
+            RegisterReadOnlyPresenter(p => $"{p.FullCode} - {p.Name}");
         }
 
         private void SetPrefix(Cuenta arg1, Cuenta? arg2)

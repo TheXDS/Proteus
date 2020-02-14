@@ -91,11 +91,23 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             if (!CanOpen()) return;
             Host.OpenPage(QuickCrudPage.BulkNew<Partida>());
         }
+
         [InteractionItem, Essential, InteractionType(InteractionType.AdminTool), Name("Periodo Actual")]
         public void EditPeriodoActual(object sender, EventArgs e)
         {
             if (!CanOpen()) return;
             Host.OpenPage(QuickCrudPage.Edit(ModuleStatus.ActivePeriodo!));
+        }
+
+        [InteractionItem, Essential, InteractionType(InteractionType.AdminTool), Name("Cuentas por pagar")]
+        public void AdminCtaXPagarTest(object sender, EventArgs e)
+        {
+            if (!CanOpen()) return;
+            Host.OpenPage(CrudPage.New<ContabilidadService, CtaXPagar>(
+                $"Cuentas por pagar de {ModuleStatus.ActiveEmpresa}",
+                o => o
+                .Where(p => p.Empresa.Id == ModuleStatus.ActiveEmpresa!.Id)
+                .Where(p=>p.Paid == false)));
         }
 
 
@@ -244,7 +256,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
         {
             if (!CanOpen()) return;
             var e = ModuleStatus.ActiveEmpresa!;
-            var q = new[] { e.Activo, e.Pasivo, e.Patrimonio }.AsQueryable();
+            var q = new[] { e.Activo, e.Pasivo, e.Patrimonio, e.Ingresos, e.Costos, e.Gastos }.AsQueryable();
             Host.OpenPage(CrudPage.New<ContabilidadService>("Catálogo de cuentas", q, new[] { typeof(Cuenta), typeof(SubCuenta) }));
         }
     }

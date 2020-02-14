@@ -14,9 +14,8 @@ namespace TheXDS.Proteus.Models
         public virtual Divisa? DefaultDivisa { get; set; }
         public decimal InitialCache { get; set; }
         public decimal BalanceCache { get; set; }
-
+        public virtual Empresa? RootParent { get; set; }
         public IEnumerable<ModelBase> JointTree => Children.Cast<ModelBase>().Concat(SubCuentas);
-
         public string FullCode => $"{Parent?.FullCode.OrNull("{0}.")}{Prefix}";
         public short FreeCuentaPrefix => (short)(Children.Any() ? Children.Max(p => p.Prefix) + 1 : 1);
         public short FreeSubCuentaPrefix => (short)(SubCuentas.Any() ? SubCuentas.Max(p => p.Prefix) + 1 : 1);

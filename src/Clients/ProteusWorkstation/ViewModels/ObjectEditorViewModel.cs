@@ -213,7 +213,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(IObjectPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.Source), description, models) { }
+        public ObjectEditorViewModel(IEntityViewModel parentVm, IObjectPropertyDescription description, params Type[] models) : this(parentVm, AppInternal.GetSource(description.Source), description, models) { }
 
         private void OnCancelSelect()
         {
@@ -226,8 +226,12 @@ namespace TheXDS.Proteus.ViewModels
         private void OnOkSelect()
         {
             Selection = TempSelection;
+            _description.Property.SetValue(_description.PropertySource == PropertyLocation.ViewModel ? _parentVm : _parentVm.Entity, TempSelection);
             OnCancelSelect();
         }
+
+        private readonly IObjectPropertyDescription _description;
+        private readonly IEntityViewModel _parentVm;
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
@@ -242,8 +246,10 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
+        public ObjectEditorViewModel(IEntityViewModel parentVm, ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
         {
+            _description = description;
+            _parentVm = parentVm;
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CanSelect = description.Selectable;
@@ -258,7 +264,7 @@ namespace TheXDS.Proteus.ViewModels
 
             ModelLabel = description.Label;
             ActiveModel = SelectableModels.FirstOrDefault();
-            SelectionSource = description.VmSource(SelectedElement.ViewModel) ?? selectionSource;
+            SelectionSource = description.UseVmSource ? description.VmSource(parentVm, this) : selectionSource;
 
             RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
             RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
@@ -376,7 +382,8 @@ namespace TheXDS.Proteus.ViewModels
             else if (Proteus.Infer(ActiveModel!) is { } svc)
             {          
                 var q = svc.All(ActiveModel!);
-                Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+                //Results = await q.CountAsync() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+                Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(q.ToList()) : null;
             }
             EnumerableResults = null;
             SearchQuery = null;

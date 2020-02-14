@@ -1624,7 +1624,7 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Obtiene un nombre amigable para el servicio.
         /// </summary>
-        public string FriendlyName => GetType().NameOf()?.OrNull() ?? GetType().Name.ChopEnd(nameof(Service));
+        public string FriendlyName => GetType().NameOf()?.Without(GetType().Name).OrNull() ?? GetType().Name.ChopEnd(nameof(Service));
 
         private protected void AfterElevation()
         {
@@ -1662,29 +1662,9 @@ namespace TheXDS.Proteus.Api
         /// <see langword="true"/> si la función tiene permisos para
         /// ejecutarse, <see langword="false"/> en caso contrario.
         /// </returns>
-        protected bool Elevate()
+        public bool Elevate()
         {
-            return !Interactive || (CanRunService() ?? false);
-
-
-            //bool r;
-            //do
-            //{
-            //    r = !Interactive || (CanRunService() ?? false);
-            //    if (!r)
-            //    {
-                    
-            //        if ( CanRunService((MethodBase.GetCurrentMethod() as MethodInfo).FullName(), SecurityFlags.Elevate, credential))
-            //        {
-
-            //        }
-
-
-            //    }
-
-            //    if (!r && (!Elevator?.Elevate(ref _session) ?? true)) break;
-            //} while (!r);
-            //return r;
+            return !Interactive || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
         }
 
 
@@ -1912,8 +1892,8 @@ namespace TheXDS.Proteus.Api
                 if (Context.Database.Exists())
                 {
                     if (Context.Database.CompatibleWithModel(false) 
-                        || (!InteractiveMt?.Ask(St.ReinitDb, St.ReinitDbQuestion) ?? true)) return false;
-                    Reporter?.UpdateStatus($"{St.DamagedDb} {string.Format(St.CreatingDb,FriendlyName.ToLower())}");
+                        || (!InteractiveMt?.Ask(St.ReinitDb, string.Format(St.ReinitDbQuestion, FriendlyName.ToLower())) ?? true)) return false;
+                    Reporter?.UpdateStatus($"{St.DamagedDb} {string.Format(St.CreatingDb, FriendlyName.ToLower())}");
                     Context.Database.Delete();
                 }
                 else
