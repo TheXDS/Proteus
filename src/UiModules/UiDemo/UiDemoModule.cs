@@ -9,6 +9,7 @@ using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Annotations;
+using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.Models;
@@ -96,6 +97,29 @@ namespace TheXDS.Proteus
             Test<bool>() &&
             Test<DateTime>() &&
             Test<Range<DateTime>>();
+        }
+
+        [InteractionItem, InteractionType(Operation)]
+        public void TestElevation(object sender, EventArgs e)
+        {
+            var s = Proteus.Service<UserService>()!;
+            if (s.IsElevated && (Proteus.InteractiveMt?.Ask("Existe una elevación activa. ¿Desea revocarla primero?") ?? true))
+            {
+                s.Revoke();
+            }
+
+            if (s.CanRunService(SecurityFlags.Root) ?? false)
+            {
+                Proteus.MessageTarget?.Info($"Se ejecutó una operación administrativa sin requerir de una elevación. IsElevated: {s.IsElevated}");
+            }
+            else if (s.Elevate(SecurityFlags.Root))
+            {
+                Proteus.MessageTarget?.Info($"Se ejecutó una operación administrativa luego de elevar los permisos del usuario. Sesión {s.Session}");
+            }
+            else
+            {
+                Proteus.MessageTarget?.Stop("Neles pasteles...");
+            }
         }
 
         [InteractionItem, InteractionType(Reports)]
