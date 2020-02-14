@@ -26,4 +26,40 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             arg1.Parent ??= arg2;
         }
     }
+
+    /// <summary>
+    /// Describe las propiedades Crud para el modelo
+    /// <see cref="Banco"/>.
+    /// </summary>
+    public class BancoCrudDescriptor : CrudDescriptor<Banco>
+    {
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Banco"/>.
+        /// </summary>
+        protected override void DescribeModel()
+        {
+            Property(p => p.Name).AsName();
+            this.DescribeContact();
+            ListProperty(p => p.Cuentas).Creatable().Required().ShowInDetails();
+        }
+    }
+
+    /// <summary>
+    /// Describe las propiedades Crud para el modelo
+    /// <see cref="CuentaBanco"/>.
+    /// </summary>
+    public class CuentaBancoCrudDescriptor : CrudDescriptor<CuentaBanco>
+    {
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="CuentaBanco"/>.
+        /// </summary>
+        protected override void DescribeModel()
+        {
+            Property(p => p.Kind).Important("Tipo de cuenta");
+            ObjectProperty(p => p.Cuenta).Selectable().Required().Important("Auxiliar contable de registro");
+        }
+    }
+
 }
