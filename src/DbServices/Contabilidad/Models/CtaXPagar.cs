@@ -12,4 +12,9 @@ namespace TheXDS.Proteus.Models
         public virtual Partida CreationPartida { get; set; }
         public virtual Partida? PaymentPartida { get; set; }
     }
+    public class CxpPayment : TimestampModel<long>
+    {
+        public virtual CtaXPagar Parent { get; set; }
+
+    }
 }

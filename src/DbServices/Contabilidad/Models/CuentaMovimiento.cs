@@ -14,7 +14,7 @@ namespace TheXDS.Proteus.Models
         public virtual Cliente? Source { get; set; }
         public virtual Proveedor? Beneficiario { get; set; }
         public virtual CuentaBanco? LocalTarget { get; set; }
-        
+
         public TargetKind? OtherTarget { get; set; }
         public string? ExternalTarget { get; set; }
 
