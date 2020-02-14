@@ -1,4 +1,5 @@
 ﻿using System;
+using TheXDS.Proteus.ContabilidadUi.Modules;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 
