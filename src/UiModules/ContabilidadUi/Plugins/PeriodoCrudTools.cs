@@ -148,16 +148,4 @@ namespace TheXDS.Proteus.ContabilidadUi.Plugins
 
         */
     }
-
-    public class CtaPagoCrudTools : CrudTool<CtaXPagar>
-    {
-        public CtaPagoCrudTools() : base(CrudToolVisibility.Selected)
-        {
-        }
-
-        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
