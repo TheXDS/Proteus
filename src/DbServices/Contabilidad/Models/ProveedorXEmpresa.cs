@@ -36,61 +36,20 @@ namespace TheXDS.Proteus.Models
         Ahorros,
         Cheques
     }
+
     public class CuentaBanco : ModelBase<string>
     {
         public virtual CuentaBancoKind Kind { get; set; }
         public virtual SubCuenta Cuenta { get; set; }
         public virtual List<CuentaMovimiento> Movimientos { get; set; } = new List<CuentaMovimiento>();
+
+        public virtual Banco Parent { get; set; }
+        public override string ToString()
+        {
+            return $"Cuenta de {Kind} en {Parent} #{Id}";
+        }
     }
 
-    /*
-    public enum CuentaMovimientoKind : byte
-    {
-        Cheque,
-        Transferencia,
-        Retiro,
-        [Name("Depósito")] Deposito
-    }
-
-    public class ChequeIn : CuentaMovimientoIn
-    {
-        public string Concepto { get; set; }
-    }
-
-    public class ChequeOut : CuentaMovimientoOut
-    {
-        public string Concepto { get; set; }
-    }
-
-
-    public class TransferenciaIn : CuentaMovimientoIn
-    {
-    }
-
-    public class TransferenciaOut : CuentaMovimientoOut
-    {
-    }
-
-    public class Retiro : CuentaMovimiento
-    {
-    }
-
-    public abstract class CuentaMovimientoIn : CuentaMovimiento
-    {
-        public virtual Cliente Source { get; set; }
-    }
-    public abstract class CuentaMovimientoOut : CuentaMovimiento
-    {
-        public virtual Proveedor Beneficiario { get; set; }
-    }
-    public abstract class CuentaMovimiento : TimestampModel<long>
-    {
-        public string NumRef { get; set; }
-        public virtual CuentaBanco Parent { get; set; }
-        public decimal Monto { get; set; }
-        public virtual Partida RefPartida { get; set; }
-    }
-    */
     public enum CuentaMovimientoKind : byte
     {
         Cheque,

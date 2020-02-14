@@ -33,11 +33,13 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             //ObjectProperty(p => p.PaymentPartida).Creatable().Nullable().Important("Partida de pago");
 
             VmBeforeSave(BuildPartida);
+            AfterSave(async () => await ContabilidadModule.ModuleStatus.InitViewModel());
         }
 
         private void BuildPartida(CtaXPagarViewModel arg1, ModelBase arg2)
-        {
+        {            
             var cta = arg1.Entity;
+            if (cta.CreationPartida is { }) return;
             cta.Empresa = ContabilidadModule.ModuleStatus.ActiveEmpresa!;
             var current = Proteus.Service<ContabilidadService>()!.First<ProveedorXEmpresa>(p => p.Empresa.Id == ContabilidadModule.ModuleStatus.ActiveEmpresa!.Id);
 
@@ -69,6 +71,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                     }
                 }
             };
+
         }
     }
 }

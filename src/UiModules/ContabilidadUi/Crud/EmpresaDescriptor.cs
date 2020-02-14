@@ -30,7 +30,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             TextProperty(p => p.RTN).Mask("0000-0000-000000").Nullable().AsListColumn();
             this.DescribeAddress();
             this.DescribeContact();
-            ListProperty(p => p.Periodos).Creatable().WatermarkAlwaysVisible().Label("Periodos contables");
             ShowAllInDetails();
 
             VmObjectProperty(p => p.FromMolde).Selectable()
@@ -39,8 +38,15 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 .Label("Crear árbol contable desde plantilla");
 
             VmBeforeSave(CreateRoot);
+            BeforeSave(EnsureAtLeastOnePeriod);
             CustomAction("Abrir nuevo período", NewPeriod);
-            AfterSave(async ()=> await ContabilidadModule.ModuleStatus.InitViewModel());
+            AfterSave(async () => await ContabilidadModule.ModuleStatus.InitViewModel());
+        }
+
+        private void EnsureAtLeastOnePeriod(Empresa arg1, ModelBase arg2)
+        {
+            if (arg1.Periodos.Any()) return;
+            if (arg1.IsNew) arg1.Periodos.Add(new Periodo { Timestamp = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1) });
         }
 
         private void CreateRoot(EmpresaViewModel arg1, ModelBase arg2)
