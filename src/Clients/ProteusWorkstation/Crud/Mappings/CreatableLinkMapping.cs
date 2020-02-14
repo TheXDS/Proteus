@@ -35,7 +35,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             if (!(property is ILinkPropertyDescription i)) return;
             _descr = i;
             _svc = Proteus.InferService(i.Model);
-            _source = i.Source;
+            _source = i.Source.AsQueryable();
             _selector.ItemsSource = i.Source.ToList();
             _selector.SelectedValuePath = "Id";
             _selector.DisplayMemberPath = i.DisplayMemberPath;
@@ -94,7 +94,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         private void BtnNew_Click(object sender, RoutedEventArgs e)
         {
             _crud.ClearAll();
-            _crud.ViewModel.Entity = _descr.Model.New();
+            _crud.ViewModel.Entity = _descr.Model.New<ModelBase>();
             _btnNew.IsChecked = true;
         }
 

@@ -27,6 +27,7 @@ using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
 using static TheXDS.Proteus.Proteus;
 using Timer = System.Timers.Timer;
+using St = TheXDS.Proteus.Resources.Strings;
 
 namespace TheXDS.Proteus.Api
 {
@@ -1623,7 +1624,7 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Obtiene un nombre amigable para el servicio.
         /// </summary>
-        public string FriendlyName => GetType().NameOf()?.OrNull() ?? GetType().Name.Replace("Service", string.Empty);
+        public string FriendlyName => GetType().NameOf()?.Without(GetType().Name).OrNull() ?? GetType().Name.ChopEnd(nameof(Service));
 
         private protected void AfterElevation()
         {
@@ -1661,29 +1662,9 @@ namespace TheXDS.Proteus.Api
         /// <see langword="true"/> si la función tiene permisos para
         /// ejecutarse, <see langword="false"/> en caso contrario.
         /// </returns>
-        protected bool Elevate()
+        public bool Elevate()
         {
-            return !Interactive || (CanRunService() ?? false);
-
-
-            //bool r;
-            //do
-            //{
-            //    r = !Interactive || (CanRunService() ?? false);
-            //    if (!r)
-            //    {
-                    
-            //        if ( CanRunService((MethodBase.GetCurrentMethod() as MethodInfo).FullName(), SecurityFlags.Elevate, credential))
-            //        {
-
-            //        }
-
-
-            //    }
-
-            //    if (!r && (!Elevator?.Elevate(ref _session) ?? true)) break;
-            //} while (!r);
-            //return r;
+            return !Interactive || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
         }
 
 
@@ -1837,7 +1818,7 @@ namespace TheXDS.Proteus.Api
         {
             return Op(() =>
             {
-                CommonReporter?.UpdateStatus($"Sanitizando la base de datos de {FriendlyName}...");
+                CommonReporter?.UpdateStatus(String.Format(St.SanitizingDb,FriendlyName.ToLower()));
                 foreach (var j in Context.GetType().GetProperties()
                     .Where(p => typeof(DbSet<ISoftDeletable>).IsAssignableFrom(p.PropertyType))
                     .Select(q => q.GetMethod!.Invoke(Context, Array.Empty<object>()) as DbSet<ISoftDeletable>))
@@ -1905,25 +1886,26 @@ namespace TheXDS.Proteus.Api
 
         internal bool InitializeDatabase()
         {
-            Reporter?.UpdateStatus($"Comprobando base de datos de {FriendlyName.ToLower()}...");
+            Reporter?.UpdateStatus(string.Format(St.CheckingDb, FriendlyName.ToLower()));
             try
             {
                 if (Context.Database.Exists())
                 {
-                    if (Context.Database.CompatibleWithModel(false)) return false;
-                    Reporter?.UpdateStatus($"Base de datos dañada. Creando base de datos de {FriendlyName.ToLower()}...");
+                    if (Context.Database.CompatibleWithModel(false) 
+                        || (!InteractiveMt?.Ask(St.ReinitDb, string.Format(St.ReinitDbQuestion, FriendlyName.ToLower())) ?? true)) return false;
+                    Reporter?.UpdateStatus($"{St.DamagedDb} {string.Format(St.CreatingDb, FriendlyName.ToLower())}");
                     Context.Database.Delete();
                 }
                 else
                 {
-                    Reporter?.UpdateStatus($"Creando base de datos de {FriendlyName.ToLower()}...");
+                    Reporter?.UpdateStatus(string.Format(St.CreatingDb, FriendlyName.ToLower()));
                 }
                 Context.Database.Create();
                 return true;
             }
             catch (Exception ex)
             {
-                Reporter?.UpdateStatus($"{ex.Message}");                
+                Reporter?.UpdateStatus(ex.Message);                
                 return false;
             }
         }
@@ -1948,7 +1930,7 @@ namespace TheXDS.Proteus.Api
                     var r = await s.SeedAsync(this, Reporter);
                     if (r.Result != Result.Ok)
                     {
-                        AlertTarget?.Alert($"Error al inicializar la base de datos de {FriendlyName}", r.Message);
+                        AlertTarget?.Alert(string.Format(St.ErrorInitDb, FriendlyName.ToLower()), r.Message);
                         return r.Result;
                     }
                 }
@@ -2022,8 +2004,7 @@ namespace TheXDS.Proteus.Api
         protected static TEstacion? GetStation<TEstacion>() where TEstacion : EstacionBase, new()
         {
             return GetStation<TEstacion>(Proteus.Infer(typeof(TEstacion)) 
-                ?? throw new InvalidOperationException(
-                    $"No fue posible encontrar un servicio que administre entidades de tipo {typeof(TEstacion)}."));
+                ?? throw new InvalidOperationException(string.Format(St.Svc4EntNotFound,typeof(TEstacion))));
         }
 
         /// <summary>
@@ -2041,8 +2022,7 @@ namespace TheXDS.Proteus.Api
         protected static TUser? GetUser<TUser>() where TUser : ModelBase, IUserBase, new()
         {
             return GetUser<TUser>(Proteus.Infer(typeof(TUser))
-                ?? throw new InvalidOperationException(
-                    $"No fue posible encontrar un servicio que administre entidades de tipo {typeof(TUser)}."));
+                ?? throw new InvalidOperationException(string.Format(St.Svc4EntNotFound, typeof(TUser))));
         }
 
         /// <summary>

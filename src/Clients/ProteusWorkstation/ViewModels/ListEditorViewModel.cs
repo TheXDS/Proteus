@@ -115,7 +115,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos de datos para los cuales generar el control.
         /// </param>
-        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), new List<ModelBase>(), models)
+        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.Source), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
             if (CanSelect = description.Selectable) ClearSearch();
@@ -150,7 +150,7 @@ namespace TheXDS.Proteus.ViewModels
         private void ListViewSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!(Selector is ListView lv)) return;
-            Selection = lv.SelectedItems.ToGeneric().FirstOrDefault();
+            Selection = lv.SelectedItems.ToGeneric().FirstOrDefault() as ModelBase;
         }
 
         /// <summary>
