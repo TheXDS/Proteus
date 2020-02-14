@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Attributes;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
@@ -93,8 +94,8 @@ namespace TheXDS.Proteus.Models
     public enum CuentaMovimientoKind : byte
     {
         Cheque,
-        Transferencia,
-        Efectivo
+        [Name("Transferencia bancaria")] Transferencia,
+        [Name("Retiro / Depósito")] Efectivo
     }
 
     public enum TargetKind : byte
@@ -102,9 +103,10 @@ namespace TheXDS.Proteus.Models
         [Name("Banco externo")]ExternalBanco,
     }
 
-    public class CuentaMovimiento : TimestampModel<long>
+    public class CuentaMovimiento : TimestampModel<long>, INameable
     {
-        public string NumRef { get; set; }
+        public string Name { get; set; }
+        public string? Notes { get; set; }
         public virtual CuentaBanco Parent { get; set; }
         public decimal Monto { get; set; }
         public virtual Partida RefPartida { get; set; }

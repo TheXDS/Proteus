@@ -24,5 +24,8 @@ namespace TheXDS.Proteus.Context
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<CtaXPagar> CtasXPagar { get; set; }
         public DbSet<ProveedorXEmpresa> ProveedorXEmpresas { get; set; }
+        public DbSet<Banco> Bancos { get; set; }
+        public DbSet<CuentaBanco> CuentasBanco { get; set; }
+        public DbSet<CuentaMovimiento> CuentaMovimientos { get; set; }
     }
 }

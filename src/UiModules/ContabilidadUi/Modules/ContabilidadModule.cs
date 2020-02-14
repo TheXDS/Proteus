@@ -92,6 +92,14 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
             Host.OpenPage(QuickCrudPage.BulkNew<Partida>());
         }
 
+        [InteractionItem, InteractionType(InteractionType.Operation), Name("Cuentas bancarias")]
+        public void AdminCuentasBancarias(object sender, EventArgs e)
+        {
+            if (!CanOpen()) return;
+            Host.OpenPage(CrudPage.New<ContabilidadService>("Administrar cuentas bancarias",ContabilidadService.CuentasFor(ModuleStatus.ActiveEmpresa!).AsQueryable(),new[] { typeof(CuentaMovimiento)}));
+        }
+
+
         [InteractionItem, Essential, InteractionType(InteractionType.AdminTool), Name("Periodo Actual")]
         public void EditPeriodoActual(object sender, EventArgs e)
         {

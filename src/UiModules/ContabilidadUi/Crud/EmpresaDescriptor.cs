@@ -45,6 +45,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
 
         private void CreateRoot(EmpresaViewModel arg1, ModelBase arg2)
         {
+            if (!arg1.Entity.IsNew) return;
             if (arg1.FromMolde is { } m)
             {
                 (arg1.Entity.Activo = m.Activo).Prefix = 1;

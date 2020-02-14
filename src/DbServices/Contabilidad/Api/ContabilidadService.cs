@@ -82,5 +82,12 @@ namespace TheXDS.Proteus.Api
                     .Where(p => DateTime.Today > p.Timestamp + TimeSpan.FromDays(p.Proveedor.DaysDue));
             }
         }
+
+        public static IEnumerable<CuentaBanco> CuentasFor(Empresa e)
+        {
+            return Proteus.Service<ContabilidadService>()!.All<CuentaBanco>()
+                .ToList()
+                .Where(p => p.Cuenta.FindRoot().RootParent?.Id == e.Id);
+        }
     }
 }
