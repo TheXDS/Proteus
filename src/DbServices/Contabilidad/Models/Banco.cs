@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TheXDS.Proteus.Models.Base;
+using System.Linq;
 
 namespace TheXDS.Proteus.Models
 {
