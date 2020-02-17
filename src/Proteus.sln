@@ -88,6 +88,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScvTest", "NwServices\ScvTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelExporter", "UiModules\ExcelExporter\ExcelExporter.csproj", "{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusUpdater", "Utils\ProteusUpdater\ProteusUpdater.csproj", "{491A5983-F82D-47F4-A69F-BCA0D5339ACC}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shared\TerminalApps\TerminalApps.projitems*{23237288-77a7-45c0-b479-720769cc2dbd}*SharedItemsImports = 13
