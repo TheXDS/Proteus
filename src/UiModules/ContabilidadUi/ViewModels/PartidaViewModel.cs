@@ -363,4 +363,46 @@ namespace TheXDS.Proteus.ContabilidadUi.ViewModels
         }
 
     }
+
+    public class PayCtaWithViewModel : PageViewModel, IReadEntityViewModel<CtaXPagar>
+    {
+        private bool _withBank;
+        private bool _withContab;
+
+        public PayCtaWithViewModel(ICloseable host, CtaXPagar cta) : base(host)
+        {
+            Entity = cta;
+        }
+
+        public CtaXPagar Entity { get; }
+
+        /// <summary>
+        /// Calcula el total pagado de esta cuenta por pagar.
+        /// </summary>
+        public decimal Paid => Entity.Payments.Any() ? Entity.Payments.Sum(p => p.Monto) : 0m;
+        public decimal Remaining => Entity.Total - Paid;
+
+
+        /// <summary>
+        ///     Obtiene o establece el valor WithBank.
+        /// </summary>
+        /// <value>El valor de WithBank.</value>
+        public bool WithBank
+        {
+            get => _withBank;
+            set => Change(ref _withBank, value);
+        }
+
+        /// <summary>
+        ///     Obtiene o establece el valor WithContab.
+        /// </summary>
+        /// <value>El valor de WithContab.</value>
+        public bool WithContab
+        {
+            get => _withContab;
+            set => Change(ref _withContab, value);
+        }
+
+
+    }
 }

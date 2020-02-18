@@ -1,0 +1,84 @@
+﻿<UserControl
+    x:Class="TheXDS.Proteus.ContabilidadUi.Pages.PayCtaWithPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets;assembly=ProteusWorkstation"
+    xmlns:page="http://schemas.thexds.com/2019/Proteus/page"    
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    mc:Ignorable="d"
+    Language="es-HN"
+    d:DesignHeight="450" d:DesignWidth="400">
+    <controls:BusyContainer>
+        <ScrollViewer MaxWidth="550" VerticalAlignment="Center" HorizontalAlignment="Center">            
+            <StackPanel Style="{StaticResource BotoneraBase}" MinWidth="250">
+                <TextBlock Style="{StaticResource Title}">
+                    Cuenta por pagar a <Run Text="{Binding Entity.Proveedor, Mode=OneWay}"/>
+                </TextBlock>
+                <Separator/>
+                <UniformGrid Columns="2">
+                    <TextBlock>Número de referencia:</TextBlock>
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding Entity.RefNum, Mode=OneWay}"/>
+                    <TextBlock>Total de la cuenta:</TextBlock>
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding Entity.Total, Mode=OneWay,StringFormat=C}"/>
+                    <TextBlock>Cancelado:</TextBlock>
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding Paid, Mode=OneWay,StringFormat=C}"/>
+                    <TextBlock>Restante:</TextBlock>
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding Remaining, Mode=OneWay,StringFormat=C}"/>
+                </UniformGrid>
+                <GroupBox Header="Pagar con...">
+                    <StackPanel>                        
+                        <GroupBox>
+                            <GroupBox.Header>
+                                <RadioButton IsChecked="{Binding WithBank}">Cuenta de banco</RadioButton>
+                            </GroupBox.Header>
+                            <StackPanel IsEnabled="{Binding WithBank, Mode=OneWay}">
+                                <ComboBox
+                                    widgets:ProteusProp.Watermark="Cuenta de pago"
+                                    widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                                    ItemsSource="{Binding CurrentCuentas, Mode=OneWay}" 
+                                    SelectedItem="{Binding SelectedCuenta}"/>
+                                <ComboBox 
+                                    widgets:ProteusProp.Watermark="Pagar con"
+                                    widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                                    ItemsSource="{Binding PaymentKinds, Mode=OneWay}"
+                                    SelectedItem="{Binding selectedPaymentKind}"/>                        
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox>
+                            <GroupBox.Header>
+                                <RadioButton IsChecked="{Binding WithContab}">Origen contable</RadioButton>
+                            </GroupBox.Header>
+                            <StackPanel IsEnabled="{Binding WithContab, Mode=OneWay}">
+                                <ComboBox 
+                                    widgets:ProteusProp.Watermark="Cuenta"
+                                    widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                                    ItemsSource="{Binding PaymentKinds, Mode=OneWay}"
+                                    SelectedItem="{Binding selectedPaymentKind}"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                    </StackPanel>
+                </GroupBox>
+                
+                
+                
+                <xctk:DecimalUpDown 
+                    Value="{Binding Monto, StringFormat=C}"
+                    widgets:ProteusProp.Watermark="Monto a cancelar"
+                    Minimum="0.01"
+                    Maximum="{Binding MaxMonto, Mode=OneWay}"/>
+                <TextBox
+                    widgets:ProteusProp.Watermark="Número de referencia"
+                    widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                    Text="{Binding NumRef}"/>
+                <UniformGrid Rows="1">
+                    <Button Command="{Binding PayCommand}">Pagar</Button>
+                    <Button Command="{Binding CancelCommand}">Cancelar</Button>
+                </UniformGrid>
+            </StackPanel>
+        </ScrollViewer>
+    </controls:BusyContainer>
+</UserControl>

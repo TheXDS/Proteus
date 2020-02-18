@@ -1,4 +1,5 @@
-﻿using TheXDS.Proteus.Models.Base;
+﻿using System.Collections.Generic;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
 {
@@ -10,7 +11,7 @@ namespace TheXDS.Proteus.Models
         public decimal Total { get; set; }
         public bool Paid { get; set; }
         public virtual Partida CreationPartida { get; set; }
-        public virtual Partida? PaymentPartida { get; set; }
+        public virtual List<CxpPayment> Payments { get; set; } = new List<CxpPayment>();
     }
 
     /*
@@ -24,6 +25,8 @@ namespace TheXDS.Proteus.Models
     public class CxpPayment : TimestampModel<long>
     {
         public virtual CtaXPagar Parent { get; set; }
+        public virtual Partida? PaymentPartida { get; set; }
+        public decimal Monto { get; set; }
 
     }
 }

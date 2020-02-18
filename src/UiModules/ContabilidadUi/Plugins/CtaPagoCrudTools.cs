@@ -20,6 +20,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Plugins
 
         public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
         {
+            yield break;
             throw new NotImplementedException();
         }
     }
