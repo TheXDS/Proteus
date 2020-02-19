@@ -13,6 +13,7 @@ using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Plugins;
 
 namespace TheXDS.Proteus.UiDemo.Tools
@@ -41,7 +42,7 @@ namespace TheXDS.Proteus.UiDemo.Tools
                 name = $"{App.Info.Name}.exe",
                 version = App.Info.InformationalVersion ?? App.Info.Version?.ToString() ?? "1.0.0.0"
             });
-            var request = (HttpWebRequest)WebRequest.Create($"https://localhost:44363/v1/Update/WriteManifest");
+            var request = (HttpWebRequest)WebRequest.Create($"{Settings.Default.UpdateServer.TrimEnd('/')}/v1/Update/WriteManifest");
             request.Method = "POST";
             request.ContentType = "application/json";
             await JsonSerializer.SerializeAsync(await request.GetRequestStreamAsync(), list.ToArray());
