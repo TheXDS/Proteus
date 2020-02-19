@@ -4,6 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using System;
+using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types;
@@ -136,6 +137,24 @@ namespace TheXDS.Proteus
             var fd = ReportBuilder.MakeReport("Test");
             ReportBuilder.MakeTable(fd, q, new[] { model.GetProperty("Id",typeof(string)), model.GetProperty("Name"), model.GetProperty("DefaultGranted") });
             fd.Print("Test");
+        }
+
+        [InteractionItem, InteractionType(Operation)]
+        public async void TestReporter(object? sender, EventArgs e)
+        {
+            Proteus.CommonReporter?.UpdateStatus("Estado indeterminado");
+            await Task.Delay(3000);
+            Proteus.CommonReporter?.UpdateStatus(20,"Operación importante...");
+            await Task.Delay(1000);
+            Proteus.CommonReporter?.UpdateStatus(40, "Operación importante...");
+            await Task.Delay(1000); 
+            Proteus.CommonReporter?.UpdateStatus(60, "Operación importante...");
+            await Task.Delay(1000);
+            Proteus.CommonReporter?.UpdateStatus(80, "Operación importante...");
+            await Task.Delay(1000);
+            Proteus.CommonReporter?.UpdateStatus(100, "Operación importante...");
+            await Task.Delay(1000);
+            Proteus.CommonReporter?.Done();
         }
     }
 }
