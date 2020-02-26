@@ -17,6 +17,7 @@ using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.Reporting;
+using TheXDS.Proteus.UiDemo.Pages;
 using static TheXDS.Proteus.Annotations.InteractionType;
 
 [assembly: Name("UI Demo")]
@@ -50,6 +51,11 @@ namespace TheXDS.Proteus
         public void OpenTestPage(object sender, EventArgs e)
         {
             Host.OpenPage<TestPage>();
+        }
+        [InteractionItem, InteractionType(AdminTool)]
+        public void OpenServiceInfoPage(object sender, EventArgs e)
+        {
+            Host.OpenPage<DiagnosticsPage>();
         }
 
         [InteractionItem, Essential, InteractionType(Operation)]
