@@ -15,7 +15,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <ListView ItemsSource="{x:Static proteus:Proteus.Services}">
+        <ListView ItemsSource="{x:Static proteus:Proteus.Services}" x:Name="LstServices">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Servicio" DisplayMemberBinding="{Binding FriendlyName, Mode=OneWay}"/>
@@ -23,7 +23,7 @@
             </ListView.View>
         </ListView>
         <GridSplitter/>
-        <StackPanel Grid.Column="2">
+        <StackPanel Grid.Column="2" DataContext="{Binding SelectedItem, ElementName=LstServices, Mode=OneWay}">
             <TextBlock Text="{Binding FriendlyName, Mode=OneWay}" Style="{StaticResource Title}"/>
             <Separator/>
             <TextBlock>
@@ -35,6 +35,9 @@
             <TextBlock>
                 Modo de elevación: <Run Text="{Binding ElevationBehavior, Mode=OneWay}"/>
             </TextBlock>
+
+            <Button Click="Button_Click">Check ChangesPending</Button>
+            <Button Click="Button_Click_1">Forcefully save</Button>
         </StackPanel>
     </Grid>
 </page:ProteusPage>
