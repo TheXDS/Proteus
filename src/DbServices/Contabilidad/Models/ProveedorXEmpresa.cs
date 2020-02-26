@@ -13,7 +13,7 @@ namespace TheXDS.Proteus.Models
 
         public override string ToString()
         {
-            return $"{Proveedor} en {Empresa} (GPA: {DebitoCuenta?.FullCode}, CPP: {CreditoCuenta?.FullCode}, Gasto: {GastoCuenta?.FullCode})";
+            return $"{Empresa} (GPA: {DebitoCuenta?.FullCode}, CPP: {CreditoCuenta?.FullCode}, Gasto: {GastoCuenta?.FullCode})";
         }
     }
 }

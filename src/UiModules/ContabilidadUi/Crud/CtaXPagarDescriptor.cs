@@ -41,7 +41,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             var cta = arg1.Entity;
             if (cta.CreationPartida is { }) return;
             cta.Empresa = ContabilidadModule.ModuleStatus.ActiveEmpresa!;
-            var current = Proteus.Service<ContabilidadService>()!.First<ProveedorXEmpresa>(p => p.Empresa.Id == ContabilidadModule.ModuleStatus.ActiveEmpresa!.Id);
+            var current = Proteus.Service<ContabilidadService>()!.First<ProveedorXEmpresa>(p => p.Empresa.Id == cta.Empresa!.Id);
 
             cta.CreationPartida = new Partida
             {

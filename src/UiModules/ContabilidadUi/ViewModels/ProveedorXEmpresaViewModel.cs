@@ -17,6 +17,8 @@ namespace TheXDS.Proteus.ViewModels
     public class ProveedorXEmpresaViewModel : ViewModel<ProveedorXEmpresa>
     {
         private ISearchViewModel _vm;
+        private Empresa _selectedEmpresa;
+
         /// <summary>
         /// Inicializa una nueva instancia de la clase
         /// <see cref="ProveedorXEmpresaViewModel"/>.
@@ -39,11 +41,13 @@ namespace TheXDS.Proteus.ViewModels
         /// <value>El valor de SelectedEmpresa.</value>
         public Empresa SelectedEmpresa
         {
-            get => Entity.Empresa;
+            get => _selectedEmpresa ?? Entity.Empresa;
             set
             {
-                //if (!Change(ref _selectedEmpresa, value)) return;
+                if (!Change(ref _selectedEmpresa, value)) return;
                 Entity.Empresa = value;
+                Notify("Empresa");
+                Notify("Entity.Empresa");
                 CurrentSubCuentas
                     .Substitute(Flatten(value?.Activo)
                     .Concat(Flatten(value?.Pasivo))
