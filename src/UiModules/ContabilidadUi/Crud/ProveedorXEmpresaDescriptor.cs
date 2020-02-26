@@ -35,7 +35,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 .VmSource<ProveedorXEmpresaViewModel>(GetObservable)
                 .Required()
                 .Important("Cuenta de gasto");
-
         }
 
         private ObservableListWrap<ModelBase> GetObservable(ProveedorXEmpresaViewModel p, CrudViewModelBase v)

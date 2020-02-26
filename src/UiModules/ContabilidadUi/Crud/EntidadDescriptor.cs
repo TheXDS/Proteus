@@ -29,9 +29,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 .Label("Centros de costo asociados")
                 .ShowInDetails();
             CanDelete(ChkNoPartidas);
-            //AfterSave(ContabilidadModule.ModuleStatus.InitViewModel);
             AfterSave(async () => await ContabilidadModule.ModuleStatus.InitViewModel());
-
         }
 
         private bool ChkNoPartidas(Entidad arg)

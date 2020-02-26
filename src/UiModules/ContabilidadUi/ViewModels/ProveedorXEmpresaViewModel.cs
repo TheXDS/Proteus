@@ -39,7 +39,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <value>El valor de SelectedEmpresa.</value>
         public Empresa SelectedEmpresa
         {
-            get =>  Entity.Empresa;
+            get => Entity.Empresa;
             set
             {
                 //if (!Change(ref _selectedEmpresa, value)) return;
