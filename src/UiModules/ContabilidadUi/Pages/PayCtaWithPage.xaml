@@ -49,7 +49,7 @@
                         </GroupBox>
                         <GroupBox>
                             <GroupBox.Header>
-                                <RadioButton IsChecked="{Binding WithContab}">Origen contable</RadioButton>
+                                <RadioButton IsEnabled="False" IsChecked="{Binding WithContab}">Origen contable</RadioButton>
                             </GroupBox.Header>
                             <StackPanel IsEnabled="{Binding WithContab, Mode=OneWay}">
                                 <ComboBox 
@@ -69,7 +69,7 @@
                     Value="{Binding Monto, StringFormat=C}"
                     widgets:ProteusProp.Watermark="Monto a cancelar"
                     Minimum="0.01"
-                    Maximum="{Binding MaxMonto, Mode=OneWay}"/>
+                    Maximum="{Binding Remaining, Mode=OneWay}"/>
                 <TextBox
                     widgets:ProteusProp.Watermark="Número de referencia"
                     widgets:ProteusProp.WatermarkAlwaysVisible="True"
