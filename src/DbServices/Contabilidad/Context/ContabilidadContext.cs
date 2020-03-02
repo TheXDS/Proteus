@@ -11,11 +11,13 @@ namespace TheXDS.Proteus.Context
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<ClienteXEmpresa> ClientesXEmpresa { get; set; }
         public DbSet<CostCenter> CostCenters { get; set; }
+        public DbSet<CtaXCobrar> CtasXCobrar { get; set; }
         public DbSet<CtaXPagar> CtasXPagar { get; set; }
         public DbSet<Cuenta> Cuentas { get; set; }
         public DbSet<CuentaBanco> CuentasBanco { get; set; }
         public DbSet<CuentaMolde> CuentaMoldes { get; set; }
         public DbSet<CuentaMovimiento> CuentaMovimientos { get; set; }
+        public DbSet<CxcPayment> CxcPayments { get; set; }
         public DbSet<CxpPayment> CxpPayments { get; set; }
         public DbSet<Divisa> Divisas { get; set; }
         public DbSet<DocumentKind> DocumentKinds { get; set; }

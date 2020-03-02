@@ -5,19 +5,19 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
     /// <summary>
     /// Describe las propiedades Crud para el modelo
-    /// <see cref="Proveedor"/>.
+    /// <see cref="Cliente"/>.
     /// </summary>
-    public class ProveedorDescriptor : CrudDescriptor<Proveedor>
+    public class ClienteCrudDescriptor : CrudDescriptor<Cliente>
     {
         /// <summary>
         /// Describe las propiedades Crud para el modelo
-        /// <see cref="Proveedor"/>.
+        /// <see cref="Cliente"/>.
         /// </summary>
         protected override void DescribeModel()
         {
             OnModuleMenu(Annotations.InteractionType.AdminTool);
             Property(p => p.Name).AsName();
-            TextProperty(p => p.Rtn).Mask("9999-9999-999999").Required().Important("RTN");
+            TextProperty(p => p.Rtn).Mask("9999-9999-999999").Nullable().Important("RTN");
             this.DescribeContact();
             this.DescribeAddress();
             ListProperty(p => p.Empresas)
@@ -25,7 +25,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 .Required()
                 .Label("Cuentas contables por empresa")
                 .ShowInDetails();
-            NumericProperty(p => p.DaysDue).Label("Días de gracia para cuentas por pagar");
         }
     }
 }

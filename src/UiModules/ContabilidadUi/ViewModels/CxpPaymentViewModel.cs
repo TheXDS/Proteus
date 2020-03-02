@@ -6,9 +6,9 @@ namespace TheXDS.Proteus.ContabilidadUi.ViewModels
     /// <summary>
     /// Clase base personalizada para el ViewModel recompilado que se utilizará
     /// dentro del Crud generado para el modelo
-    /// <see cref="CtaXPagar"/>.
+    /// <see cref="CtaXCobrar"/>.
     /// </summary>
-    public class CtaXPagarViewModel : ViewModel<CtaXPagar>
+    public class CxpPaymentViewModel : ViewModel<CxpPayment>
     {
         private DocumentKind _kind;
 

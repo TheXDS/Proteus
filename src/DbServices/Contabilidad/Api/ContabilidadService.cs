@@ -12,6 +12,10 @@ namespace TheXDS.Proteus.Api
 {
     public class ContabilidadService : Service<ContabilidadContext>
     {
+        public static void ForcefullySave()
+        {
+            Proteus.Service<ContabilidadService>().InternalSaveAsync();
+        }
         public AccessControlList? GetList()
         {
             return GetUser<AccessControlList>(this);

@@ -12,13 +12,13 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
 {
     /// <summary>
     /// Describe las propiedades Crud para el modelo
-    /// <see cref="ProveedorXEmpresa"/>.
+    /// <see cref="ClienteXEmpresa"/>.
     /// </summary>
-    public class ProveedorXEmpresaDescriptor : CrudDescriptor<ProveedorXEmpresa, ProveedorXEmpresaViewModel>
+    public class ClienteXEmpresaCrudDescriptor : CrudDescriptor<ClienteXEmpresa, ClienteXEmpresaViewModel>
     {
         /// <summary>
         /// Describe las propiedades Crud para el modelo
-        /// <see cref="ProveedorXEmpresa"/>.
+        /// <see cref="ClienteXEmpresa"/>.
         /// </summary>
         protected override void DescribeModel()
         {
@@ -29,37 +29,38 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 .Default(ContabilidadModule.ModuleStatus?.ActiveEmpresa!);
             ObjectProperty(p => p.DebitoCuenta)
                 .Selectable()
-                .VmSource<ProveedorXEmpresaViewModel>(GetObservable)
+                .VmSource<ClienteXEmpresaViewModel>(GetObservable)
                 .Required().NotNull()
-                .Important("Auxiliar de gastos pagados por anticipado");
+                .Important("Auxiliar de cuentas por cobrar");
             ObjectProperty(p => p.CreditoCuenta)
                 .Selectable()
-                .VmSource<ProveedorXEmpresaViewModel>(GetObservable)
+                .VmSource<ClienteXEmpresaViewModel>(GetObservable)
                 .Required().NotNull()
-                .Important("Auxiliar de cuentas por pagar");
-            ObjectProperty(p => p.GastoCuenta)
+                .Important("Auxiliar de cuentas cobradas por anticipado");
+            ObjectProperty(p => p.IngresoCuenta)
                 .Selectable()
-                .VmSource<ProveedorXEmpresaViewModel>(GetObservable)
+                .VmSource<ClienteXEmpresaViewModel>(GetObservable)
                 .Required().NotNull()
-                .Important("Cuenta de gasto");
+                .Important("Cuenta de ingresos");
 
             VmBeforeSave(CheckEmpSelected);
 
             // HACK: Al editar entidades con propiedades desde un ViewModel, el estado no se actualiza correctamente. Es necesario forzar el guardado.
             AfterSave(ForcefullySave);
+
         }
 
-        private async void ForcefullySave(ProveedorXEmpresa arg1, ModelBase arg2)
+        private async void ForcefullySave(ClienteXEmpresa arg1, ModelBase arg2)
         {
             if (!arg1.IsNew) await Proteus.Service<ContabilidadService>()!.ForcefullySaveAsync();
         }
 
-        private void CheckEmpSelected(ProveedorXEmpresaViewModel arg1, ModelBase arg2)
+        private void CheckEmpSelected(ClienteXEmpresaViewModel arg1, ModelBase arg2)
         {
             if (arg1.SelectedEmpresa is null) throw new Exception("Debe seleccionar una empresa primero.");
         }
 
-        private ObservableListWrap<ModelBase> GetObservable(ProveedorXEmpresaViewModel p, CrudViewModelBase v)
+        private ObservableListWrap<ModelBase> GetObservable(ClienteXEmpresaViewModel p, CrudViewModelBase v)
         {
             return p.GetCurrentSubCuentas(v as ISearchViewModel);
         }

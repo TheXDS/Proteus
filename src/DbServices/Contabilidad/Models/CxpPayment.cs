@@ -14,6 +14,5 @@ namespace TheXDS.Proteus.Models
         public virtual CtaXPagar Parent { get; set; }
         public virtual Partida? PaymentPartida { get; set; }
         public decimal Monto { get; set; }
-
     }
 }
