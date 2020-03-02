@@ -11,17 +11,6 @@ namespace TheXDS.Proteus.Models
         public virtual List<SubCuentaMolde> SubCuentas { get; set; } = new List<SubCuentaMolde>();
         public virtual Divisa? DefaultDivisa { get; set; }
 
-        public static implicit operator Cuenta(CuentaMolde molde)
-        {
-            return new Cuenta
-            {
-                Name = molde.Name,
-                Children = molde.Children.Select(ToCuenta).ToList(),
-                DefaultDivisa = molde.DefaultDivisa,
-                SubCuentas = molde.SubCuentas.Select(ToCuenta).ToList()
-            };
-        }
-
         private static Cuenta ToCuenta(CuentaMolde p, int i)
         {
             var c = (Cuenta)p;
@@ -35,6 +24,16 @@ namespace TheXDS.Proteus.Models
             return c;
         }
 
+        public static implicit operator Cuenta(CuentaMolde molde)
+        {
+            return new Cuenta
+            {
+                Name = molde.Name,
+                Children = molde.Children.Select(ToCuenta).ToList(),
+                DefaultDivisa = molde.DefaultDivisa,
+                SubCuentas = molde.SubCuentas.Select(ToCuenta).ToList()
+            };
+        }
         public static implicit operator CuentaMolde(string name)
         {
             return new CuentaMolde

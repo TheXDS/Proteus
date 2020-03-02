@@ -9,8 +9,4 @@ namespace TheXDS.Proteus.Models
         public int DaysDue { get; set; } = 30;
         public virtual List<ProveedorXEmpresa> Empresas { get; set; } = new List<ProveedorXEmpresa>();
     }
-
-    public class Cliente : Addressable<int>
-    {
-    }
 }

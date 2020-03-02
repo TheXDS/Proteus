@@ -29,5 +29,4 @@ namespace TheXDS.Proteus.Seeders
             };
         }
     }
-
 }

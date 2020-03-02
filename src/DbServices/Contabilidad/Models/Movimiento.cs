@@ -16,6 +16,5 @@ namespace TheXDS.Proteus.Models
         {
             return $"{Cuenta?.FullCode} - {Cuenta?.Name}: {RawValue:C}";
         }
-
     }
 }
