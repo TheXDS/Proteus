@@ -1,4 +1,4 @@
-﻿<page:ProteusPage
+﻿<Page
     xmlns:page="http://schemas.thexds.com/2019/Proteus/page"
     xmlns:Proteus="http://schemas.thexds.com/2019/Proteus/widgets"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:resources="http://schemas.thexds.com/2019/Proteus/res"
     x:Class="TheXDS.Proteus.Pages.UITestPlayground"
     mc:Ignorable="d" 
     d:DesignWidth="400">
@@ -139,7 +140,7 @@
             </Expander>
             <Expander Header="Tablas de datos">
                 <UniformGrid>
-                    <ListView Margin="10" MaxHeight="90" Style="{x:Null}">
+                    <ListView Margin="10" MaxHeight="90">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Width="100" Header="Texto"/>
@@ -150,9 +151,6 @@
                         <system:String>List item 2</system:String>
                         <system:String>Elemento de lista número 3</system:String>
                     </ListView>
-                    <DataGrid
-                    DataContext=""
-                    Margin="10" Height="100" />
                     <TreeView Margin="10" Height="100">
                         <TreeViewItem Header="Item">
                             <TreeViewItem Header="SubItem" />
@@ -220,10 +218,11 @@
                     </mcart:LightGraph>
                 </UniformGrid>
             </Expander>
-            <Expander Header="Otros">
-                <!--<widgets:CalendarView />-->
+            <Expander Header="Scroll">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" MaxHeight="250" MaxWidth="250">
+                    <Viewbox Height="500" Width="500" Child="{x:Static resources:Images.Logo}"/>
+                </ScrollViewer>
             </Expander>
-            <Expander Header="Reportes"/>
         </StackPanel>
     </ScrollViewer>
-</page:ProteusPage>
+</Page>

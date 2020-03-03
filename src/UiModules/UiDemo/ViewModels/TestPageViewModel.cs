@@ -29,10 +29,18 @@ namespace TheXDS.Proteus.UiDemo.ViewModels
         }
         public ICommand FlipCommand { get; }
 
+
+        /// <summary>
+        ///     Obtiene el comando relacionado a la acción DoClose.
+        /// </summary>
+        /// <returns>El comando DoClose.</returns>
+        public SimpleCommand DoCloseCommand { get; }
+
         public TestPageViewModel(ICloseable host) : base(host)
         {
             Title = $"Página de prueba {_counter++}";
             FlipCommand = new SimpleCommand(OnFlip);
+            DoCloseCommand = new SimpleCommand(Close);
         }
         private void OnFlip()
         {

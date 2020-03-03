@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TheXDS.MCART.Attributes;
 using TheXDS.Proteus.Api;
 
 namespace TheXDS.Proteus.UiDemo.Pages
@@ -18,12 +19,12 @@ namespace TheXDS.Proteus.UiDemo.Pages
     /// <summary>
     /// Lógica de interacción para DiagnosticsPage.xaml
     /// </summary>
+    [Name("Información de diagnóstico de servicios")]
     public partial class DiagnosticsPage
     {
         public DiagnosticsPage()
         {
             InitializeComponent();
-            //Title = "Información de diagnóstico de servicios";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

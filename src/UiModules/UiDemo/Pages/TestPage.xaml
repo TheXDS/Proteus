@@ -20,6 +20,7 @@
             <TextBlock>Control editable</TextBlock>
             <TextBox Text="{Binding Entity.Name}"/>
             <Button Margin="0,10,0,0" Command="{Binding FlipCommand, Mode=OneWay}">Flip!</Button>
+            <Button Margin="0,10,0,0" Command="{Binding DoCloseCommand, Mode=OneWay}">Cerrar desde ViewModel</Button>
         </StackPanel>
     </Viewbox>
 </page:ProteusPage>

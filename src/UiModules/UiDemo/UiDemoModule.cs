@@ -41,30 +41,25 @@ namespace TheXDS.Proteus
                 " módulo pueda causar.");
         }
 
-        [InteractionItem, Essential, InteractionType(Operation)]
-        public void TestUi(object sender, EventArgs e)
-        {
-            Proteus.MessageTarget?.Show("Test");
-        }
-
-        [InteractionItem, Essential, InteractionType(Operation)]
+        [InteractionItem, Essential, InteractionType(Operation), Name("Página de pruebas simple")]
         public void OpenTestPage(object sender, EventArgs e)
         {
             Host.OpenPage<TestPage>();
         }
-        [InteractionItem, InteractionType(AdminTool)]
+
+        [InteractionItem, InteractionType(AdminTool), Name("Telemetría de servicios")]
         public void OpenServiceInfoPage(object sender, EventArgs e)
         {
-            Host.OpenPage<DiagnosticsPage>();
+            Host.OpenPage<HostedPage<DiagnosticsPage>>();
         }
 
-        [InteractionItem, Essential, InteractionType(Operation)]
+        [InteractionItem, Essential, InteractionType(Operation), Name("Playground de UI")]
         public void OpenUiTestPage(object sender, EventArgs e)
         {
-            Host.OpenPage<UITestPlayground>();
+            Host.OpenPage<HostedPage<UITestPlayground>>();
         }
 
-        [InteractionItem, InteractionType(Operation)]
+        [InteractionItem, InteractionType(Operation), Name("Probar MessageTarget")]
         public void OpenTestMessage(object sender, EventArgs e)
         {
             Proteus.MessageTarget?.Show("Este es un mensaje de prueba");
@@ -75,7 +70,7 @@ namespace TheXDS.Proteus
             Proteus.MessageTarget?.Critical("Este es un mensaje de prueba");
         }
 
-        [InteractionItem, InteractionType(Operation)]
+        [InteractionItem, InteractionType(Operation), Name("Probar pregunta")]
         public void TestQuestion(object sender, EventArgs e)
         {
             
@@ -83,7 +78,7 @@ namespace TheXDS.Proteus
             Proteus.MessageTarget?.Info(r ? "Proteus funcionó bien c:" : "Nooooo!! Proteus no funcionó :c");
         }
 
-        [InteractionItem, InteractionType(Operation)]
+        [InteractionItem, InteractionType(Operation), Name("Probar input")]
         public void TestInputSplash(object sender, EventArgs e)
         {
             static bool Test<T>()
@@ -106,7 +101,7 @@ namespace TheXDS.Proteus
             Test<Range<DateTime>>();
         }
 
-        [InteractionItem, InteractionType(Operation)]
+        [InteractionItem, InteractionType(Operation), Name("Probar elevación")]
         public void TestElevation(object sender, EventArgs e)
         {
             var s = Proteus.Service<UserService>()!;
@@ -129,7 +124,7 @@ namespace TheXDS.Proteus
             }
         }
 
-        [InteractionItem, InteractionType(Reports)]
+        [InteractionItem, InteractionType(Reports), Name("Reporte de prueba")]
         public void ReportTest(object sender, EventArgs e)
         {
             var model = typeof(User);
@@ -145,7 +140,7 @@ namespace TheXDS.Proteus
             fd.Print("Test");
         }
 
-        [InteractionItem, InteractionType(Operation)]
+        [InteractionItem, InteractionType(Operation), Name("Probar Reporter")]
         public async void TestReporter(object? sender, EventArgs e)
         {
             Proteus.CommonReporter?.UpdateStatus("Estado indeterminado");
