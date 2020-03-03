@@ -16,9 +16,12 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             FriendlyName("Molde de árbol contable");
 
             Property(p => p.Name).AsName().AsListColumn();
-            ObjectProperty(p => p.Activo).Creatable().Important("Molde de cuenta de activo").Required();
-            ObjectProperty(p => p.Pasivo).Creatable().Important("Molde de cuenta de pasivo").Required();
-            ObjectProperty(p => p.Patrimonio).Creatable().Important("Molde de cuenta de capital").Required();
+            ObjectProperty(p => p.Activo).Creatable().NotNull().Important("Molde de cuenta de activo").Required();
+            ObjectProperty(p => p.Pasivo).Creatable().NotNull().Important("Molde de cuenta de pasivo").Required();
+            ObjectProperty(p => p.Patrimonio).Creatable().NotNull().Important("Molde de cuenta de patrimonio").Required();
+            ObjectProperty(p => p.Ingresos).Creatable().NotNull().Important("Molde de cuenta de ingresos").Required();
+            ObjectProperty(p => p.Costos).Creatable().NotNull().Important("Molde de cuenta de costos").Required();
+            ObjectProperty(p => p.Gastos).Creatable().NotNull().Important("Molde de cuenta de gastos").Required();
 
             ShowAllInDetails();
         }
