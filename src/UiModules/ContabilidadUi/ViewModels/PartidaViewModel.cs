@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Models;
 
@@ -16,14 +17,13 @@ namespace TheXDS.Proteus.ContabilidadUi.ViewModels
         /// </summary>
         public decimal Cuadre => Entity is { } e && e.Movimientos.Any() ? e.Movimientos.Sum(p => p.RawValue) : 0m;
 
-
         /// <summary>
         /// Inicializa una nueva instancia de la clase
         /// <see cref="PartidaViewModel"/>.
         /// </summary>
         public PartidaViewModel()
         {
-            RegisterPropertyChangeBroadcast(nameof(Partida.Movimientos), nameof(Cuadre));
+            RegisterPropertyChangeBroadcast("Entity.Movimientos", "Cuadre");
         }
     }
 }

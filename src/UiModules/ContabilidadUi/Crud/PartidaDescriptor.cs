@@ -39,7 +39,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
 
         private void SetEntity(Partida partida, ModelBase arg2)
         {
-            partida.Entidad = arg2 as Entidad ?? ContabilidadModule.ModuleStatus.ActiveEntidad ?? throw new Exception();
+            partida.Entidad = arg2 as Entidad ?? ContabilidadModule.ModuleStatus.ActiveEntidad;
         }
 
         private async void BroadcastChanges(Partida arg1, ModelBase arg2)
