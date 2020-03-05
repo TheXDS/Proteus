@@ -2,7 +2,7 @@
 
 namespace TheXDS.Proteus.Models
 {
-    public class ProveedorXEmpresa : ModelBase<int>
+    public class ProveedorXEmpresa : ModelBase<int>, IXXEmpresa
     {
         public virtual Proveedor Proveedor { get; set; }
         public virtual Empresa Empresa { get; set; }
