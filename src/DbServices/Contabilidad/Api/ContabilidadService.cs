@@ -1,17 +1,27 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using TheXDS.MCART;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Context;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Plugins;
 
 namespace TheXDS.Proteus.Api
 {
     public class ContabilidadService : Service<ContabilidadContext>
     {
+        public IReadOnlyDictionary<Guid, IDepreciador> Depreciadores { get; private set; }
+
+        protected override async Task AfterInitialization(IStatusReporter? reporter)
+        {
+            reporter?.UpdateStatus("Cargando herramientas de depreciación");
+
+            Depreciadores = Objects.FindAllObjects<IDepreciador>().ToDictionary(p => p.Guid);
+        }
         public static void ForcefullySave()
         {
             Proteus.Service<ContabilidadService>().InternalSaveAsync();
@@ -20,7 +30,10 @@ namespace TheXDS.Proteus.Api
         {
             return GetUser<AccessControlList>(this);
         }
-
+        public IDepreciador? GetDepreciador(Guid guid)
+        {
+            return Depreciadores.ContainsKey(guid) ? Depreciadores[guid] : null;
+        }
         public async Task<DetailedResult> NewPeriod(Empresa obj)
         {
             var epoch = DateTime.Now;
