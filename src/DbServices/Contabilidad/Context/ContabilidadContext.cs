@@ -32,5 +32,10 @@ namespace TheXDS.Proteus.Context
         public DbSet<ProveedorXEmpresa> ProveedorXEmpresas { get; set; }
         public DbSet<SubCuenta> SubCuentas { get; set; }
         public DbSet<SubCuentaMolde> SubCuentaMoldes { get; set; }
+        public DbSet<InventarioFijo> InventarioFijos { get; set; }
+        public DbSet<DepreMode> DepreModes { get; set; }
+        public DbSet<Depreciacion> Depreciaciones { get; set; }
+        public DbSet<InventarioKind> InventarioKinds { get; set; }
+
     }
 }

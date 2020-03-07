@@ -22,10 +22,6 @@ namespace TheXDS.Proteus.Api
 
             Depreciadores = Objects.FindAllObjects<IDepreciador>().ToDictionary(p => p.Guid);
         }
-        public static void ForcefullySave()
-        {
-            Proteus.Service<ContabilidadService>().InternalSaveAsync();
-        }
         public AccessControlList? GetList()
         {
             return GetUser<AccessControlList>(this);
@@ -105,6 +101,46 @@ namespace TheXDS.Proteus.Api
             return Proteus.Service<ContabilidadService>()!.All<CuentaBanco>()
                 .ToList()
                 .Where(p => p.Cuenta.FindRoot().RootParent?.Id == e.Id);
+        }
+
+        public async Task RunDepreciaciones()
+        {
+            foreach (var j in await AllAsync<InventarioFijo>())
+            {
+                if (!ShouldDepreciar(j)) continue;
+                var (current, total) = CalcDeprePeriodos(j);
+                var actualValue = Depreciadores[j.Kind.Depreciacion!.DepreciadorGuid].CalcAbsolute(j.ValorInicial, j.ValorResidual, total, current);
+
+            }
+        }
+
+        private bool ShouldDepreciar(InventarioFijo inv)
+        {
+            if (inv.Kind.Depreciacion is null) return false;
+
+            return true;
+        }
+        private (int current, int total) CalcDeprePeriodos(InventarioFijo inv)
+        {
+            var minUnit = (TimeUnit) new byte[] { (byte)inv.Kind.LifeUnit, (byte)inv.Kind.Depreciacion!.Periodicity }.Min();
+            return (ToUnit(minUnit, inv.Depreciaciones.Count, inv.Kind.LifeUnit), ToUnit(minUnit, inv.Kind.LifeValue, inv.Kind.Depreciacion!.Periodicity));
+        }
+        private int ToUnit(TimeUnit targetUnit, int value, TimeUnit startingUnit)
+        {
+            return (startingUnit, targetUnit) switch
+            {
+                (TimeUnit.Years, TimeUnit.Days) => (int)(value * 365.25),
+                (TimeUnit.Years, TimeUnit.Weeks) => value * 52,
+                (TimeUnit.Years, TimeUnit.Months) => value * 12,
+                (TimeUnit.Months, TimeUnit.Days) => (int)(value * 30.4375),
+                (TimeUnit.Months, TimeUnit.Weeks) => (int)(value * (52.0 / 12.0)),
+                (TimeUnit.Weeks, TimeUnit.Days) => value * 7,
+                _ => throw new InvalidOperationException()
+            };
+
+
+
+
         }
     }
 }

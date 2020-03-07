@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
@@ -31,35 +32,62 @@ namespace TheXDS.Proteus.Models
             };
         }
     }
+    public class InventarioKind : Nameable<int>
+    {
+        /// <summary>
+        /// Describe el modo actual de depreciación. <see langword="null"/>
+        /// para inventario fijo que no se deprecia.
+        /// </summary>
+        public virtual DepreMode? Depreciacion { get; set; }
+
+        /// <summary>
+        /// Obtiene la unidad en la que se mide la vida útil de un inventario fijo.
+        /// </summary>
+        public TimeUnit LifeUnit { get; set; }
+
+        /// <summary>
+        /// Obtiene el valor de vida útil del inventario fijo.
+        /// </summary>
+        public int LifeValue { get; set; }
+
+    }
 
     public class InventarioFijo : TimestampModel<string>, INameable
     {
-        public int PiecesCount { get; set; }
-
+        public virtual InventarioKind Kind { get; set; }
         public string Name { get; set; }
+        public int PiecesCount { get; set; }
+        public decimal ValorInicial { get; set; }
+        public virtual List<Depreciacion> Depreciaciones { get; set; } = new List<Depreciacion>();
+        public decimal ValorResidual
+        {
+            get
+            {
+                return Kind.Depreciacion is { PercentValue: float p }
+                    ? ValorInicial - (ValorInicial * (decimal)p)
+                    : Kind.Depreciacion?.StaticValue ?? ValorInicial;
+            }
+        }
 
-        /// <summary>
-        /// Describe el ciclo actual de depreciación. <see langword="null"/> para inventario fijo que no se deprecia.
-        /// </summary>
-        public int? DepreCycle { get; set; }
-
-        /// <summary>
-        /// Describe la última vez que una depreciación se ejecutó en este ítem.
-        /// </summary>
-        public DateTime? LastDepred { get; set; }
     }
 
-    public enum RunPeriodicity : byte
+    public class Depreciacion: TimestampModel<long>
     {
-        Daily, Weekly, Monthly, Yearly
+        public virtual InventarioFijo InvFijo { get; set; }
+        public decimal Amount { get; set; }
     }
 
-    public class DepreMode : ModelBase<int>
+
+    public enum TimeUnit : byte
+    {
+        Days, Weeks, Months, Years
+    }
+
+    public class DepreMode : Valuable<int>
     {
         public Guid DepreciadorGuid { get; set; }
         public int RunEach { get; set; } = 1;
-        public RunPeriodicity Periodicity { get; set; } = RunPeriodicity.Yearly;
-        public decimal ResidualValue { get; set; }
+        public TimeUnit Periodicity { get; set; } = TimeUnit.Years;
         public override string ToString()
         {
             return $"{Proteus.Service<ContabilidadService>()?.GetDepreciador(DepreciadorGuid)?.Name ?? DepreciadorGuid.ToString()} cada {Perioddesc()}";
@@ -70,10 +98,10 @@ namespace TheXDS.Proteus.Models
         {
             return Periodicity switch
             {
-                RunPeriodicity.Daily => RunEach == 1 ? "día" : $"{RunEach} días",
-                RunPeriodicity.Weekly => RunEach == 1 ? "semana" : $"{RunEach} semanas",
-                RunPeriodicity.Monthly => RunEach == 1 ? "mes" : $"{RunEach} meses",
-                RunPeriodicity.Yearly => RunEach == 1 ? "año" : $"{RunEach} años",
+                TimeUnit.Days => RunEach == 1 ? "día" : $"{RunEach} días",
+                TimeUnit.Weeks => RunEach == 1 ? "semana" : $"{RunEach} semanas",
+                TimeUnit.Months => RunEach == 1 ? "mes" : $"{RunEach} meses",
+                TimeUnit.Years => RunEach == 1 ? "año" : $"{RunEach} años",
                 _ => $"{RunEach} {Periodicity.NameOf().OrNull() ?? Periodicity.ToString()}"
             };
         }
