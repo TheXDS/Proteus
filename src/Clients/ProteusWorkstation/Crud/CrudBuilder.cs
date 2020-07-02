@@ -3,9 +3,6 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Crud.Mappings;
-using TheXDS.Proteus.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +11,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using TheXDS.MCART.Controls;
-using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Crud.Mappings;
+using TheXDS.Proteus.Models.Base;
 using static TheXDS.MCART.Types.Extensions.CollectionExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
@@ -101,7 +100,7 @@ namespace TheXDS.Proteus.Crud
 
         internal static bool DescribesModel(Type t, Type model)
         {
-            try { return t.BaseType.GenericTypeArguments.First() == model; }
+            try { return t.BaseType!.GenericTypeArguments.First() == model; }
             catch { return false; }
         }
     }

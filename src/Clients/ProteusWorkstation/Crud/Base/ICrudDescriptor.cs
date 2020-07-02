@@ -61,7 +61,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// Enumera una serie de acciones personalizadas definidas para 
         /// mostrar en la venana del editor de Crud.
         /// </summary>
-        IDictionary<string, Action<ModelBase, NotifyPropertyChangeBase>> CustomActions { get; }
+        IDictionary<string, Action<ModelBase?, NotifyPropertyChangeBase?>> CustomActions { get; }
 
         /// <summary>
         ///  Enumera las columnas a mostrar cuando el modelo sea presentado en 

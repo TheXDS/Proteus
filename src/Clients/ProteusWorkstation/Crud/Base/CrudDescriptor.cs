@@ -1048,6 +1048,9 @@ namespace TheXDS.Proteus.Crud.Base
             var p = GetMember(propertySelector) as PropertyInfo
                 ?? throw new MemberAccessException("El miembro a seleccionar debe ser una propiedad.");
 
+            var i = _properties.FirstOrDefault(q => q.Property == p);
+
+
             if (_properties.Any(q => q.Property == p))
                 //throw new InvalidOperationException($"La propiedad '{p.Name}' ya ha sido configurada.");
                 return _properties.First(q => q.Property == p) is TDescriptor td ? td : default;

@@ -31,7 +31,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// Una referencia a la misma instancia para utilizar sintáxis
         /// Fluent.
         /// </returns>
-        IDataPropertyDescriptor Source(IQueryable<ModelBase> source);
+        IDataPropertyDescriptor Source(IQueryable<ModelBase>? source);
 
         IDataPropertyDescriptor VmSource<T>(Func<T, ObservableListWrap<ModelBase>> source) where T : ViewModelBase;
 
