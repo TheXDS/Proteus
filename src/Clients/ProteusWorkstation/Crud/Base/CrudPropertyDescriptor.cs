@@ -15,6 +15,8 @@ using TheXDS.MCART;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Component.Attributes;
 using System.Collections;
+using System.Linq.Expressions;
+using TheXDS.MCART.Types;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -424,28 +426,125 @@ namespace TheXDS.Proteus.Crud.Base
 
 
 
-
         public static IPropertyDescriptor<TModel, string> Big<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
         {
             descriptor.SetValue(DescriptionValue.TextKind, TextKind.Big);
             return descriptor;
         }
 
-        public static IPropertyDescriptor<TModel, string> MinLength<TModel>(this IPropertyDescriptor<TModel, string> descriptor, int minLength) where TModel : ModelBase
+        public static IPropertyDescriptor<TModel, string> Rich<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKind.Big);
+            descriptor.SetValue(DescriptionValue.TextKind, TextKind.Rich);
             return descriptor;
         }
 
+        public static IPropertyDescriptor<TModel, string> FilePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
+        {
+            return FilePath(descriptor, new FileExtension("Todos los archivos", "*") );
+        }
+        
+        public static IPropertyDescriptor<TModel, string> FilePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor, params FileExtension[] fileExtensions) where TModel : ModelBase
+        {
+            return FilePath(descriptor, fileExtensions.AsEnumerable());
+        }
+        
+        public static IPropertyDescriptor<TModel, string> FilePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor, IEnumerable<FileExtension> fileExtensions) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.TextKind, TextKind.FilePath);
+            return SetTextKindMetadata(descriptor, p => p.FileExtensions, fileExtensions);
+        }
 
+        public static IPropertyDescriptor<TModel, string> PicturePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.TextKind, TextKind.PicturePath);
+            return SetTextKindMetadata(descriptor, p => p.FileExtensions, new[] 
+            {
+                new FileExtension("Todos los archivos de imagen", "png", "jpg", "jpeg", "jpe", "bmp", "gif"),
+                new FileExtension("Imagen PNG", "png"),
+                new FileExtension("Imagen Jpeg", "jpg", "jpeg", "jpe"),
+                new FileExtension("Imagen de mapa de bits", "bmp"),
+                new FileExtension("Archivo Gif", "gif")
+            });
+        }
 
+        public static IPropertyDescriptor<TModel, string> DirectoryPath<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.TextKind, TextKind.DirectoryPath);
+            return descriptor;
+        }
 
+        public static IPropertyDescriptor<TModel, string> Url<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.TextKind, TextKind.Url);
+            return descriptor;
+        }
 
+        public static IPropertyDescriptor<TModel, string> MinLength<TModel>(this IPropertyDescriptor<TModel, string> descriptor, int minLength) where TModel : ModelBase
+        {
+            return SetTextKindMetadata(descriptor, p => p.MinLength, minLength);
+        }
 
+        public static IPropertyDescriptor<TModel, string> MaxLength<TModel>(this IPropertyDescriptor<TModel, string> descriptor, int maxLength) where TModel : ModelBase
+        {
+            return SetTextKindMetadata(descriptor, p => p.MaxLength, maxLength);
+        }
 
+        public static IPropertyDescriptor<TModel, string> Mask<TModel>(this IPropertyDescriptor<TModel, string> descriptor, string mask) where TModel : ModelBase
+        {
+            return SetTextKindMetadata(descriptor, p => p.Mask, mask);
+        }
 
+        private static IPropertyDescriptor<TModel, string> SetTextKindMetadata<TModel, T>(IPropertyDescriptor<TModel, string> descriptor, Expression<Func<TextKindMetadata, T>> property, T metadata) where TModel : ModelBase
+        {
+            if (!(descriptor[DescriptionValue.TextKindMetadata] is TextKindMetadata m))
+            {
+                descriptor.SetValue(DescriptionValue.TextKindMetadata, m = new TextKindMetadata());
+            }
+            ReflectionHelpers.GetProperty(property).SetValue(m, metadata);
+            return descriptor;
+        }
+        
+        public static IPropertyDescriptor<TModel, TProperty> Range<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, TProperty min, TProperty max) where TModel : ModelBase where TProperty : IComparable<TProperty>
+        {
+            descriptor.SetValue(DescriptionValue.Range, new Range<TProperty>(min, max));
+            return descriptor;
+        }
 
+        public static IPropertyDescriptor<TModel, DateTime> WithTime<TModel>(this IPropertyDescriptor<TModel, DateTime> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.WithTime, true);
+            return descriptor;
+        }
 
+        public static IPropertyDescriptor<TModel, TProperty> Selectable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase where TProperty : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Selectable, typeof(TProperty));
+            return descriptor;
+        }
+
+        public static IPropertyDescriptor<TModel, TProperty> Creatable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase where TProperty : ModelBase, new()
+        {
+            descriptor.SetValue(DescriptionValue.Creatable, typeof(TProperty));
+            return descriptor;
+        }
+
+        public static IPropertyDescriptor<TModel, TProperty> Creatable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, IEnumerable<Type> models) where TModel : ModelBase where TProperty : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Creatable, models);
+            return descriptor;
+        }
+
+        public static IPropertyDescriptor<TModel, TProperty> DisplayMember<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, Expression<Func<TProperty, object?>> selector) where TModel : ModelBase where TProperty : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.DisplayMember, ReflectionHelpers.GetProperty(selector).Name);
+            return descriptor;
+        }
+
+        public static IPropertyDescriptor<TModel, TProperty> DisplayMember<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string bindingPath) where TModel : ModelBase where TProperty : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.DisplayMember, bindingPath);
+            return descriptor;
+        }
 
 
 

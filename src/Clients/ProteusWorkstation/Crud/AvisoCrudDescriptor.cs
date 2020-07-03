@@ -22,25 +22,25 @@ namespace TheXDS.Proteus.Crud
             FriendlyName("Aviso");
 
             Property(p => p.Timestamp)
-                .AsListColumn()
-                .Default(DateTime.Now)
-                .ShowInDetails()
                 .Label("Fecha de creación")
+                .Timestamp()
+                .AsListColumn()
+                .ShowInDetails()
                 .ReadOnly();
 
             Property(p => p.Header)
-                .MaxLength(150)
-                .Validator<Aviso>(CheckTitle)
                 .Label("Título")
+                .MaxLength(150)
+                .Validator(CheckTitle)
                 .ShowInDetails()
                 .AsListColumn()
                 .Required();
 
             Property(p => p.Body)
+                .Label("Contenido")
                 .Big()
                 .MaxLength(4096)
-                .Validator<Aviso>(CheckBody)
-                .Label("Contenido")
+                .Validator(CheckBody)
                 .ShowInDetails()
                 .Required();
 

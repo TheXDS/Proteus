@@ -29,7 +29,7 @@ namespace TheXDS.Proteus.Crud.Base
     /// describir una propiedad de un modelo, incluyendo información
     /// fuertemente tipeada del modelo y de la propiedad descritos.
     /// </summary>
-    public interface IPropertyDescriptor<TModel, TProperty> : IPropertyDescriptor, IPropertyDescription where TModel : ModelBase
+    public interface IPropertyDescriptor<out TModel, TProperty> : IPropertyDescriptor, IPropertyDescription where TModel : ModelBase
     {
         Type IPropertyDescription.ModelType => typeof(TModel);
 

@@ -37,56 +37,5 @@ namespace TheXDS.Proteus.Crud.Base
 
         IDataPropertyDescriptor VmSource<TParent>(Func<TParent, CrudViewModelBase, ObservableListWrap<ModelBase>> source) where TParent : ViewModelBase;
 
-        /// <summary>
-        /// Indica que el control generado para la propiedad debe permitir
-        /// crear nuevas entidades.
-        /// </summary>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        IDataPropertyDescriptor Creatable();
-
-        /// <summary>
-        /// Indica que el control generado para la propiedad debe permitir
-        /// crear nuevas entidades.
-        /// </summary>
-        /// <param name="models">
-        /// Modelos que pueden ser creados.
-        /// </param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        IDataPropertyDescriptor Creatable(IEnumerable<Type> models);
-
-        /// <summary>
-        /// Indica que se utilizará una propiedad del objeto para su
-        /// presentación visual.
-        /// </summary>
-        /// <param name="selector">
-        /// Selector de la propiedad a utilizar para presentar el objeto 
-        /// visualmente.
-        /// </param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        IDataPropertyDescription DisplayMember(Expression<Func<ModelBase, object>> selector);
-
-        /// <summary>
-        /// Indica que se utilizará una propiedad del objeto para su
-        /// presentación visual.
-        /// </summary>
-        /// <param name="path">
-        /// Ruta en formato <see cref="string"/> que será pasada
-        /// directamente al <see cref="System.Windows.Data.Binding"/> 
-        /// resultante.
-        /// </param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        IDataPropertyDescription DisplayMember(string path);
     }
 }
