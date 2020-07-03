@@ -3,15 +3,15 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Models;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using static TheXDS.MCART.Types.Extensions.StringExtensions;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.ViewModels;
+using TheXDS.Proteus.ViewModels.Base;
+using static TheXDS.MCART.Types.Extensions.StringExtensions;
 
 namespace TheXDS.Proteus.Crud
 {
@@ -21,14 +21,14 @@ namespace TheXDS.Proteus.Crud
         {
             FriendlyName("Aviso");
 
-            DateProperty(p => p.Timestamp)
+            Property(p => p.Timestamp)
                 .AsListColumn()
                 .Default(DateTime.Now)
                 .ShowInDetails()
                 .Label("Fecha de creación")
                 .ReadOnly();
 
-            TextProperty(p => p.Header)
+            Property(p => p.Header)
                 .MaxLength(150)
                 .Validator<Aviso>(CheckTitle)
                 .Label("Título")
@@ -36,18 +36,16 @@ namespace TheXDS.Proteus.Crud
                 .AsListColumn()
                 .Required();
 
-            TextProperty(p => p.Body)
+            Property(p => p.Body)
+                .Big()
                 .MaxLength(4096)
-                .TextKind(TextKind.Big)
                 .Validator<Aviso>(CheckBody)
                 .Label("Contenido")
                 .ShowInDetails()
                 .Required();
 
             BeforeSave(SetCreationTime);
-
             CustomAction("Vista previa", o => Proteus.MessageTarget?.Show(o.Header, o.Body));
-
             AfterSave(NotifyViewModel);
         }
 

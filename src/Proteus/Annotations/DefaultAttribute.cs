@@ -17,4 +17,16 @@ namespace TheXDS.Proteus.Component.Attributes
         {
         }
     }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public sealed class DescriptionDefaultAttribute : Attribute, IValueAttribute<object?>
+    {
+        public DescriptionDefaultAttribute(object? value)
+        {
+            Value = value;
+        }
+
+        public object? Value { get; }
+    }
+
 }

@@ -13,148 +13,42 @@ using System.Windows;
 using System.Windows.Data;
 using TheXDS.MCART;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Component.Attributes;
+using System.Collections;
 
 namespace TheXDS.Proteus.Crud.Base
 {
+    /*
     internal class CrudPropertyDescriptor : IPropertyDescriptor, IPropertyDescription, IEquatable<CrudPropertyDescriptor>
     {
-        private string _label;
-        private string _icon;
-        private bool _hidden;
-        private object? _default;
-        private NullMode _nullability;
-        private int? _order;
-        private bool _readOnly;
-        private bool _showInDetails;
-        private string _tooltip;
         private readonly Dictionary<DependencyProperty, BindingBase> _customBindings = new Dictionary<DependencyProperty, BindingBase>();
-        private readonly List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>> _validators = new List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>();
 
-        public CrudPropertyDescriptor(PropertyInfo property, PropertyLocation location)
-        {
-            PropertySource = location;
-            Property = property;
-            _label = property.NameOf();
-            _default = property.GetAttr<DefaultValueAttribute>()?.Value ?? property.GetType().Default();
-        }
-        public CrudPropertyDescriptor(PropertyInfo property) : this(property, PropertyLocation.Model) { }
 
-        #region IPropertyDescription
 
-        public bool UseDefault { get; private set; }
         public IDictionary<DependencyProperty, BindingBase> CustomBindings => _customBindings;
-        public bool IsListColumn { get; private set; }
-        public PropertyInfo Property { get; }
-        public PropertyLocation PropertySource { get; internal set; }
-        public string ReadOnlyFormat { get; private set; }
-        public string RadioGroup { get; private set; }
-        public bool ShowWatermark { get; private set; }
         Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>> IPropertyDescription.Validator => (m, c) => _validators.SelectMany(p => p.Invoke(m, c));
-        string IPropertyDescription.Tooltip => _tooltip;
-        int? IPropertyDescription.Order => _order;
-        string IPropertyDescription.Icon => _icon;
-        string IPropertyDescription.Label => _label.OrNull() ?? Property.Name;
-        NullMode IPropertyDescription.Nullability => _nullability;
-        object IPropertyDescription.Default => _default;
-        bool IPropertyDescription.Hidden => _hidden;
-        bool IPropertyDescription.ReadOnly => _readOnly;
-        bool IPropertyDescription.ShowInDetails => _showInDetails;
-        public Type PropertyType => Property.PropertyType;
 
-        #endregion
 
-        #region IPropertyDescriptor
 
-        public void Hidden()
-        {
-            _hidden = true;
-        }
-        public IPropertyDescriptor Label(string label)
-        {
-            _label = label;
-            return this;
-        }
-        public IPropertyDescriptor Icon(string icon)
-        {
-            _icon = icon;
-            return this;
-        }
-        public IPropertyDescriptor Icon(char icon)
-        {
-            _icon = new string(new[] { icon });
-            return this;
-        }
-        public IPropertyDescriptor Default(object value)
-        {
-            UseDefault = true;
-            _default = value;
-            return this;
-        }
-        public IPropertyDescriptor Nullability(NullMode nullability)
-        {
-            _nullability = nullability;
-            return this;
-        }
         public IPropertyDescriptor Required()
         {
             return Nullability(NullMode.Required).Validator(CheckNotNull);
         }
+
         private IEnumerable<ValidationError> CheckNotNull(ModelBase arg1, PropertyInfo arg2)
         {
             if (arg1 is null) yield return new NullValidationError(arg2);
         }
-        public IPropertyDescriptor Nullable() => Nullability(NullMode.Nullable);
-        public IPropertyDescriptor RadioSelectable() => Nullability(NullMode.Radio);
-        public IPropertyDescriptor RadioSelectable(string groupId)
-        {
-            RadioGroup = groupId;
-            return RadioSelectable();
-        }
+
+
         public bool Equals(CrudPropertyDescriptor other) => Property == other.Property;
-        public IPropertyDescriptor Order(int order)
-        {
-            _order = order;
-            return this;
-        }
-        public IPropertyDescriptor Validator(Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>> validator)
-        {
-            _validators.Add(validator);
-            return this;
-        }
-        public IPropertyDescriptor Validator<T>(Func<T, PropertyInfo, IEnumerable<ValidationError>> validator) where T : ModelBase
-        {
-            IEnumerable<ValidationError> CastTest(ModelBase m, PropertyInfo p)
-            {
-                if (!(m is T e)) return new ValidationError[] { $"Error general de validación para {typeof(T).NameOf()}. No se puede validar un {m?.GetType().NameOf() ?? "objeto de referencia nula (null)"}" };
-                return validator(e, p);
-            }
-            _validators.Add(CastTest);
-            return this;
-        }
-        public void ReadOnly()
-        {
-            _readOnly = true;
-        }
-        public void ReadOnly(string format)
-        {
-            ReadOnly();
-            ReadOnlyFormat = format;
-        }
-        public IPropertyDescriptor Format(string format)
-        {
-            ReadOnlyFormat = format;
-            return this;
-        }
-        public IPropertyDescriptor Tooltip(string tooltip)
-        {
-            _tooltip = tooltip;
-            return this;
-        }
-        public IPropertyDescriptor WatermarkAlwaysVisible()
-        {
-            ShowWatermark = true;
-            return this;
-        }
+
+
+
+
+
+
+
         public IPropertyDescriptor Bind(DependencyProperty path, BindingBase binding)
         {
             CustomBindings.Add(path, binding);
@@ -176,17 +70,393 @@ namespace TheXDS.Proteus.Crud.Base
         {
             return Bind(path, new Binding() { Path = binding, Source = source });
         }
-        public IPropertyDescriptor AsListColumn()
-        {
-            IsListColumn = true;
-            return this;
-        }
-        public IPropertyDescriptor ShowInDetails()
-        {
-            _showInDetails = true;
-            return this;
-        }
 
         #endregion
+    }
+    */
+
+    internal class CrudPropertyDescriptor<TModel, TProperty> : IPropertyDescriptor<TModel, TProperty> where TModel : ModelBase
+    {
+        private readonly Dictionary<DescriptionValue, object?> _values = new Dictionary<DescriptionValue, object?>();
+
+        public PropertyInfo Property { get; }
+
+        public PropertyLocation Location { get; }
+
+        public object? this[DescriptionValue property] => _values.TryGetValue(property, out var o) ? o : property.GetAttr<DescriptionDefaultAttribute>()?.Value ?? null;
+
+        public CrudPropertyDescriptor(PropertyInfo property, PropertyLocation location)
+        {
+            Property = property;
+            Location = location;
+        }
+
+        public void SetValue(DescriptionValue property, object? value)
+        {
+            if (!_values.ContainsKey(property))
+            {
+                _values.Add(property, value);
+            }
+            else
+            {
+                _values[property] = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Implementa la mayoría de descripciones comunes de propiedades como
+    /// métodos de extensión genéricos.
+    /// </summary>
+    public static class PropertyDescriptions
+    {
+        /// <summary>
+        /// Establece un valor predeterminado para el campo.
+        /// </summary>
+        /// <param name="value">Valor predeterminado a asignar.</param>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Default<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, TProperty value) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Default, value);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que el campo no se mostrará en la interfaz del editor.
+        /// </summary>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Hidden<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Visible, false);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que una propiedad aparecerá en el Crud como elemento de
+        /// solo lectura.
+        /// </summary>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> ReadOnly<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.ReadOnly, true);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que una propiedad aparecerá en el Crud como elemento de
+        /// solo lectura.
+        /// </summary>
+        /// <param name="format">
+        /// Formato de texto a aplicar al control.
+        /// </param>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> ReadOnly<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string format) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Format, format);
+            return ReadOnly(descriptor);
+        }
+
+        /// <summary>
+        /// Establece un ícono a aplicar a los controles que lo soporten.
+        /// </summary>
+        /// <param name="icon">Ícono a aplicar.</param>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Icon<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string icon) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Icon, icon);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Establece un ícono a aplicar a los controles que lo soporten.
+        /// </summary>
+        /// <param name="icon">Ícono a aplicar.</param>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Icon<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, char icon) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Icon, icon);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Establece una etiqueta a aplicar a los controles que lo
+        /// soporten.
+        /// </summary>
+        /// <param name="label">Etiqueta a aplicar.</param>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Label<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string label) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Label, label);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que el campo es requerido, y por lo tanto no nulable.
+        /// </summary>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Required<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Nullability, NullMode.Required);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que el campo es nulable, por lo que su control será
+        /// contenido por un CheckBox.
+        /// </summary>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Nullable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Nullability, NullMode.Nullable);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que el campo es nulable, por lo que su control será
+        /// contenido por un RadioButton.
+        /// </summary>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> RadioSelectable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Nullability, NullMode.Radio);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que el campo es nulable, por lo que su control será
+        /// contenido por un RadioButton.
+        /// </summary>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="groupId">
+        /// Id del grupo de RadioButton al cual asociar al selector.
+        /// </param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> RadioSelectable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string groupId) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Nullability, NullMode.Radio);
+            descriptor.SetValue(DescriptionValue.RadioGroup, groupId);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Establece un valor ordinal al campo.
+        /// </summary>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="order">Valor ordinal del campo.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Order<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, int order) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Order, order);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Establece la función de validación de este campo.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="validator">
+        /// Función de validación a utilizar.
+        /// </param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Validator<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, Func<TModel, PropertyInfo, IEnumerable<ValidationError>> validator) where TModel : ModelBase
+        {
+            IEnumerable<ValidationError> CastTest(ModelBase m, PropertyInfo p)
+            {
+                if (!(m is TModel e)) return new ValidationError[] { $"Error general de validación para {typeof(TModel).NameOf()}. No se puede validar un {m?.GetType().NameOf() ?? "objeto de referencia nula (null)"}" };
+                return validator(e, p);
+            }
+            if (descriptor[DescriptionValue.Validations] is null)
+            {
+                descriptor.SetValue(DescriptionValue.Validations, new List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>());
+            }
+            ((List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>)descriptor[DescriptionValue.Validations]!).Add(CastTest);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Establece un texto de ayuda sobre los controles generados a
+        /// partir de este descriptor.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="tooltip">Etiqueta a aplicar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Tooltip<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string tooltip) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Tooltip, tooltip);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que el control mostrará la marca de agua siempre.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> WatermarkAlwaysVisible<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.WatermarkVisibility, true);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Establece un formato de presentación para una propiedad.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="format">Formato a aplicar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Format<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string format) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Format, format);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Agrega esta propiedad como columna de lista al presentarse en
+        /// un control <see cref="System.Windows.Controls.ListView"/>.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> AsListColumn<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.AsListColumn, true);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Indica que la propiedad se mostrará en el panel autogenerado de
+        /// detalles.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> ShowInDetails<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.ShowInDetails, true);
+            return descriptor;
+        }
+
+
+
+
+
+        public static IPropertyDescriptor<TModel, string> Big<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.TextKind, TextKind.Big);
+            return descriptor;
+        }
+
+        public static IPropertyDescriptor<TModel, string> MinLength<TModel>(this IPropertyDescriptor<TModel, string> descriptor, int minLength) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.TextKind, TextKind.Big);
+            return descriptor;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public static IPropertyDescriptor<TModel, TProperty> Selectable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase where TProperty : IList
+        {
+            //descriptor.SetValue(DescriptionValue.ShowInDetails, true);
+            //return descriptor;
+        }
+
     }
 }

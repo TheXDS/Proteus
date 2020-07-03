@@ -38,7 +38,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// Obtiene un valor que indica el formato a utilizar para representar
         /// el valor de esta columna.
         /// </summary>
-        public string Format { get; internal set; }
+        public string? Format { get; internal set; }
 
         /// <summary>
         /// Obtiene un valor que indica el ancho sugerido de esta columna.
@@ -46,7 +46,7 @@ namespace TheXDS.Proteus.Crud.Base
         public GridLength Width { get; }
 
         public Column(string path) : this(path, path, DefaultGrid) { }
-        public Column(string path, GridLength width):this(path,path,width) { }
+        public Column(string path, GridLength width):this(path, path, width) { }
         public Column(string header, string path) : this(header, path, DefaultGrid) { }
         public Column(string header, string path, GridLength width)
         {
@@ -71,9 +71,9 @@ namespace TheXDS.Proteus.Crud.Base
             return GetStringValue(GetValue(entity), Format);
         }
 
-        private string? GetStringValue(object? obj, string format)
+        private string? GetStringValue(object? obj, string? format)
         {
-            return format.IsEmpty()
+            return format?.IsEmpty() ?? true
                 ? obj?.ToString()
                 : obj?.GetType().GetMethod(nameof(ToString), new Type[] { typeof(string) }) is { } i
                     ? i.Invoke(obj, new[] { format }) as string

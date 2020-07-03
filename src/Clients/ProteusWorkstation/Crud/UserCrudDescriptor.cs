@@ -21,17 +21,17 @@ namespace TheXDS.Proteus.Crud
 
             base.DescribeModel();
 
-            ObjectProperty(u => u.Parent)
-                .Selectable()
+            Property(u => u.Parent)
                 .Label("Grupo padre")
-                .ShowInDetails()
                 .Required()
+                .ShowInDetails()
+                .Selectable()
                 .AsListColumn();
 
-            ListProperty(u => u.Roles)
+            Property(u => u.Roles)
+                .Label("Roles de usuario")
                 .Selectable()
-                .ShowInDetails()
-                .Label("Roles de usuario");
+                .ShowInDetails();
 
             Property(u => u.Enabled)
                 .Label("Usuario activo")

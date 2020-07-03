@@ -3,10 +3,6 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Annotations;
-using TheXDS.Proteus.Crud.Mappings;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.ViewModels.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,16 +10,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Annotations;
+using TheXDS.Proteus.Crud.Mappings;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels.Base;
 using static TheXDS.MCART.ReflectionHelpers;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
-using System.Threading.Tasks;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -90,130 +89,11 @@ namespace TheXDS.Proteus.Crud.Base
         /// puede configurar la presentación de la propiedad en una ventana
         /// de Crud.
         /// </returns>
-        protected IPropertyDescriptor VmProperty(Expression<Func<TViewModel, object?>> propertySelector)
-        {
-            return Prop<CrudPropertyDescriptor, object?>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene una referencia a una propiedad numérica dentro de un
-        /// ViewModel.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyNumberDescriptor{TValue}"/> por medio
-        /// del cual se puede configurar la presentación de la propiedad en
-        /// una ventana de Crud.
-        /// </returns>
-        protected IPropertyNumberDescriptor<TValue> VmNumericProperty<TValue>(Expression<Func<TViewModel, TValue>> propertySelector) where TValue : IComparable<TValue>
-        {
-            return Prop<CrudNumericPropertyDescriptor<TValue>, TValue>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene una referencia a una propiedad de texto dentro de un
-        /// ViewModel.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyTextDescriptor"/> por medio
-        /// del cual se puede configurar la presentación de la propiedad en
-        /// una ventana de Crud.
-        /// </returns>
-        protected IPropertyTextDescriptor VmTextProperty(Expression<Func<TViewModel, string?>> propertySelector)
-        {
-            return Prop<CrudTextPropertyDescriptor, string?>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene una referencia a una propiedad de fecha dentro de un
-        /// ViewModel.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyDateDescriptor"/> por medio
-        /// del cual se puede configurar la presentación de la propiedad en
-        /// una ventana de Crud.
-        /// </returns>
-        protected IPropertyDateDescriptor VmDateProperty(Expression<Func<TViewModel, DateTime>> propertySelector)
-        {
-            var r = Prop<DatePropertyDescriptor, DateTime>(propertySelector);
-            r.PropertySource = PropertyLocation.ViewModel;
-            return r;
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IListPropertyDescriptor{T}"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IListPropertyDescriptor{T}"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
         [DebuggerStepThrough]
-        public IListPropertyDescriptor<TItem> VmListProperty<TItem>(Expression<Func<TViewModel, IEnumerable<TItem>>> propertySelector) where TItem : ModelBase
+        public IPropertyDescriptor<TModel, TProperty> VmProperty<TProperty>(Expression<Func<TModel, TProperty>> propertySelector)
         {
-            var r = Prop<ListPropertyDescriptor<TItem>, IEnumerable<TItem>, TViewModel>(propertySelector);
-            r.PropertySource = PropertyLocation.ViewModel;
-            return r;
+            return Property(propertySelector, PropertyLocation.Model);
         }
-
-        /// <summary>
-        /// Obtiene un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public ILinkPropertyDescriptor<TLink> VmLinkProperty<TLink>(Expression<Func<TViewModel, object?>> propertySelector) where TLink : ModelBase
-        {
-            var r = Prop<LinkPropertyDescriptor<TLink>, object?, TViewModel>(propertySelector);
-            r.PropertySource = PropertyLocation.ViewModel;
-            return r;
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IObjectPropertyDescriptor"/> con el cual
-        /// se puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IObjectPropertyDescriptor"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IObjectPropertyDescriptor VmObjectProperty(Expression<Func<TViewModel, ModelBase?>> propertySelector)
-        {
-            var r = Prop<ObjectPropertyDescriptor, ModelBase?, TViewModel>(propertySelector);
-            r.PropertySource = PropertyLocation.ViewModel;
-            return r;
-        }
-
 
         /// <summary>
         /// Obtiene el tipo efectivo de ViewModel a utilizar como base para
@@ -268,12 +148,6 @@ namespace TheXDS.Proteus.Crud.Base
             return _afterSave.Push(new SaveActionChain(action));
         }
 
-        private TDescriptor Prop<TDescriptor, TProperty>(Expression<Func<TViewModel, TProperty>> propertySelector) where TDescriptor : IPropertyDescriptor, IPropertyDescription
-        {
-            var r = Prop<TDescriptor, TProperty, TViewModel>(propertySelector);
-            if (r is CrudPropertyDescriptor cpd) cpd.PropertySource = PropertyLocation.ViewModel;
-            return r;
-        }
     }
 
     /// <summary>
@@ -332,7 +206,7 @@ namespace TheXDS.Proteus.Crud.Base
         private DataTemplate? _trvTemplate;
         private InteractionType? _onModuleMenu;
         private Func<bool>? _preCondition;
-        private protected readonly HashSet<IPropertyDescription> _properties = new HashSet<IPropertyDescription>();
+        private protected readonly HashSet<IPropertyDescriptor> _properties = new HashSet<IPropertyDescriptor>();
         private protected readonly Dictionary<string, Action<ModelBase, NotifyPropertyChangeBase>> _customActions = new Dictionary<string, Action<ModelBase, NotifyPropertyChangeBase>>();
         private readonly HashSet<Column> _listColumns = new HashSet<Column>();
 
@@ -393,8 +267,8 @@ namespace TheXDS.Proteus.Crud.Base
             get
             {
                 var c = _listColumns.Concat(_properties
-                    .Where(p => p.IsListColumn)
-                    .Select(p => new Column(p.Label, p.Property.Name) { Format = p.ReadOnlyFormat }));
+                    .Where(p => (bool?)p[DescriptionValue.AsListColumn] ?? false)
+                    .Select(p => p.AsColumn()));
 
                 if (c.Any()) return c;
 
@@ -433,6 +307,40 @@ namespace TheXDS.Proteus.Crud.Base
         #endregion
 
         #region Métodos de descripción
+
+
+
+
+
+
+
+        /// <summary>
+        /// Obtiene un <see cref="IPropertyDescriptor{T, TProperty}"/> con el
+        /// cual se puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// </summary>
+        /// <param name="propertySelector">
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="IPropertyDescriptor{T, TProperty}"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
+        /// </returns>
+        [DebuggerStepThrough]
+        public IPropertyDescriptor<T, TProperty> Property<TProperty>(Expression<Func<T, TProperty>> propertySelector)
+        {
+            return Property(propertySelector, PropertyLocation.Model);
+        }
+
+
+
+
+
+
+
+
 
         /// <summary>
         /// Configura un modelo para aparecer de forma automática en el 
@@ -494,7 +402,7 @@ namespace TheXDS.Proteus.Crud.Base
         {
             foreach (var j in _properties)
             {
-                (j as IPropertyDescriptor)?.ShowInDetails();
+                j.SetValue(DescriptionValue.ShowInDetails, true);
             }
         }
 
@@ -507,7 +415,7 @@ namespace TheXDS.Proteus.Crud.Base
             foreach (var j in _properties)
             {
                 if (j.PropertyType != typeof(string) && j.PropertyType.Implements<IEnumerable>()) continue;
-                (j as IPropertyDescriptor)?.AsListColumn();
+                j.SetValue(DescriptionValue.AsListColumn, true);
             }
         }
 
@@ -757,188 +665,6 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        /// Obtiene un <see cref="IPropertyDescriptor"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyDescriptor"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IPropertyDescriptor Property(Expression<Func<T, object?>> propertySelector)
-        {
-            return Prop<CrudPropertyDescriptor, object?, T>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IPropertyNumberDescriptor{T}"/> con el
-        /// cual se puede configurar la presentación de una propiedad en
-        /// una ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyNumberDescriptor{T}"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IPropertyNumberDescriptor<TValue> NumericProperty<TValue>(Expression<Func<T, TValue>> propertySelector) where TValue : IComparable<TValue>
-        {
-            return Prop<CrudNumericPropertyDescriptor<TValue>, TValue, T>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IPropertyNumberDescriptor{T}"/> con el
-        /// cual se puede configurar la presentación de una propiedad en
-        /// una ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyNumberDescriptor{T}"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IPropertyNumberDescriptor<TValue> NumericProperty<TValue>(Expression<Func<T, TValue?>> propertySelector) where TValue : struct, IComparable<TValue>
-        {
-            return Prop<CrudNumericPropertyDescriptor<TValue>, TValue, T>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IPropertyTextDescriptor"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyTextDescriptor"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IPropertyTextDescriptor TextProperty(Expression<Func<T, string?>> propertySelector)
-        {
-            return Prop<CrudTextPropertyDescriptor, string?, T>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IPropertyDateDescriptor"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyDateDescriptor"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IPropertyDateDescriptor DateProperty(Expression<Func<T, DateTime>> propertySelector)
-        {
-            var p = Prop<DatePropertyDescriptor, DateTime, T>(propertySelector);
-            return p;
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IPropertyDateDescriptor"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IPropertyDateDescriptor"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IPropertyDateDescriptor DateProperty(Expression<Func<T, DateTime?>> propertySelector)
-        {
-            var p = Prop<DatePropertyDescriptor, DateTime, T>(propertySelector);
-            return p;
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IObjectPropertyDescriptor"/> con el cual
-        /// se puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IObjectPropertyDescriptor"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IObjectPropertyDescriptor ObjectProperty(Expression<Func<T, ModelBase?>> propertySelector)
-        {
-            return Prop<ObjectPropertyDescriptor, ModelBase?, T>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="IListPropertyDescriptor{T}"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="IListPropertyDescriptor{T}"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public IListPropertyDescriptor<TItem> ListProperty<TItem>(Expression<Func<T, IEnumerable<TItem>>> propertySelector) where TItem : ModelBase
-        {
-            return Prop<ListPropertyDescriptor<TItem>, IEnumerable<TItem>, T>(propertySelector);
-        }
-
-        /// <summary>
-        /// Obtiene un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se
-        /// puede configurar la presentación de una propiedad en una
-        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
-        /// </summary>
-        /// <param name="propertySelector">
-        /// Expresión de selección de propiedad. Debe ser un acceso simple
-        /// a un valor del modelo de datos.
-        /// </param>
-        /// <returns>
-        /// Un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se puede
-        /// configurar la presentación de una propiedad en una ventana
-        /// autogenerada de Crud utilizando sintáxis Fluent.
-        /// </returns>
-        [DebuggerStepThrough]
-        public ILinkPropertyDescriptor<TLink> LinkProperty<TLink>(Expression<Func<T, object>> propertySelector) where TLink : ModelBase
-        {
-            return Prop<LinkPropertyDescriptor<TLink>, object, T>(propertySelector);
-        }
-
-        /// <summary>
         /// Agrega una acción personalizada a la ventana del editor de Crud
         /// autogenerada.
         /// </summary>
@@ -1029,35 +755,12 @@ namespace TheXDS.Proteus.Crud.Base
         #endregion
 
         [DebuggerStepThrough]
-        private protected TDescriptor Prop<TDescriptor, TProperty, TObject>(Expression<Func<TObject, TProperty>> propertySelector) where TDescriptor : IPropertyDescriptor, IPropertyDescription
+        private protected IPropertyDescriptor<T, TProperty> Property<TProperty>(Expression<Func<T, TProperty>> propertySelector, PropertyLocation location)
         {
-            var p = GetMember(propertySelector) as PropertyInfo
-                ?? throw new MemberAccessException("El miembro a seleccionar debe ser una propiedad.");
-
-            if (_properties.Any(q => q.Property == p))
-                //throw new InvalidOperationException($"La propiedad '{p.Name}' ya ha sido configurada.");
-                return _properties.First(q => q.Property == p) is TDescriptor td ? td : default;
-
-            var cpd = typeof(TDescriptor).New<TDescriptor>(p);
-            _properties.Add(cpd);
-            return cpd;
+            var p = GetMember(propertySelector) as PropertyInfo ?? throw new MemberAccessException("El miembro a seleccionar debe ser una propiedad.");
+            return _properties.FirstOrDefault(q => q.Property == p) as IPropertyDescriptor<T, TProperty>
+                ?? new CrudPropertyDescriptor<T, TProperty>(p, location);
         }
-        [DebuggerStepThrough]
-        private protected TDescriptor Prop<TDescriptor, TProperty, TObject>(Expression<Func<TObject, TProperty?>> propertySelector) where TDescriptor : IPropertyDescriptor, IPropertyDescription where TProperty : struct
-        {
-            var p = GetMember(propertySelector) as PropertyInfo
-                ?? throw new MemberAccessException("El miembro a seleccionar debe ser una propiedad.");
 
-            var i = _properties.FirstOrDefault(q => q.Property == p);
-
-
-            if (_properties.Any(q => q.Property == p))
-                //throw new InvalidOperationException($"La propiedad '{p.Name}' ya ha sido configurada.");
-                return _properties.First(q => q.Property == p) is TDescriptor td ? td : default;
-
-            var cpd = typeof(TDescriptor).New<TDescriptor>(p);
-            _properties.Add(cpd);
-            return cpd;
-        }
     }
 }

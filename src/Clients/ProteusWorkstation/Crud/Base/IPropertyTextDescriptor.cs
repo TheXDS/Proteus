@@ -15,7 +15,6 @@ namespace TheXDS.Proteus.Crud.Base
         /// Fluent.
         /// </returns>
         IPropertyTextDescriptor Big();
-        IPropertyTextDescriptor TextKind(TextKind kind);
         IPropertyTextDescriptor MinLength(int minLength);
         IPropertyTextDescriptor MaxLength(int maxLength);
         IPropertyTextDescriptor Mask(string mask);
