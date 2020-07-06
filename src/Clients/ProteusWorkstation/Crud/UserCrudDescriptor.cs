@@ -30,7 +30,7 @@ namespace TheXDS.Proteus.Crud
 
             Property(u => u.Roles)
                 .Label("Roles de usuario")
-                .Selectable()
+                .AllowSelection()
                 .ShowInDetails();
 
             Property(u => u.Enabled)

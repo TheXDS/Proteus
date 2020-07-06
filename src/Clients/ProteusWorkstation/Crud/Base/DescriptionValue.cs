@@ -41,7 +41,8 @@ namespace TheXDS.Proteus.Crud.Base
         Creatable,
         Selectable,
         Editable,
-        DisplayMember
+        DisplayMember,
+        Source
     }
 
     internal struct TextKindMetadata

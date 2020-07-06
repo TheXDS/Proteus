@@ -26,29 +26,28 @@ namespace TheXDS.Proteus.Crud.Base
         /// <summary>
         /// Atajo que configura una propiedad como un nombre.
         /// </summary>
-        /// <param name="p">Propiedad a configurar.</param>
+        /// <param name="descriptor">Propiedad a configurar.</param>
         /// <param name="label">
         /// Etiqueta opcional a mostrar.
         /// </param>
         /// <returns>
-        /// La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="descriptor"/>.
         /// </returns>
         [Sugar]
-        public static T AsName<T>(this T p, string label) where T: IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, string> AsName<TModel>(this IPropertyDescriptor<TModel, string> descriptor, string label) where TModel : ModelBase
         {
-            p.Label(label).Important().NotEmpty();
-            return p;
+            return descriptor.Label(label).Important().NotEmpty();
         }
 
         /// <summary>
         /// Atajo que configura una propiedad como un nombre.
         /// </summary>
-        /// <param name="p">Propiedad a configurar.</param>
+        /// <param name="descriptor">Propiedad a configurar.</param>
         /// <returns>
-        /// La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="descriptor"/>.
         /// </returns>
         [Sugar]
-        public static T AsName<T>(this T p) where T : IPropertyDescriptor => p.AsName("Nombre descriptivo");
+        public static IPropertyDescriptor<TModel, string> AsName<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase => descriptor.AsName("Nombre descriptivo");
 
         /// <summary>
         /// Muestra una propiedad únicamente en la vista de detalles.
@@ -58,10 +57,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T OnlyInDetails<T>(this T p) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> OnlyInDetails<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p) where TModel : ModelBase
         {
-            p.ShowInDetails().Hidden();
-            return p;
+            return p.ShowInDetails().Hidden();
         }
 
         /// <summary>
@@ -75,10 +73,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T OnlyInDetails<T>(this T p, string label) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> OnlyInDetails<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p, string label) where TModel : ModelBase
         {
-            p.ShowInDetails().Label(label).Hidden();
-            return p;
+            return p.ShowInDetails().Label(label).Hidden();
         }
 
         /// <summary>
@@ -93,10 +90,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T AsName<T>(this T p, string label, string icon) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> AsName<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p, string label, string icon) where TModel : ModelBase
         {
-            p.Label(label).Icon(icon).Important();
-            return p;
+            return p.Label(label).Icon(icon).Important();
         }
 
         /// <summary>
@@ -110,10 +106,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T Important<T>(this T p) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> Important<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p) where TModel : ModelBase
         {
-            p.WatermarkAlwaysVisible().ShowInDetails().AsListColumn();
-            return p;
+            return p.WatermarkAlwaysVisible().ShowInDetails().AsListColumn();
         }
 
         /// <summary>
@@ -128,10 +123,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T Important<T>(this T p, string label) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> Important<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p, string label) where TModel : ModelBase
         {
-            p.WatermarkAlwaysVisible().ShowInDetails().AsListColumn().Label(label);
-            return p;
+            return p.WatermarkAlwaysVisible().ShowInDetails().AsListColumn().Label(label);
         }
 
         /// <summary>
@@ -144,10 +138,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T Id<T>(this T p, string label, string icon) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> Id<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p, string label, string icon) where TModel : ModelBase
         {
-            p.Label(label).Icon(icon).Important().Required();
-            return p;
+            return p.Label(label).Icon(icon).Important().Required();
         }
 
         /// <summary>
@@ -159,7 +152,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T Id<T>(this T p, string label) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> Id<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p, string label) where TModel : ModelBase
         {
             return p.Id(label, "🗝");
         }
@@ -172,7 +165,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T Id<T>(this T p) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> Id<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p) where TModel : ModelBase
         {
             return p.Id("Id", "🗝");
         }
@@ -186,24 +179,23 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static IListPropertyDescriptor<T> CreatableOnly<T>(this IListPropertyDescriptor<T> p) where T : ModelBase
+        public static IPropertyDescriptor<TModel, TProperty> CreatableOnly<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p) where TModel : ModelBase where TProperty : IEnumerable<ModelBase>
         {
-            p.Source(null).Creatable();
+            p.Source(null).AllowCreate();
             return p;
         }
 
         /// <summary>
-        /// Marca un campo para no ser una cadena nula.
+        /// Marca un campo para no ser una cadena vacía.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T NotEmpty<T>(this T p) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, string> NotEmpty<TModel>(this IPropertyDescriptor<TModel, string> p) where TModel : ModelBase
         {
-            p.Required().Validator(CheckNotEmpty);
-            return p;
+            return p.Required().Validator(CheckNotEmpty);
         }
         
         /// <summary>
@@ -214,10 +206,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T NotNull<T>(this T p) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> NotNull<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p) where TModel : ModelBase
         {
-            p.Required().Validator(CheckNotNull);
-            return p;
+            return p.Required().Validator(CheckNotNull);
         }
 
         /// <summary>
@@ -228,10 +219,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static IListPropertyDescriptor<T> NotEmpty<T>(this IListPropertyDescriptor<T> p) where T : ModelBase
+        public static IPropertyDescriptor<TModel, TProperty> NotEmpty<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p) where TModel : ModelBase where TProperty : IEnumerable<ModelBase>
         {
-            p.Required().Validator(CheckListNotEmpty);
-            return p;
+            return p.Required().Validator(CheckListNotEmpty);
         }
 
         /// <summary>
@@ -246,27 +236,12 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T Validations<T>(this T p, params Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>[] validations) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> Validations<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p, params Func<TModel, PropertyInfo, IEnumerable<ValidationError>>[] validations) where TModel : ModelBase
         {
-            p.Validator((e, pr) => validations.SelectMany(q => q?.Invoke(e, pr)));
-            return p;
-        }
-
-        /// <summary>
-        /// Permite agregar múltiples funciones de validación a un mismo
-        /// campo.
-        /// </summary>
-        /// <param name="p">Propiedad a configurar.</param>
-        /// <param name="validations">
-        /// Funciones de validación a concatenar.
-        /// </param>
-        /// <returns>
-        /// La misma instancia que <paramref name="p"/>.
-        /// </returns>
-        [Sugar]
-        public static TDescriptor Validations<TDescriptor, TModel>(this TDescriptor p, params Func<TModel, PropertyInfo, IEnumerable<ValidationError>>[] validations) where TModel: ModelBase, new() where TDescriptor : IPropertyDescriptor
-        {
-            p.Validator<TModel>((e, pr) => validations.SelectMany(q => q?.Invoke(e, pr)));
+            foreach (var j in validations)
+            {
+                p.Validator(j);
+            }
             return p;
         }
 
@@ -279,7 +254,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static T AsListColumn<T>(this T p, string format) where T : IPropertyDescriptor
+        public static IPropertyDescriptor<TModel, TProperty> AsListColumn<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p, string format) where TModel : ModelBase
         {
             p.AsListColumn().Format(format);
             return p;
@@ -298,9 +273,27 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static IDataPropertyDescriptor Creatable<T>(this IDataPropertyDescriptor p) where T : ModelBase
+        public static IPropertyDescriptor<TModel, TProperty> AllowCreateAny<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase where TProperty : IEnumerable<ModelBase>
         {
-            return p.Creatable(GetTypes<T>(true));
+            return descriptor.AllowCreate(GetTypes<TProperty>(true));
+        }
+
+        /// <summary>
+        /// Indica que una lista debe contener controles para la creación
+        /// de nuevas entidades de la clase base especificada.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo base de los modelos que deben estar disponibles para la
+        /// creación.
+        /// </typeparam>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        [Sugar]
+        public static IPropertyDescriptor<TModel, TProperty> CreatableAny<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase where TProperty : ModelBase
+        {
+            return descriptor.Creatable(GetTypes<TProperty>(true));
         }
 
         /// <summary>
@@ -310,7 +303,12 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<decimal> Positive(this IPropertyNumberDescriptor<decimal> p)
+        public static IPropertyDescriptor<TModel, decimal> Positive<TModel>(this IPropertyDescriptor<TModel, decimal> p) where TModel : ModelBase
+        {
+            return p.Range(0.01m, decimal.MaxValue);
+        }
+
+        public static IPropertyDescriptor<TModel, decimal?> Positive<TModel>(this IPropertyDescriptor<TModel, decimal?> p) where TModel : ModelBase
         {
             return p.Range(0.01m, decimal.MaxValue);
         }
@@ -322,9 +320,14 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<short> Positive(this IPropertyNumberDescriptor<short> p)
+        public static IPropertyDescriptor<TModel, short> Positive<TModel>(this IPropertyDescriptor<TModel, short> p) where TModel : ModelBase
         {
-            return p.Range(1, short.MaxValue);
+            return p.Range((short)1, short.MaxValue);
+        }
+
+        public static IPropertyDescriptor<TModel, short?> Positive<TModel>(this IPropertyDescriptor<TModel, short?> p) where TModel : ModelBase
+        {
+            return p.Range((short)1, short.MaxValue);
         }
 
         /// <summary>
@@ -334,7 +337,12 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<int> Positive(this IPropertyNumberDescriptor<int> p)
+        public static IPropertyDescriptor<TModel, int> Positive<TModel>(this IPropertyDescriptor<TModel, int> p) where TModel : ModelBase
+        {
+            return p.Range(1, int.MaxValue);
+        }
+
+        public static IPropertyDescriptor<TModel, int?> Positive<TModel>(this IPropertyDescriptor<TModel, int?> p) where TModel : ModelBase
         {
             return p.Range(1, int.MaxValue);
         }
@@ -346,7 +354,12 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<long> Positive(this IPropertyNumberDescriptor<long> p)
+        public static IPropertyDescriptor<TModel, long> Positive<TModel>(this IPropertyDescriptor<TModel, long> p) where TModel : ModelBase
+        {
+            return p.Range(1L, long.MaxValue);
+        }
+
+        public static IPropertyDescriptor<TModel, long?> Positive<TModel>(this IPropertyDescriptor<TModel, long?> p) where TModel : ModelBase
         {
             return p.Range(1L, long.MaxValue);
         }
@@ -358,7 +371,12 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<float> Positive(this IPropertyNumberDescriptor<float> p)
+        public static IPropertyDescriptor<TModel, float> Positive<TModel>(this IPropertyDescriptor<TModel, float> p) where TModel : ModelBase
+        {
+            return p.Range(float.Epsilon, float.MaxValue);
+        }
+
+        public static IPropertyDescriptor<TModel, float?> Positive<TModel>(this IPropertyDescriptor<TModel, float?> p) where TModel : ModelBase
         {
             return p.Range(float.Epsilon, float.MaxValue);
         }
@@ -370,11 +388,21 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<double> Positive(this IPropertyNumberDescriptor<double> p)
+        public static IPropertyDescriptor<TModel, double> Positive<TModel>(this IPropertyDescriptor<TModel, double> p) where TModel : ModelBase
+        {
+            return p.Range(double.Epsilon, double.MaxValue);
+        }
+        
+        public static IPropertyDescriptor<TModel, double?> Positive<TModel>(this IPropertyDescriptor<TModel, double?> p) where TModel : ModelBase
         {
             return p.Range(double.Epsilon, double.MaxValue);
         }
 
+
+
+
+
+
         /// <summary>
         /// Indica que un campo numérico no debe ser igual a cero.
         /// </summary>
@@ -382,10 +410,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<decimal> NonZero(this IPropertyNumberDescriptor<decimal> p)
+        public static IPropertyDescriptor<TModel, decimal> NonZero<TModel>(this IPropertyDescriptor<TModel, decimal> p) where TModel : ModelBase
         {
-            p.Validations(CheckNotZero);
-            return p;
+            return p.Validations(CheckNotZero);
         }
 
         /// <summary>
@@ -395,10 +422,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<short> NonZero(this IPropertyNumberDescriptor<short> p)
+        public static IPropertyDescriptor<TModel, short> NonZero<TModel>(this IPropertyDescriptor<TModel, short> p) where TModel : ModelBase
         {
-            p.Validations(CheckNotZero);
-            return p;
+            return p.Validations(CheckNotZero);
         }
 
         /// <summary>
@@ -408,10 +434,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<int> NonZero(this IPropertyNumberDescriptor<int> p)
+        public static IPropertyDescriptor<TModel, int> NonZero<TModel>(this IPropertyDescriptor<TModel, int> p) where TModel : ModelBase
         {
-            p.Validations(CheckNotZero);
-            return p;
+            return p.Validations(CheckNotZero);
         }
 
         /// <summary>
@@ -421,10 +446,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<long> NonZero(this IPropertyNumberDescriptor<long> p)
+        public static IPropertyDescriptor<TModel, long> NonZero<TModel>(this IPropertyDescriptor<TModel, long> p) where TModel : ModelBase
         {
-            p.Validations(CheckNotZero);
-            return p;
+            return p.Validations(CheckNotZero);
         }
 
         /// <summary>
@@ -434,10 +458,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<float> NonZero(this IPropertyNumberDescriptor<float> p)
+        public static IPropertyDescriptor<TModel, float> NonZero<TModel>(this IPropertyDescriptor<TModel, float> p) where TModel : ModelBase
         {
-            p.Validations(CheckNotZero);
-            return p;
+            return p.Validations(CheckNotZero);
         }
 
         /// <summary>
@@ -447,10 +470,81 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static IPropertyNumberDescriptor<double> NonZero(this IPropertyNumberDescriptor<double> p)
+        public static IPropertyDescriptor<TModel, double> NonZero<TModel>(this IPropertyDescriptor<TModel, double> p) where TModel : ModelBase
         {
-            p.Validations(CheckNotZero);
-            return p;
+            return p.Validations(CheckNotZero);
+        }
+
+        /// <summary>
+        /// Indica que un campo numérico no debe ser igual a cero.
+        /// </summary>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, decimal?> NonZero<TModel>(this IPropertyDescriptor<TModel, decimal?> p) where TModel : ModelBase
+        {
+            return p.Validations(CheckNotZero);
+        }
+
+        /// <summary>
+        /// Indica que un campo numérico no debe ser igual a cero.
+        /// </summary>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, short?> NonZero<TModel>(this IPropertyDescriptor<TModel, short?> p) where TModel : ModelBase
+        {
+            return p.Validations(CheckNotZero);
+        }
+
+        /// <summary>
+        /// Indica que un campo numérico no debe ser igual a cero.
+        /// </summary>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, int?> NonZero<TModel>(this IPropertyDescriptor<TModel, int?> p) where TModel : ModelBase
+        {
+            return p.Validations(CheckNotZero);
+        }
+
+        /// <summary>
+        /// Indica que un campo numérico no debe ser igual a cero.
+        /// </summary>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, long?> NonZero<TModel>(this IPropertyDescriptor<TModel, long?> p) where TModel : ModelBase
+        {
+            return p.Validations(CheckNotZero);
+        }
+
+        /// <summary>
+        /// Indica que un campo numérico no debe ser igual a cero.
+        /// </summary>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, float?> NonZero<TModel>(this IPropertyDescriptor<TModel, float?> p) where TModel : ModelBase
+        {
+            return p.Validations(CheckNotZero);
+        }
+
+        /// <summary>
+        /// Indica que un campo numérico no debe ser igual a cero.
+        /// </summary>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, double?> NonZero<TModel>(this IPropertyDescriptor<TModel, double?> p) where TModel : ModelBase
+        {
+            return p.Validations(CheckNotZero);
         }
 
         /// <summary>
@@ -461,10 +555,14 @@ namespace TheXDS.Proteus.Crud.Base
         /// <returns>
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
-        public static T Timestamp<T>(this T p) where T : IPropertyDateDescriptor
+        public static IPropertyDescriptor<TModel, DateTime> Timestamp<TModel>(this IPropertyDescriptor<TModel, DateTime> p) where TModel : ModelBase
         {
-            p.WithTime().Default(DateTime.Now).Label("Fecha de creación");
-            return p;
+            return p.WithTime().Default(DateTime.Now).Label("Fecha de creación");
+        }
+        
+        public static IPropertyDescriptor<TModel, DateTime?> Timestamp<TModel>(this IPropertyDescriptor<TModel, DateTime?> p) where TModel : ModelBase
+        {
+            return p.WithTime().Default(DateTime.Now).Label("Fecha de creación");
         }
 
         private static IEnumerable<ValidationError> CheckNotZero(ModelBase m, PropertyInfo prop)
@@ -475,6 +573,7 @@ namespace TheXDS.Proteus.Crud.Base
                 yield return new NullValidationError(prop);
             }
         }
+
         #endregion
 
         #region Bulks de descripción de modelos
@@ -492,7 +591,7 @@ namespace TheXDS.Proteus.Crud.Base
         [Sugar]
         public static void DescribeAddress<T>(this CrudDescriptor<T> descriptor) where T : ModelBase, IAddressable, new()
         {
-            descriptor.TextProperty(p => p.Address).TextKind(TextKind.Big).Label("Dirección").Icon("🏢").Required().Validator(CheckAddress).ShowInDetails();
+            descriptor.Property(p => p.Address).Big().Label("Dirección").Icon("🏢").Required().Validator(CheckAddress).ShowInDetails();
             descriptor.Property(p => p.City).Label("Cuidad").Icon("🏙").NotEmpty().ShowInDetails();
             descriptor.Property(p => p.Province).Label("Provincia/Departamento").Icon("🚩").NotEmpty().ShowInDetails();
             descriptor.Property(p => p.Zip).Label("Código Zip").Icon("📮").Nullable().ShowInDetails();
@@ -512,17 +611,17 @@ namespace TheXDS.Proteus.Crud.Base
         [Sugar]
         public static void DescribeContact<T>(this CrudDescriptor<T> descriptor) where T : ModelBase, IContact, new()
         {
-            descriptor.ListProperty(p => p.Emails)
-                .Editable()
-                .Creatable()
+            descriptor.Property(p => p.Emails)
+                .AllowEdit()
+                .AllowCreate()
                 .Label("Correos de contacto")
                 .Icon("📧")
                 .ShowInDetails()
                 .Required();
 
-            descriptor.ListProperty(p => p.Phones)
-                .Editable()
-                .Creatable()
+            descriptor.Property(p => p.Phones)
+                .AllowEdit()
+                .AllowCreate()
                 .Label("Teléfonos")
                 .Icon("📞")
                 .ShowInDetails()
@@ -559,13 +658,13 @@ namespace TheXDS.Proteus.Crud.Base
         [Sugar]
         public static void DescribeValuable<T>(this CrudDescriptor<T> descriptor) where T: ModelBase, IValuable, new()
         {
-            descriptor.NumericProperty(p => p.StaticValue)
+            descriptor.Property(p => p.StaticValue)
                 .Range(decimal.Zero, decimal.MaxValue)
                 .Nullable()
                 .RadioSelectable()
                 .Label("Valor estático");
 
-            descriptor.NumericProperty(p => p.PercentValue)
+            descriptor.Property(p => p.PercentValue)
                 .Range(0f, 1f)
                 .Nullable()
                 .RadioSelectable()
@@ -607,21 +706,6 @@ namespace TheXDS.Proteus.Crud.Base
         public static IEnumerable<ValidationError> CheckNotEmpty(ModelBase entity, PropertyInfo prop)
         {
             if (prop.GetValue(entity)?.ToString()?.IsEmpty() ?? true) yield return new ValidationError(prop, "Este campo es requerido.");
-        }
-
-        /// <summary>
-        /// Validación que comprueba que el objeto no sea <see langword="null"/>.
-        /// </summary>
-        /// <param name="entity">Entidad a validar.</param>
-        /// <param name="prop">Referencia a la propiedad a validar.</param>
-        /// <returns>
-        /// Una colección de errores de validación si existen problemas, o
-        /// una colección vacía si la entidad ha superado todas las
-        /// validaciones.
-        /// </returns>
-        public static IEnumerable<ValidationError> CheckNotNull(ModelBase entity, PropertyInfo prop)
-        {
-            if (prop.GetValue(entity) is null) yield return new NullValidationError(prop);
         }
 
         /// <summary>
