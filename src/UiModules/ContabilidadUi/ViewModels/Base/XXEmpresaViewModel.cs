@@ -24,7 +24,7 @@ namespace TheXDS.Proteus.ContabilidadUi.ViewModels.Base
 
         public ObservableListWrap<ModelBase> CurrentSubCuentas { get; } = new ObservableListWrap<ModelBase>();
 
-        public ObservableListWrap<ModelBase> GetCurrentSubCuentas(ISearchViewModel vm)
+        public ObservableListWrap<ModelBase> GetCurrentSubCuentas(ISearchViewModel? vm)
         {
             _vm ??= vm;
             return CurrentSubCuentas;

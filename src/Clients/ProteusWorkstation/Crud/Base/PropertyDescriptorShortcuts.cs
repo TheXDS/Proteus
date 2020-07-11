@@ -228,9 +228,10 @@ namespace TheXDS.Proteus.Crud.Base
         /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
-        public static IPropertyDescriptor NotEmpty<T>(this IListPropertyDescriptor<T> p) where T : ModelBase
+        public static IListPropertyDescriptor<T> NotEmpty<T>(this IListPropertyDescriptor<T> p) where T : ModelBase
         {
-            return p.Required().Validator(CheckListNotEmpty);
+            p.Required().Validator(CheckListNotEmpty);
+            return p;
         }
 
         /// <summary>

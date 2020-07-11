@@ -50,12 +50,22 @@ namespace TheXDS.Proteus.Models
         /// </summary>
         public int LifeValue { get; set; }
 
+        public virtual List<InventarioKindXEmpresa> RegistroCuentas { get; set; } = new List<InventarioKindXEmpresa>();
+        
+    }
+
+    public class InventarioKindXEmpresa : ModelBase<int>, IXXEmpresa
+    {
+        public virtual InventarioKind Parent { get; set; }
+        public virtual Empresa Empresa { get; set; }
+        public virtual SubCuenta RegistroCuenta { get; set; }
     }
 
     public class InventarioFijo : TimestampModel<string>, INameable
     {
         public virtual InventarioKind Kind { get; set; }
         public string Name { get; set; }
+        public virtual Empresa Empresa { get; set; }
         public int PiecesCount { get; set; }
         public decimal ValorInicial { get; set; }
         public virtual List<Depreciacion> Depreciaciones { get; set; } = new List<Depreciacion>();
@@ -105,5 +115,8 @@ namespace TheXDS.Proteus.Models
                 _ => $"{RunEach} {Periodicity.NameOf().OrNull() ?? Periodicity.ToString()}"
             };
         }
+
+        public virtual SubCuenta DepreCuenta { get; set; }
+
     }
 }
