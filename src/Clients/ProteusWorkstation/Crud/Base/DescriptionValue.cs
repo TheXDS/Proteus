@@ -5,7 +5,6 @@ Licenciado para uso interno solamente.
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Documents;
 using TheXDS.Proteus.Component.Attributes;
 
 namespace TheXDS.Proteus.Crud.Base

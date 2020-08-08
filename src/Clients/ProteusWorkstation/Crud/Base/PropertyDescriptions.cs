@@ -94,6 +94,17 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
+        /// <summary>
+        /// Obtiene un valor que indica si el control a generar debe ser de
+        /// sólo lectura.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> si se debe generar un control de sólo
+        /// lectura, <see langword="false"/> en caso contrario.
+        /// </returns>
         public static bool ReadOnly(this IPropertyDescription description)
         {
             return (bool?)description[DescriptionValue.ReadOnly] ?? false;
@@ -132,6 +143,14 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
+        /// <summary>
+        /// Obtiene una cadena con el ícono a utilizar al generar el control de
+        /// CRUD.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>El ícono a utilizar al generar el control de Crud.</returns>
         public static string Icon(this IPropertyDescription description)
         {
             return description[DescriptionValue.Icon] switch
@@ -141,7 +160,6 @@ namespace TheXDS.Proteus.Crud.Base
                 _ => "✏"
             };
         }
-
 
         /// <summary>
         /// Establece un ícono a aplicar a los controles que lo soporten.
@@ -174,10 +192,159 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
+        /// <summary>
+        /// Obtiene una cadena con el texto de etiqueta a utilizar al generar
+        /// el control de CRUD.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>
+        /// El texto de etiqueta a utilizar al generar el control de Crud.
+        /// </returns>
         public static string Label(this IPropertyDescription description)
         {
             return description[DescriptionValue.Icon] as string ?? description.Property.Name;
         }
+
+        /// <summary>
+        /// Establece un texto de ayuda sobre los controles generados a
+        /// partir de este descriptor.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="tooltip">Etiqueta a aplicar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Tooltip<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string tooltip) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Tooltip, tooltip);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Obtiene una cadena con el texto de tooltip a utilizar al generar
+        /// el control de CRUD.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>
+        /// El texto de tooltip a utilizar al generar el control de Crud.
+        /// </returns>
+        public static string Tooltip(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.Tooltip] as string ?? description.Property.Name;
+        }
+
+        /// <summary>
+        /// Establece un valor ordinal al campo.
+        /// </summary>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="order">Valor ordinal del campo.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Order<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, int order) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Order, order);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Obtiene un valor que indica el orden en el cual el control generado
+        /// debe colocarse en el CRUD.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>
+        /// Un valor que indica el orden en el cual el control generado debe
+        /// colocarse en el CRUD, o <see langword="null"/> si el valor no ha
+        /// sido configurado, caso en el cual el control se colocará de acuerdo
+        /// al orden de descripción.
+        /// </returns>
+        public static int? Order(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.Order] is int i ? (int?)i : null;
+        }
+
+        /// <summary>
+        /// Establece un formato de presentación para una propiedad.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="format">Formato a aplicar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Format<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string format) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.Format, format);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Obtiene una cadena con el texto de tooltip a utilizar al generar
+        /// el control de CRUD.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>
+        /// El texto de tooltip a utilizar al generar el control de Crud.
+        /// </returns>
+        public static string? Format(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.Format] as string;
+        }
+
+        /// <summary>
+        /// Indica que el control mostrará la marca de agua siempre.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> WatermarkAlwaysVisible<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.WatermarkVisibility, true);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Obtiene un valor que indica si la etiqueta de marca de agua debe
+        /// ser siempre visible.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> si la etiqueta debe ser siempre visible,
+        /// <see langword="false"/> en caso contrario.
+        /// </returns>
+        public static bool WatermarkAlwaysVisible(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.ReadOnly] is bool b ? b : false;
+        }
+
+
+
 
 
         /// <summary>
@@ -228,6 +395,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
 
+
+
+
+
+
         /// <summary>
         /// Indica que el campo es nulable, por lo que su control será
         /// contenido por un RadioButton.
@@ -262,20 +434,7 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
-        /// <summary>
-        /// Establece un valor ordinal al campo.
-        /// </summary>
-        /// <param name="descriptor">Descriptor a configurar.</param>
-        /// <param name="order">Valor ordinal del campo.</param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        public static IPropertyDescriptor<TModel, TProperty> Order<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, int order) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.Order, order);
-            return descriptor;
-        }
+
 
         /// <summary>
         /// Establece la función de validación de este campo.
@@ -307,62 +466,8 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
-        /// <summary>
-        /// Establece un texto de ayuda sobre los controles generados a
-        /// partir de este descriptor.
-        /// </summary>
-        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
-        /// <typeparam name="TProperty">
-        /// Tipo de la propiedad descrita.
-        /// </typeparam>
-        /// <param name="descriptor">Descriptor a configurar.</param>
-        /// <param name="tooltip">Etiqueta a aplicar.</param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        public static IPropertyDescriptor<TModel, TProperty> Tooltip<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string tooltip) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.Tooltip, tooltip);
-            return descriptor;
-        }
 
-        /// <summary>
-        /// Indica que el control mostrará la marca de agua siempre.
-        /// </summary>
-        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
-        /// <typeparam name="TProperty">
-        /// Tipo de la propiedad descrita.
-        /// </typeparam>
-        /// <param name="descriptor">Descriptor a configurar.</param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        public static IPropertyDescriptor<TModel, TProperty> WatermarkAlwaysVisible<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.WatermarkVisibility, true);
-            return descriptor;
-        }
 
-        /// <summary>
-        /// Establece un formato de presentación para una propiedad.
-        /// </summary>
-        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
-        /// <typeparam name="TProperty">
-        /// Tipo de la propiedad descrita.
-        /// </typeparam>
-        /// <param name="descriptor">Descriptor a configurar.</param>
-        /// <param name="format">Formato a aplicar.</param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        public static IPropertyDescriptor<TModel, TProperty> Format<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, string format) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.Format, format);
-            return descriptor;
-        }
 
         /// <summary>
         /// Agrega esta propiedad como columna de lista al presentarse en
@@ -665,9 +770,6 @@ namespace TheXDS.Proteus.Crud.Base
             descriptor.SetValue(DescriptionValue.Source, source);
             return descriptor;
         }
-
-
-
 
 
 
