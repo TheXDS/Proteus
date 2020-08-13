@@ -92,14 +92,25 @@ namespace TheXDS.Proteus.ViewModels
         {
             if (Proteus.Interactive)
             {
-                if (Proteus.Session.GetDescriptor<ModuleSecurityDescriptor>(module.Module.GetType().FullName!) is { } d)
+                if (Proteus.Session!.GetDescriptor<ModuleSecurityDescriptor>(module.Module.GetType().FullName!) is { } d)
                 {
-                    if (!d.Accesible) return false;
+                    //if (!d.Accesible) return false;
+                    return d.Accesible;
                 }
-                return Proteus.Session.ModuleBehavior?.HasFlag(SecurityBehavior.Visible) ?? false;
+                return ChkModuleFlag(Proteus.Session) ?? false;
             }
 
             return true;
+        }
+        private static bool? ChkModuleFlag(IProteusHierachicalCredential? credential)
+        {
+            if (credential is null) return null;
+            if (credential.ModuleBehavior?.HasFlag(SecurityBehavior.Visible) is { } r) return r;
+            foreach (var j in credential.Roles)
+            {
+                if (j.ModuleBehavior?.HasFlag(SecurityBehavior.Visible) is { } q) return q;
+            }
+            return ChkModuleFlag(credential.Parent);
         }
 
         public DateTime DayOfCalendar
@@ -131,15 +142,7 @@ namespace TheXDS.Proteus.ViewModels
 
         private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                case nameof(Settings.UiModulesHeight):
-                    Notify(nameof(UiModulesHeight));
-                    break;
-                case nameof(Settings.UiModulesWidth):
-                    Notify(nameof(UiModulesWidth));
-                    break;
-            }
+            Notify(e.PropertyName);
         }
 
         public void Alert(string alert)
@@ -188,7 +191,7 @@ namespace TheXDS.Proteus.ViewModels
 
         public async Task RefreshAsync()
         {
-            _avisos = await UserService.AllAvisos.ToListAsync();
+            _avisos = await System.Data.Entity.QueryableExtensions.ToListAsync(UserService.AllAvisos);
             Notify(nameof(Avisos));
         }
 

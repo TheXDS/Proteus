@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -16,6 +17,7 @@ using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models.Base;
@@ -34,6 +36,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         private bool _editMode;
         private Type? _selection;
 
+        public double EditorWidth => Settings.Default.EditorWidth;
 
         /// <summary>
         /// Colección que describe las diferentes presentaciones
@@ -95,7 +98,21 @@ namespace TheXDS.Proteus.ViewModels.Base
                     }
                     foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
                     {
-                        k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
+                        try
+                        {
+                            k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
+                        }
+                        catch (TargetInvocationException)
+                        {
+                            try
+                            {
+                                k.GetValue(SelectedElement!.ViewModel);
+                            }
+                            catch (TargetInvocationException)
+                            {
+                                k.GetValue(value!);
+                            }
+                        }
                     }
                 }
                 else
@@ -165,6 +182,13 @@ namespace TheXDS.Proteus.ViewModels.Base
                 nameof(NotEditMode), nameof(EditVis), nameof(NotEditVis));
             RegisterPropertyChangeBroadcast(nameof(Selection),
                 nameof(SelectedEditor), nameof(SelectedElement), nameof(SelectedDetails));
+
+            Settings.Default.PropertyChanged += Default_PropertyChanged;
+        }
+
+        private void Default_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Notify(e.PropertyName);
         }
 
         /// <summary>
@@ -407,5 +431,10 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// Obtiene un valor de visibilidad aplicable cuando el ViewModel no se encuentre en modo de edición.
         /// </summary>
         public Visibility NotEditVis => NotEditMode ? Visibility.Visible : Visibility.Collapsed;
+
+        ~CrudViewModelBase()
+        {
+            Settings.Default.PropertyChanged -= Default_PropertyChanged;
+        }
     }
 }

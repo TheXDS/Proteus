@@ -55,7 +55,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <value>El valor de EnumerableResults.</value>
         public IEnumerable<ModelBase>? EnumerableResults
         {
-            get => _enumerableResults ?? Proteus.Infer(ActiveModel)?.All(ActiveModel);
+            get => _enumerableResults ?? Proteus.Infer(ActiveModel)?.All(ActiveModel!);
             private set => Change(ref _enumerableResults, value);
         }
 
@@ -382,8 +382,22 @@ namespace TheXDS.Proteus.ViewModels
             else if (Proteus.Infer(ActiveModel!) is { } svc)
             {          
                 var q = svc.All(ActiveModel!);
-                //Results = await q.CountAsync() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
-                Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(q.ToList()) : null;
+                if (q.Count() <= Settings.Default.RowLimit)
+                {
+                    try
+                    {
+                        var re = await q.ToListAsync();
+                        Results = CollectionViewSource.GetDefaultView(re);
+                    }
+                    catch 
+                    {
+                        Results = null;
+                    }
+                }
+                else
+                {
+                    Results = null;
+                }
             }
             EnumerableResults = null;
             SearchQuery = null;
@@ -424,10 +438,12 @@ namespace TheXDS.Proteus.ViewModels
                 l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
             }
             else { return; }
-            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            var ll = new List<ModelBase>();
+            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>().Where(p=>p.UsableFor(ActiveModel!)))
             {
-                l = j.Filter(l, SearchQuery!);
+                ll = ll.Concat(j.Filter(l, SearchQuery!)).ToList();
             }
+            l = ll.Distinct().ToList();
             EnumerableResults = l;
             Results = CollectionViewSource.GetDefaultView(l);
             Results.Refresh();

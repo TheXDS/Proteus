@@ -116,7 +116,7 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Obtiene una referencia a la sesión activa para este servicio.
         /// </summary>  
-        protected IProteusUserCredential? Session => _session ?? Proteus.Session;
+        public IProteusUserCredential? Session => _session ?? Proteus.Session;
 
         /// <summary>
         /// Obtiene un valor que indica si este servicio se encuentra
@@ -1252,7 +1252,7 @@ namespace TheXDS.Proteus.Api
             return CanRunService(id, flags, credential.Parent);
         }
 
-        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Proteus.Session);
+        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Session);
 
         public bool? CanRunService(SecurityFlags flags, IProteusHierachicalCredential? cred)
         {
@@ -1662,31 +1662,15 @@ namespace TheXDS.Proteus.Api
         /// <see langword="true"/> si la función tiene permisos para
         /// ejecutarse, <see langword="false"/> en caso contrario.
         /// </returns>
-        protected bool Elevate()
+        public bool Elevate()
         {
-            return !Interactive || (CanRunService() ?? false);
-
-
-            //bool r;
-            //do
-            //{
-            //    r = !Interactive || (CanRunService() ?? false);
-            //    if (!r)
-            //    {
-                    
-            //        if ( CanRunService((MethodBase.GetCurrentMethod() as MethodInfo).FullName(), SecurityFlags.Elevate, credential))
-            //        {
-
-            //        }
-
-
-            //    }
-
-            //    if (!r && (!Elevator?.Elevate(ref _session) ?? true)) break;
-            //} while (!r);
-            //return r;
+            return !Interactive || (Session ?? Proteus.Session)?.Id == "root" || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
         }
 
+        public bool Elevate(SecurityFlags flags)
+        {
+            return Elevate() && (CanRunService(flags) ?? false);
+        }
 
         /// <summary>
         /// Enumera los tipos de entidad hospedadas en el contexto
@@ -1701,6 +1685,8 @@ namespace TheXDS.Proteus.Api
             }
         }
 
+        public Task<DetailedResult> ForcefullySaveAsync() => InternalSaveAsync(true);
+
         /// <summary>
         /// Ejecuta una operación de guardado directamente, sin realizar
         /// verificaciones de permisos.
@@ -1713,12 +1699,12 @@ namespace TheXDS.Proteus.Api
         /// <see cref="Result.Unreachable"/> si no es posible contactar con
         /// el servidor de dase de datos.
         /// </returns>
-        protected async Task<DetailedResult> InternalSaveAsync()
+        protected async Task<DetailedResult> InternalSaveAsync(bool forcefullySave = false)
         {
             CancellationTokenSource? cs = null;
             try
             {
-                if (!ChangesPending()) return Result.Ok;
+                if (!(ChangesPending() || forcefullySave)) return Result.Ok;
 
                 var affectedEntities = Context.ChangeTracker.Entries()
                     .Where(p => p.State != EntityState.Unchanged).ToList();
