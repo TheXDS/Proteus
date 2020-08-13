@@ -24,7 +24,7 @@ namespace TheXDS.Proteus.Tools
     /// </summary>
     public class ExDumper : Tool
     {
-        private const string _totalFail = "Error cerrando la aplicación. Para prevenir daños a la información o al equipo, detenga la ejecución de este programa inmediatamente.";
+        private const string _totalFail = "Error cerrando la aplicación. Para prevenir daños a la información o al equipo, se detendrá la ejecución de este programa inmediatamente. De no detenerse, por favor detenga este programa. Utilice el administrador de tareas de ser necesario o reinicie (normalmente o forzosamente) el equipo.";
         private static bool _dumping;
         private static bool _enabled;
         private static bool _shutdown = true;
