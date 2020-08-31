@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)FullCheckArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HighPriorityArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InitArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InMemoryDbArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LocalDbArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LogFileArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LowPriorityArgument.cs" />

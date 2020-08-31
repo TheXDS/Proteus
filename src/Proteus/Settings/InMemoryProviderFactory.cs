@@ -11,9 +11,19 @@ namespace TheXDS.Proteus.Component
 {
     public class InMemoryProviderFactory : IDbConnectionFactory
     {
+        private static bool _registered;
         public DbConnection CreateConnection(string nameOrConnectionString)
         {
             return Effort.DbConnectionFactory.CreatePersistent($"Proteus_{Guid.NewGuid()}");
+        }
+
+        public InMemoryProviderFactory()
+        {
+            if (!_registered)
+            {
+                _registered = true;
+                Effort.Provider.EffortProviderConfiguration.RegisterProvider();
+            }
         }
     }
 }

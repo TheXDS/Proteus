@@ -8,12 +8,12 @@ using TheXDS.Proteus.Component;
 
 namespace TheXDS.Proteus.Cmd
 {
-    public class LocalDbArgument : Argument
+    public class InMemoryArgument : Argument
     {
-        public override string Summary => "Obliga a Proteus a utilizar un servidor LocalDB";
+        public override string Summary => "Obliga a Proteus a utilizar una base de datos en memoria";
         public override void Run(CmdLineParser args)
         {
-            DbConfig._forceLocalDb = true;
+            DbConfig._forceInMemory = true;
         }
     }
 }
