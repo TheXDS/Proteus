@@ -66,14 +66,16 @@ namespace TheXDS.Proteus.ViewModels
         {
             get
             {
-                return Settings.Default.WindowUiMode switch
+                var m = Settings.Default.WindowUiMode switch
                 {
                     UiMode.Simple => new SimpleUiMode(),
                     UiMode.Flat => new FlatUiMode(),
                     UiMode.Minimal => new MinimalUiMode(),
                     UiMode.Logging => new LoggingUiMode(this),
-                    _ => null
+                    _ => (FrameworkElement?)null
                 };
+                if (m is { }) m.DataContext = this;
+                return m;
             }
         }
 
@@ -101,7 +103,6 @@ namespace TheXDS.Proteus.ViewModels
 
         private void EarlySetup(params Argument[] additional)
         {
-            //ViewModelFactory.AttributeExclusionList.Add(typeof(ExcludeFromVmFactoryAttribute));
             Proteus.MessageTarget = new MessageSplashTarget();
             Proteus.CommonReporter = this;
             App.RootHost = this;
@@ -138,7 +139,13 @@ namespace TheXDS.Proteus.ViewModels
 
         internal async Task PostSettingsInit()
         {
-            Proteus.CommonReporter?.UpdateStatus("Preparando aplicación...");
+            // HACK: esperar a que la ventana sea visible...
+            while (!(Host as MainWindow)?.IsVisible ?? false)
+            {
+                await Task.Delay(100);
+            }
+
+            Proteus.CommonReporter?.UpdateStatus(0, "Preparando aplicación...");
             await Proteus.Init(Settings.Default);
             Proteus.LogoutActions.Add(Logout);
 
