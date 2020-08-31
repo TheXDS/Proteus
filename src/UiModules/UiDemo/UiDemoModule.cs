@@ -17,7 +17,6 @@ using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.Reporting;
-using TheXDS.Proteus.UiDemo.Pages;
 using static TheXDS.Proteus.Annotations.InteractionType;
 
 [assembly: Name("UI Demo")]
@@ -45,12 +44,6 @@ namespace TheXDS.Proteus
         public void OpenTestPage(object sender, EventArgs e)
         {
             Host.OpenPage<TestPage>();
-        }
-
-        [InteractionItem, InteractionType(AdminTool), Name("Telemetría de servicios")]
-        public void OpenServiceInfoPage(object sender, EventArgs e)
-        {
-            Host.OpenPage<HostedPage<DiagnosticsPage>>();
         }
 
         [InteractionItem, Essential, InteractionType(Operation), Name("Playground de UI")]
@@ -86,7 +79,7 @@ namespace TheXDS.Proteus
                 var r = InputSplash.GetNew<T>("Introduzca un valor de prueba", out var v);
                 if (r)
                 {
-                    Proteus.MessageTarget?.Show("Prueba de InputSplash", v?.ToString());
+                    Proteus.MessageTarget?.Show("Prueba de InputSplash", v?.ToString() ?? $"({typeof(T)}) <null>");
                 }
                 return r;
             }

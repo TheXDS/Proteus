@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using TheXDS.MCART.Attributes;
 using TheXDS.Proteus.Api;
 
-namespace TheXDS.Proteus.UiDemo.Pages
+namespace TheXDS.Proteus.DevelModule.Pages
 {
     /// <summary>
     /// Lógica de interacción para DiagnosticsPage.xaml
@@ -33,8 +33,8 @@ namespace TheXDS.Proteus.UiDemo.Pages
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
-        {
+        {           
             await ((LstServices.SelectedItem as Service)?.ForcefullySaveAsync() ?? Task.FromResult(DetailedResult.Ok));
-        }
+        }        
     }
 }
