@@ -16,7 +16,7 @@ using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Plugins;
 using static TheXDS.MCART.Objects;
 
-namespace TheXDS.Proteus.Tools
+namespace TheXDS.Proteus.DevelModule.Tools
 {
     /// <summary>
     /// Herramienta que permite capturar, loggear y generar intencionalmente
@@ -183,7 +183,7 @@ Cierre forzoso {(_shutdown ? "activado" : "desactivado")}");
             _dumping = true;
             try
             {
-                var failLog = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\Proteus-{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}-failure.txt";
+                var failLog = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\Proteus-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-failure.txt";
                 using var j = new System.IO.StreamWriter(failLog);
                 Internal.Dump(j, ex);
             }

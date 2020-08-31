@@ -16,9 +16,9 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Plugins;
 
-namespace TheXDS.Proteus.UiDemo.Tools
+namespace TheXDS.Proteus.DevelModule.Tools
 {
-    class UpdatePushTool : Tool
+    public class UpdatePushTool : Tool
     {
         private struct AsmInfo
         {
@@ -35,23 +35,33 @@ namespace TheXDS.Proteus.UiDemo.Tools
         [InteractionItem, Name("💎"), Description("Envía el manifiesto de componentes actuales al servidor de actualizaciones de Proteus.")]
         public async void PushUpdates(object? sender, EventArgs e)
         {
-            Proteus.CommonReporter?.UpdateStatus("Enviando manifiesto de actualizaciones...");
-            var list = AppDomain.CurrentDomain.GetAssemblies().Select(GetInfo).NotNull().ToList();
-            list.Add(new AsmInfo
+            try
             {
-                name = $"{App.Info.Name}.exe",
-                version = App.Info.InformationalVersion ?? App.Info.Version?.ToString() ?? "1.0.0.0"
-            });
-            var request = (HttpWebRequest)WebRequest.Create($"{Settings.Default.UpdateServer.TrimEnd('/')}/v1/Update/WriteManifest");
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            await JsonSerializer.SerializeAsync(await request.GetRequestStreamAsync(), list.ToArray());
-            var resp = (HttpWebResponse)await request.GetResponseAsync();
-            if (resp.StatusCode != HttpStatusCode.OK)
+                Proteus.CommonReporter?.UpdateStatus("Enviando manifiesto de actualizaciones...");
+                var list = AppDomain.CurrentDomain.GetAssemblies().Select(GetInfo).NotNull().ToList();
+                list.Add(new AsmInfo
+                {
+                    name = $"{App.Info.Name}.exe",
+                    version = App.Info.InformationalVersion ?? App.Info.Version?.ToString() ?? "1.0.0.0"
+                });
+                var request = (HttpWebRequest)WebRequest.Create($"{Settings.Default.UpdateServer.TrimEnd('/')}/v1/Update/WriteManifest");
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                await JsonSerializer.SerializeAsync(await request.GetRequestStreamAsync(), list.ToArray());
+                var resp = (HttpWebResponse)await request.GetResponseAsync();
+                if (resp.StatusCode != HttpStatusCode.OK)
+                {
+                    Proteus.MessageTarget?.Warning(resp.StatusDescription);
+                };
+            }
+            catch (Exception ex)
             {
-                Proteus.MessageTarget?.Warning(resp.StatusDescription);
-            };
-            Proteus.CommonReporter?.Done();
+                Proteus.MessageTarget?.Error(ex.Message);
+            }
+            finally 
+            {
+                Proteus.CommonReporter?.Done();
+            }
         }
 
         private AsmInfo? GetInfo(Assembly? asm)

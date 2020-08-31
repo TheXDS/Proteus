@@ -41,17 +41,22 @@ namespace TheXDS.Proteus.DevelModule
                 " módulo pueda causar.");
         }
 
-        [InteractionItem, InteractionType(AdminTool), Name("Telemetría de servicios")]
+        [InteractionItem, Essential, InteractionType(AdminTool), Name("Telemetría de servicios")]
         public void OpenServiceInfoPage(object sender, EventArgs e)
         {
             Host.OpenPage<HostedPage<DiagnosticsPage>>();
         }
 
-        [InteractionItem, InteractionType(AdminTool), Name("Administración de base de datos")]
+        [InteractionItem, Essential, InteractionType(AdminTool), Name("Administración de DB")]
         public void OpenDbManagementPage(object sender, EventArgs e)
         {
             Host.OpenPage<HostedPage<DbManagementPage>>();
         }
 
+        [InteractionItem, Essential, InteractionType(AdminTool), Name("Componentes")]
+        public void OpenComponentsPage(object sender, EventArgs e)
+        {
+            Host.OpenPage<HostedPage<ComponentOverviewPage>>();
+        }
     }
 }

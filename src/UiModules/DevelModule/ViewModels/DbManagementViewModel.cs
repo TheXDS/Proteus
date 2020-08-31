@@ -1,43 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TheXDS.MCART.ViewModel;
-using TheXDS.Proteus.Api;
-using System.Reflection;
-using TheXDS.MCART;
+using TheXDS.MCART.Pages;
+using TheXDS.Proteus.Pages;
 
 namespace TheXDS.Proteus.DevelModule.ViewModels
 {
-    public class DbManagementViewModel : ViewModelBase
+    public class DbManagementViewModel : ServiceManagementViewModel
     {
-        private Service? _SelectedService;
-
-        public IEnumerable<Service> Services
-        {
-            get
-            {
-                return Proteus.Services ?? Array.Empty<Service>().AsEnumerable();
-            }
-        }
-
-        /// <summary>
-        ///     Obtiene o establece el valor SelectedService.
-        /// </summary>
-        /// <value>El valor de SelectedService.</value>
-        public Service? SelectedService
-        {
-            get => _SelectedService;
-            set => Change(ref _SelectedService, value);
-        }
-
         /// <summary>
         /// Obtiene el comando que permite comprobar manualmente la base de
         /// datos.
         /// </summary>
         public ICommand CheckDbCommand { get; }
+
+        public ICommand CheckPendingCommand { get; }
+
+        public ICommand ForcefullySaveCommand { get; }
 
         /// <summary>
         ///     Obtiene el comando relacionado a la acción DestroyDb.
@@ -51,21 +30,17 @@ namespace TheXDS.Proteus.DevelModule.ViewModels
         /// </summary>
         public DbManagementViewModel()
         {
-            CheckDbCommand = new ObservingCommand(this, () => BusyOp(OnCheckDbAsync))
-                .SetCanExecute(IsServiceSelected)
-                .RegisterObservedProperty(() => SelectedService);
-
-            DestroyDbCommand = new ObservingCommand(this, async () => await BusyOp(Task.Run(OnDestroyDb)))
-                .SetCanExecute(IsServiceSelected)
-                .RegisterObservedProperty(() => SelectedService);
+            CheckPendingCommand = MkObsCmd(() => Task.Run(OnCheckPending));
+            ForcefullySaveCommand = MkObsCmd(OnForcefullySaveAsync);
+            CheckDbCommand = MkObsCmd(OnCheckDbAsync);
+            DestroyDbCommand = MkObsCmd(() => Task.Run(OnDestroyDb));
         }
 
-        private bool IsServiceSelected()
+        private void OnCheckPending()
         {
-            return SelectedService is { };
+            Proteus.MessageTarget?.Info(SelectedService!.ChangesPending().ToString());
         }
-
-
+        private Task OnForcefullySaveAsync() => SelectedService!.ForcefullySaveAsync();
         private async Task OnCheckDbAsync()
         {
             var r = await SelectedService!.IsHealthyAsync();
@@ -79,16 +54,37 @@ namespace TheXDS.Proteus.DevelModule.ViewModels
                 a.Alert(msg);
             }
         }
-
         private void OnDestroyDb()
         {
             RunSvcMethod("InitializeDatabase", true);
             Proteus.MessageTarget?.Show("Operación de reinicialización", RunSvcMethod("RunSeeders", false)?.ToString() ?? "Desconocido");
             SelectedService!.Reporter?.Done();
         }
-        private object? RunSvcMethod(string method, params object[] args)
+    }
+
+    public class TelemetryViewModel : ServiceManagementViewModel
+    {
+        /// <summary>
+        /// Obtiene el comando relacionado a la acción MoreInfo.
+        /// </summary>
+        /// <returns>El comando MoreInfo.</returns>
+        public ICommand MorePluginInfoCommand { get; }
+        public ICommand MoreTechInfoCommand { get; }
+
+        public TelemetryViewModel()
         {
-            return SelectedService!.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.NonPublic, null, args.ToTypes().ToArray(), null)!.Invoke(SelectedService, args);
+            MorePluginInfoCommand = MkObsCmd(() => Task.Run(OnMorePluginInfo));
+            MoreTechInfoCommand = MkObsCmd(() => Task.Run(OnMoreTechInfo));
         }
+
+        private void OnMoreTechInfo()
+        {
+            App.UiInvoke(() => App.RootHost.OpenPage(HostedPage.From(new TypeDetails(SelectedService!.GetType()))));
+        }
+        private void OnMorePluginInfo()
+        {
+            App.UiInvoke(() => App.RootHost.OpenPage(HostedPage.From(new PluginDetails() { DataContext = SelectedService })));
+        }
+
     }
 }

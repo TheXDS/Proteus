@@ -5,38 +5,64 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:vm="clr-namespace:TheXDS.Proteus.DevelModule.ViewModels"
+    xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
     xmlns:proteus="clr-namespace:TheXDS.Proteus;assembly=Proteus"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
+    <Page.DataContext>
+        <vm:TelemetryViewModel/>
+    </Page.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ListView ItemsSource="{x:Static proteus:Proteus.Services}" x:Name="LstServices">
+        <ListView ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Servicio" DisplayMemberBinding="{Binding FriendlyName, Mode=OneWay}"/>
+                    <GridViewColumn Header="Elevación" DisplayMemberBinding="{Binding IsElevated, Mode=OneWay}"/>
+                    <GridViewColumn Header="Modo de elevación" DisplayMemberBinding="{Binding ElevationBehavior, Mode=OneWay}"/>
                 </GridView>
             </ListView.View>
         </ListView>
         <GridSplitter/>
-        <StackPanel Grid.Column="2" DataContext="{Binding SelectedItem, ElementName=LstServices, Mode=OneWay}">
-            <TextBlock Text="{Binding FriendlyName, Mode=OneWay}" Style="{StaticResource Title}"/>
-            <Separator/>
-            <TextBlock>
-                Sesión: <Run Text="{Binding Session, Mode=OneWay}"/>
-            </TextBlock>
-            <TextBlock>
-                Elevación: <Run Text="{Binding IsElevated, Mode=OneWay}"/>
-            </TextBlock>
-            <TextBlock>
-                Modo de elevación: <Run Text="{Binding ElevationBehavior, Mode=OneWay}"/>
-            </TextBlock>
-
-            <Button Click="Button_Click">Check ChangesPending</Button>
-            <Button Click="Button_Click_1">Forcefully save</Button>
-        </StackPanel>
+        <TabControl Grid.Column="2">
+            <TabItem Header="Información general">
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="0,5"/>
+                        </Style>
+                        <Style TargetType="Button">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="5"/>
+                            <Setter Property="Padding" Value="10,3"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <StackPanel DataContext="{Binding SelectedService, Mode=OneWay}">
+                        <TextBlock Text="{Binding FriendlyName, Mode=OneWay}" Style="{StaticResource Title}"/>
+                        <TextBlock Text="{Binding Description, Mode=OneWay}"/>
+                        <TextBlock>Versión: <Run Text="{Binding InformationalVersion, Mode=OneWay}"/></TextBlock>
+                        <TextBlock>Copyright: <Run Text="{Binding Copyright, Mode=OneWay}"/></TextBlock>
+                        <TextBlock>Ensamblado: <Run Text="{Binding Assembly.FullName, Mode=OneWay}"/></TextBlock>
+                    </StackPanel>
+                    <Button HorizontalAlignment="Center" Command="{Binding MorePluginInfoCommand, Mode=OneWay}">Información de Plugin...</Button>
+                    <Button HorizontalAlignment="Center" Command="{Binding MoreTechInfoCommand, Mode=OneWay}">Información de tipo...</Button>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Anatomía interna">
+                <ListView DataContext="{Binding SelectedService, Mode=OneWay}" ItemsSource="{Binding Functions, Mode=OneWay}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Método" DisplayMemberBinding="{Binding Key, Mode=OneWay}"/>
+                            <GridViewColumn Header="Bandera de seguridad" DisplayMemberBinding="{Binding Value, Mode=OneWay}"/>
+                        </GridView>
+                    </ListView.View>                    
+                </ListView>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Page>
