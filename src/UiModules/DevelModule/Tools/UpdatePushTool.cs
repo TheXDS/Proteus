@@ -18,6 +18,7 @@ using TheXDS.Proteus.Plugins;
 
 namespace TheXDS.Proteus.DevelModule.Tools
 {
+    [Name("Update Push Tool")]
     public class UpdatePushTool : Tool
     {
         private struct AsmInfo

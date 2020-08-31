@@ -44,7 +44,7 @@ namespace TheXDS.Proteus.Daemons
         public override void Run()
         {
             Proteus.MessageTarget?.Show(Name, _messages[_i]);
-            Program.ServerOf<SessionProtocol>().SendAlert(_messages[_i]);
+            Program.ServerOf<SessionProtocol>()!.SendAlert(_messages[_i]);
             _i = (++_i).Wrap(0, _messages.Length - 1);
         }
     }

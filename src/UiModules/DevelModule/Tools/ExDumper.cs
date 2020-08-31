@@ -22,6 +22,7 @@ namespace TheXDS.Proteus.DevelModule.Tools
     /// Herramienta que permite capturar, loggear y generar intencionalmente
     /// excepciones en el sistema.
     /// </summary>
+    [Name("Exception Dumper Tool")]
     public class ExDumper : Tool
     {
         private const string _totalFail = "Error cerrando la aplicación. Para prevenir daños a la información o al equipo, se detendrá la ejecución de este programa inmediatamente. De no detenerse, por favor detenga este programa. Utilice el administrador de tareas de ser necesario o reinicie (normalmente o forzosamente) el equipo.";
