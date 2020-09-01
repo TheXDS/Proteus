@@ -92,7 +92,7 @@ namespace TheXDS.Proteus.Crud.Base
         [DebuggerStepThrough]
         public IPropertyDescriptor<TModel, TProperty> VmProperty<TProperty>(Expression<Func<TViewModel, TProperty>> propertySelector)
         {
-            return Property(propertySelector, PropertyLocation.ViewModel);
+            return Property<TProperty>(GetProperty(propertySelector), PropertyLocation.ViewModel);
         }
 
         /// <summary>
@@ -757,7 +757,11 @@ namespace TheXDS.Proteus.Crud.Base
         [DebuggerStepThrough]
         private protected IPropertyDescriptor<T, TProperty> Property<TProperty>(Expression<Func<T, TProperty>> propertySelector, PropertyLocation location)
         {
-            var p = GetMember(propertySelector) as PropertyInfo ?? throw new MemberAccessException("El miembro a seleccionar debe ser una propiedad.");
+            return Property<TProperty>(GetProperty(propertySelector), location);
+        }
+
+        private protected IPropertyDescriptor<T, TProperty> Property<TProperty>(PropertyInfo p, PropertyLocation location)
+        {
             return _properties.FirstOrDefault(q => q.Property == p) as IPropertyDescriptor<T, TProperty>
                 ?? new CrudPropertyDescriptor<T, TProperty>(p, location);
         }

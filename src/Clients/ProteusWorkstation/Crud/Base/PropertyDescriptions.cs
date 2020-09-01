@@ -346,7 +346,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// </returns>
         public static bool WatermarkAlwaysVisible(this IPropertyDescription description)
         {
-            return description[DescriptionValue.ReadOnly] is bool b ? b : false;
+            return description[DescriptionValue.ReadOnly] is bool b && b;
         }
 
 
@@ -514,7 +514,16 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
+        public static IEnumerable<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>> Validations(this IPropertyDescription description)
+        {
+            return ((List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>?)description[DescriptionValue.Validations])
+                ?? Array.Empty<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>().ToList();
+        }
 
+        public static Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>> Validator(this IPropertyDescription description)
+        {
+            return (model, prop) => Validations(description).SelectMany(p => p.Invoke(model, prop));
+        }
 
 
         /// <summary>
