@@ -80,7 +80,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             Description = property;
             Property = property.Property;
 
-            if (property is IPropertyTextDescription td && td.Kind == TextKind.PicturePath)
+            if (property is IPropertyTextDescription td && td.Kind == TextKindEnum.PicturePath)
             {
                 var i = new Image();
 

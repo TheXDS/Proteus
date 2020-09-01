@@ -79,7 +79,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// <summary>
         /// Tipo de campo de texto a generar para la propiedad.
         /// </summary>
-        [DescriptionDefault(Base.TextKind.Generic)] TextKind,
+        [DescriptionDefault(Base.TextKindEnum.Generic)] TextKind,
         /// <summary>
         /// Metadatos del campo de texto a generar para la propiedad.
         /// </summary>
@@ -119,7 +119,8 @@ namespace TheXDS.Proteus.Crud.Base
         /// <summary>
         /// Origen de datos del selector de lista de la entidad.
         /// </summary>
-        Source,
+        ListSource,
+        ListSourceType,
         /// <summary>
         /// Bindings personalizados a aplicar directamente a los controles del
         /// Crud generado.
@@ -129,5 +130,12 @@ namespace TheXDS.Proteus.Crud.Base
         /// Columnas de una lista personalizada.
         /// </summary>
         ListColumns
+    }
+
+    public enum ListSourceTypeEnum
+    {
+        Queryable,
+        Collection,
+        FuncEnumerable,        
     }
 }

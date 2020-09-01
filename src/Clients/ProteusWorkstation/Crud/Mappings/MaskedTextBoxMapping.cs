@@ -19,7 +19,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         {
             if (p is IPropertyTextDescription t)
             {
-                if (t.Kind == TextKind.Big)
+                if (t.Kind == TextKindEnum.Big)
                 {
                     Control.Style = Application.Current.TryFindResource("BigText") as Style;
                     Control.Margin = new Thickness(5);

@@ -62,5 +62,13 @@ namespace TheXDS.Proteus.Crud.Base
         {
             return new FileExtension(extension, new[] { extension });
         }
+
+        public static FileExtension AllFiles
+        {
+            get
+            {
+                return new FileExtension("Todos los archivos", "*");
+            }
+        }
     }
 }

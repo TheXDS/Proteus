@@ -9,7 +9,7 @@ namespace TheXDS.Proteus.Crud.Base
     /// Enumera los tipos de texto que un campo de tipo <see cref="string"/>
     /// puede ser.
     /// </summary>
-    public enum TextKind : byte
+    public enum TextKindEnum : byte
     {
         /// <summary>
         /// Texto genérico estándar.

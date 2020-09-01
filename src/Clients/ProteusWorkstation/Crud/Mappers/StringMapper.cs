@@ -17,13 +17,13 @@ namespace TheXDS.Proteus.Crud.Mappers
 
             switch ((p as IPropertyTextDescription)?.Kind)
             {
-                case TextKind.PicturePath:
+                case TextKindTypes.PicturePath:
                     return new PicturePickerMapping(p);
-                case TextKind.FilePath:
+                case TextKindTypes.FilePath:
                     return new FilePickerMapping(p);
-                case TextKind.Maskable:
+                case TextKindTypes.Maskable:
                     return new MaskedTextBoxMapping(p);
-                case TextKind.Rich:
+                case TextKindTypes.Rich:
                     return new RichTextBoxMapping(p);
                 default:
                     return new TextBoxMapping(p);

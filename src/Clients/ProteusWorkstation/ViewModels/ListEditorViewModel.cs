@@ -101,7 +101,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="description">
         /// Descripción bajo la cual se debe instanciar este objeto.
         /// </param>
-        public ListEditorViewModel(IListPropertyDescription description) : this(description, new[] { description.Property.PropertyType })
+        public ListEditorViewModel(IPropertyDescription description) : this(description, new[] { description.Property.PropertyType })
         {
         }
 
@@ -115,7 +115,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos de datos para los cuales generar el control.
         /// </param>
-        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.Source), new List<ModelBase>(), models)
+        public ListEditorViewModel(IPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.ListSource().OrNull()), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
             if (CanSelect = description.Selectable) ClearSearch();

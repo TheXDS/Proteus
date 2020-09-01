@@ -96,7 +96,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// </returns>
         public static bool Hidden(this IPropertyDescription description)
         {
-            return (bool?)description[DescriptionValue.Visible] ?? true;
+            return !(bool?)description[DescriptionValue.Visible] ?? false;
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// </returns>
         public static string Label(this IPropertyDescription description)
         {
-            return description[DescriptionValue.Icon] as string ?? description.Property.Name;
+            return description[DescriptionValue.Label] as string ?? description.Property.Name;
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// </returns>
         public static bool WatermarkAlwaysVisible(this IPropertyDescription description)
         {
-            return description[DescriptionValue.ReadOnly] is bool b && b;
+            return description[DescriptionValue.WatermarkVisibility] is bool b && b;
         }
 
         /// <summary>
@@ -431,9 +431,8 @@ namespace TheXDS.Proteus.Crud.Base
         
         public static IDictionary<DependencyProperty, BindingBase> CustomBindings(this IPropertyDescription description)
         {
-            return ((Dictionary<DependencyProperty, BindingBase>?)description[DescriptionValue.ShowInDetails]) ?? new Dictionary<DependencyProperty, BindingBase>();
+            return ((Dictionary<DependencyProperty, BindingBase>?)description[DescriptionValue.Bindings]) ?? new Dictionary<DependencyProperty, BindingBase>();
         }
-
 
         public static IEnumerable<Column> Columns(this IPropertyDescription description)
         {
@@ -452,6 +451,47 @@ namespace TheXDS.Proteus.Crud.Base
             }
             lst.Add(new Column(header, property.Name));
             return descriptor;
+        }
+
+        /// <summary>
+        /// Establece la función de validación de este campo.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <param name="validator">
+        /// Función de validación a utilizar.
+        /// </param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> Validator<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, Func<TModel, PropertyInfo, IEnumerable<ValidationError>> validator) where TModel : ModelBase
+        {
+            IEnumerable<ValidationError> CastTest(ModelBase m, PropertyInfo p)
+            {
+                if (!(m is TModel e)) return new ValidationError[] { $"Error general de validación para {typeof(TModel).NameOf()}. No se puede validar un {m?.GetType().NameOf() ?? "objeto de referencia nula (null)"}" };
+                return validator(e, p);
+            }
+            if (descriptor[DescriptionValue.Validations] is null)
+            {
+                descriptor.SetValue(DescriptionValue.Validations, new List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>());
+            }
+            ((List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>)descriptor[DescriptionValue.Validations]!).Add(CastTest);
+            return descriptor;
+        }
+
+        public static IEnumerable<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>> Validations(this IPropertyDescription description)
+        {
+            return ((List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>?)description[DescriptionValue.Validations])
+                ?? Array.Empty<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>().ToList();
+        }
+
+        public static Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>> Validator(this IPropertyDescription description)
+        {
+            return (model, prop) => Validations(description).SelectMany(p => p.Invoke(model, prop));
         }
 
 
@@ -566,49 +606,6 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
 
-
-        /// <summary>
-        /// Establece la función de validación de este campo.
-        /// </summary>
-        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
-        /// <typeparam name="TProperty">
-        /// Tipo de la propiedad descrita.
-        /// </typeparam>
-        /// <param name="descriptor">Descriptor a configurar.</param>
-        /// <param name="validator">
-        /// Función de validación a utilizar.
-        /// </param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        public static IPropertyDescriptor<TModel, TProperty> Validator<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, Func<TModel, PropertyInfo, IEnumerable<ValidationError>> validator) where TModel : ModelBase
-        {
-            IEnumerable<ValidationError> CastTest(ModelBase m, PropertyInfo p)
-            {
-                if (!(m is TModel e)) return new ValidationError[] { $"Error general de validación para {typeof(TModel).NameOf()}. No se puede validar un {m?.GetType().NameOf() ?? "objeto de referencia nula (null)"}" };
-                return validator(e, p);
-            }
-            if (descriptor[DescriptionValue.Validations] is null)
-            {
-                descriptor.SetValue(DescriptionValue.Validations, new List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>());
-            }
-            ((List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>)descriptor[DescriptionValue.Validations]!).Add(CastTest);
-            return descriptor;
-        }
-
-        public static IEnumerable<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>> Validations(this IPropertyDescription description)
-        {
-            return ((List<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>?)description[DescriptionValue.Validations])
-                ?? Array.Empty<Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>>().ToList();
-        }
-
-        public static Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>> Validator(this IPropertyDescription description)
-        {
-            return (model, prop) => Validations(description).SelectMany(p => p.Invoke(model, prop));
-        }
-
-
         /// <summary>
         /// Agrega esta propiedad como columna de lista al presentarse en
         /// un control <see cref="System.Windows.Controls.ListView"/>.
@@ -631,16 +628,37 @@ namespace TheXDS.Proteus.Crud.Base
 
 
 
+        public static TextKindEnum? TextKind(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.TextKind] is TextKindEnum k ? k : (TextKindEnum?)null;
+        }
+        public static int? TextMinLength(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.TextKindMetadata] is TextKindMetadata { MinLength: int m } ? m : (int?)null;
+        }
+        public static int? TextMaxLength(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.TextKindMetadata] is TextKindMetadata { MaxLength: int m } ? m : (int?)null;
+        }
+        public static string? TextMask(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.TextKindMetadata] is TextKindMetadata { Mask: string m } ? m : default;
+        }
+        public static IEnumerable<FileExtension>? FileExtensions(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.TextKindMetadata] is TextKindMetadata { FileExtensions: IEnumerable<FileExtension> m } ? m : new[] { FileExtension.AllFiles };
+        }
+
 
         public static IPropertyDescriptor<TModel, string> Big<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKind.Big);
+            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.Big);
             return descriptor;
         }
 
         public static IPropertyDescriptor<TModel, string> Rich<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKind.Rich);
+            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.Rich);
             return descriptor;
         }
 
@@ -656,13 +674,13 @@ namespace TheXDS.Proteus.Crud.Base
         
         public static IPropertyDescriptor<TModel, string> FilePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor, IEnumerable<FileExtension> fileExtensions) where TModel : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKind.FilePath);
+            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.FilePath);
             return SetTextKindMetadata(descriptor, p => p.FileExtensions, fileExtensions);
         }
 
         public static IPropertyDescriptor<TModel, string> PicturePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKind.PicturePath);
+            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.PicturePath);
             return SetTextKindMetadata(descriptor, p => p.FileExtensions, new[] 
             {
                 new FileExtension("Todos los archivos de imagen", "png", "jpg", "jpeg", "jpe", "bmp", "gif"),
@@ -675,13 +693,13 @@ namespace TheXDS.Proteus.Crud.Base
 
         public static IPropertyDescriptor<TModel, string> DirectoryPath<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKind.DirectoryPath);
+            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.DirectoryPath);
             return descriptor;
         }
 
         public static IPropertyDescriptor<TModel, string> Url<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKind.Url);
+            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.Url);
             return descriptor;
         }
 
@@ -709,6 +727,7 @@ namespace TheXDS.Proteus.Crud.Base
             ReflectionHelpers.GetProperty(property).SetValue(m, metadata);
             return descriptor;
         }
+
         
         public static IPropertyDescriptor<TModel, TProperty> Range<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, TProperty min, TProperty max) where TModel : ModelBase where TProperty : IComparable<TProperty>
         {
@@ -837,7 +856,8 @@ namespace TheXDS.Proteus.Crud.Base
             where TElement : ModelBase 
             where TProperty : IEnumerable<TElement> 
         {
-            descriptor.SetValue(DescriptionValue.Source, source);
+            descriptor.SetValue(DescriptionValue.ListSource, source);
+            descriptor.SetValue(DescriptionValue.ListSourceType, ListSourceTypeEnum.Queryable);
             return descriptor;
         }
 
@@ -848,7 +868,8 @@ namespace TheXDS.Proteus.Crud.Base
             where TElement : ModelBase
             where TProperty : IEnumerable<TElement>
         {
-            descriptor.SetValue(DescriptionValue.Source, source);
+            descriptor.SetValue(DescriptionValue.ListSource, source);
+            descriptor.SetValue(DescriptionValue.ListSourceType, ListSourceTypeEnum.Collection);
             return descriptor;
         }
 
@@ -859,7 +880,8 @@ namespace TheXDS.Proteus.Crud.Base
             where TElement : ModelBase 
             where TProperty : IEnumerable<TElement>
         {
-            descriptor.SetValue(DescriptionValue.Source, source);
+            descriptor.SetValue(DescriptionValue.ListSource, source);
+            descriptor.SetValue(DescriptionValue.ListSourceType, ListSourceTypeEnum.FuncEnumerable);
             return descriptor;
         }
 
@@ -869,7 +891,8 @@ namespace TheXDS.Proteus.Crud.Base
             where TModel : ModelBase
             where TProperty : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.Source, source);
+            descriptor.SetValue(DescriptionValue.ListSource, source);
+            descriptor.SetValue(DescriptionValue.ListSourceType, ListSourceTypeEnum.Queryable);
             return descriptor;
         }
 
@@ -879,7 +902,8 @@ namespace TheXDS.Proteus.Crud.Base
             where TModel : ModelBase
             where TProperty : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.Source, source);
+            descriptor.SetValue(DescriptionValue.ListSource, source);
+            descriptor.SetValue(DescriptionValue.ListSourceType, ListSourceTypeEnum.Collection);
             return descriptor;
         }
 
@@ -889,10 +913,16 @@ namespace TheXDS.Proteus.Crud.Base
             where TModel : ModelBase
             where TProperty : ModelBase
         {
-            descriptor.SetValue(DescriptionValue.Source, source);
+            descriptor.SetValue(DescriptionValue.ListSource, source);
+            descriptor.SetValue(DescriptionValue.ListSourceType, ListSourceTypeEnum.FuncEnumerable);
             return descriptor;
         }
 
+        public static IEnumerable<ModelBase> ListSource(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.ListSource] as IEnumerable<ModelBase> 
+                ?? Array.Empty<ModelBase>();
+        }
 
 
         /// <summary>

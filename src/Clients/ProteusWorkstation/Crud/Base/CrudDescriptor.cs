@@ -763,7 +763,7 @@ namespace TheXDS.Proteus.Crud.Base
         private protected IPropertyDescriptor<T, TProperty> Property<TProperty>(PropertyInfo p, PropertyLocation location)
         {
             return _properties.FirstOrDefault(q => q.Property == p) as IPropertyDescriptor<T, TProperty>
-                ?? new CrudPropertyDescriptor<T, TProperty>(p, location);
+                ?? new CrudPropertyDescriptor<T, TProperty>(p, location).PushInto(_properties);
         }
     }
 }
