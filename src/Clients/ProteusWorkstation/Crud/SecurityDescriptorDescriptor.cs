@@ -27,8 +27,8 @@ namespace TheXDS.Proteus.Crud
     {
         /// <inheritdoc/>
         protected override void DescribeModel()
-        {
-            VmObjectProperty(p => p.Selection)
+        {            
+            VmProperty(p => p.Selection)
                 .Source(Source().Select(p => new SecurityObjectSelection<TSelection>(p)).AsQueryable())
                 .Required()
                 .Important("Objeto de seguridad")

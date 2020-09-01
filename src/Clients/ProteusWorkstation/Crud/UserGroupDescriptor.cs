@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using TheXDS.Proteus.Models;
 using System.Linq;
 using System;
+using TheXDS.Proteus.Crud.Base;
 
 namespace TheXDS.Proteus.Crud
 {
@@ -17,9 +18,9 @@ namespace TheXDS.Proteus.Crud
 
             base.DescribeModel();
 
-            ListProperty(u => u.Children)
+            Property(u => u.Children)
                 .Column("Entidad", p => p.Name)
-                .Selectable()
+                .AllowSelection()
                 .ShowInDetails()
                 .Label("Miembros");
 

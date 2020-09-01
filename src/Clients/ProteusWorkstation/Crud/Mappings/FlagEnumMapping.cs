@@ -30,7 +30,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             };
             var b = new GroupBox
             {
-                Header = p.Label,
+                Header = p.Label(),
                 Content = new ScrollViewer
                 {
                     Content = pnl,

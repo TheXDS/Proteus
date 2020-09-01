@@ -100,7 +100,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                     {
                         try
                         {
-                            k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
+                            k.GetValue(k.Description.Location == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
                         }
                         catch (TargetInvocationException)
                         {

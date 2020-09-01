@@ -17,8 +17,8 @@ namespace TheXDS.Proteus.Crud
         {
             FriendlyName("Correo electrónico");
 
-            TextProperty(p => p.Address)
-                .Validator<Email>(IsEmail)
+            Property(p => p.Address)
+                .Validator(IsEmail)
                 .Label("Dirección de correo")
                 .Icon("📧")
                 .AsListColumn()
@@ -28,17 +28,20 @@ namespace TheXDS.Proteus.Crud
 
         private IEnumerable<ValidationError> IsEmail(Email entity, PropertyInfo p)
         {
+            const string validChars = "abcdefghijklmnopqrstuvwxyz1234567890_-.";
             if (entity?.Address is null) yield return "Entidad nula.";
-            var tokens = entity.Address.Split('@');
+            var tokens = entity!.Address.Split('@');
             if (tokens.Length != 2 || !tokens[1].Contains("."))
             {
                 yield return new ValidationError(p, "La dirección de correo no es válida.");
                 yield break;
             }
             foreach( var j in tokens[0].ToCharArray())
-                if (!"abcdefghijklmnopqrstuvwxyz1234567890_-.".Contains(j.ToString())) yield return new ValidationError(p,"El nombre de la dirección contiene caracteres ilegales.");
+                if (!validChars.Contains(j.ToString()))
+                    yield return new ValidationError(p, "El nombre de la dirección contiene caracteres ilegales.");
             foreach (var j in tokens[1].ToCharArray())
-                if (!"abcdefghijklmnopqrstuvwxyz1234567890_-.".Contains(j.ToString())) yield return new ValidationError(p, "El dominio de correo contiene caracteres ilegales.");
+                if (!validChars.Contains(j.ToString()))
+                    yield return new ValidationError(p, "El dominio de correo contiene caracteres ilegales.");
         }
     }
     public class ContactDescriptor : CrudDescriptor<Contact>
@@ -48,8 +51,8 @@ namespace TheXDS.Proteus.Crud
             FriendlyName("Contacto");
             Property(p => p.Name).AsName("Nombre");
 
-            ListProperty(p => p.Emails).Creatable().Label("Correo electrónico");
-            ListProperty(p => p.Phones).Creatable().Label("Teléfonos de contacto");
+            Property(p => p.Emails).AllowCreate().Label("Correo electrónico");
+            Property(p => p.Phones).AllowCreate().Label("Teléfonos de contacto");
         }
     }
 }

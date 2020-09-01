@@ -34,7 +34,7 @@ namespace TheXDS.Proteus.Crud
             });
             foreach (var j in d.Descriptions)
             {
-                if (j.Hidden) continue;
+                if (j.Hidden()) continue;
                 stckpnl.Children.Add(boxes.Push(PropertyMapper.GetMapping(parentVm, j)).ContainingControl);
             }
             var wp = new StretchyWrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
@@ -85,7 +85,7 @@ namespace TheXDS.Proteus.Crud
 
             foreach (var j in d.Descriptions)
             {
-                if (!j.ShowInDetails) continue;
+                if (!j.ShowInDetails()) continue;
                 stckPnl.Children.Add(new ReadOnlyMapping(j).Control);
             }
 

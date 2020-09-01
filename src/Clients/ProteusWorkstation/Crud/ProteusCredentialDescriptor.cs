@@ -31,7 +31,7 @@ namespace TheXDS.Proteus.Crud
                 .ShowInDetails()
                 .Default(SecurityFlags.None);
 
-            ListProperty(p => p.Descriptors).Creatable().Label("Permisos explícitos").ShowInDetails();
+            Property(p => p.Descriptors).AllowCreate().Label("Permisos explícitos").ShowInDetails();
         }
     }
 }

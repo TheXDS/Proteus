@@ -34,7 +34,13 @@ namespace TheXDS.Proteus.Crud.Base
         public static IPropertyDescriptor<TModel, TProperty> Default<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, TProperty value) where TModel : ModelBase
         {
             descriptor.SetValue(DescriptionValue.Default, value);
+            descriptor.SetValue(DescriptionValue.UseDefault, true);
             return descriptor;
+        }
+
+        public static bool UseDefault(this IPropertyDescription description)
+        {
+            return (bool?)description[DescriptionValue.UseDefault] ?? false;
         }
 
         /// <summary>
@@ -344,6 +350,44 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
 
+        /// <summary>
+        /// Indica que la propiedad se mostrará en el panel autogenerado de
+        /// detalles.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Tipo de la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">Descriptor a configurar.</param>
+        /// <returns>
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> ShowInDetails<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
+        {
+            descriptor.SetValue(DescriptionValue.ShowInDetails, true);
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Obtiene un valor que indica si no se mostrará en el panel
+        /// autogenerado de detalles.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> si se debe ocultar el campo en el panel
+        /// autogenerado de detalles, <see langword="false"/> en caso
+        /// contrario.
+        /// </returns>
+        public static bool ShowInDetails(this IPropertyDescription description)
+        {
+            return (bool?)description[DescriptionValue.ShowInDetails] ?? false;
+        }
+
+
+
 
 
 
@@ -394,6 +438,10 @@ namespace TheXDS.Proteus.Crud.Base
             return (description[DescriptionValue.Nullability] is NullMode n && n == NullMode.Nullable) || InferNullability(description);
         }
 
+        public static NullMode NullabilityMode(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.Nullability] is NullMode n ? n : default;
+        }
 
 
 
@@ -488,24 +536,6 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
-        /// <summary>
-        /// Indica que la propiedad se mostrará en el panel autogenerado de
-        /// detalles.
-        /// </summary>
-        /// <typeparam name="TModel">Modelo del descriptor.</typeparam>
-        /// <typeparam name="TProperty">
-        /// Tipo de la propiedad descrita.
-        /// </typeparam>
-        /// <param name="descriptor">Descriptor a configurar.</param>
-        /// <returns>
-        /// Una referencia a la misma instancia para utilizar sintáxis
-        /// Fluent.
-        /// </returns>
-        public static IPropertyDescriptor<TModel, TProperty> ShowInDetails<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.ShowInDetails, true);
-            return descriptor;
-        }
 
 
 

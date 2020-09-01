@@ -146,9 +146,9 @@ namespace TheXDS.Proteus.Crud
             var entity =  Model.New() as ModelBase;
             foreach (var k in EditControls)
             {
-                if (k.Description.UseDefault)
+                if (k.Description.UseDefault())
                 {
-                    k.Property.SetValue(entity, k.Description.Default);
+                    k.Property.SetValue(entity, k.Description.Default());
                     (ViewModel as NotifyPropertyChangeBase)?.Notify(k.Property.Name);
                     k.GetValue(entity);
                 }
@@ -218,7 +218,7 @@ namespace TheXDS.Proteus.Crud
         {
             foreach (var j in EditControls)
             {
-                j.SetValue(j.Description.PropertySource == PropertyLocation.Model ? ViewModel.Entity : (object)ViewModel);
+                j.SetValue(j.Description.Location == PropertyLocation.Model ? ViewModel.Entity! : ViewModel);
                 (ViewModel as INotifyPropertyChangeBase)?.Notify(j.Property.Name);
             }
         }

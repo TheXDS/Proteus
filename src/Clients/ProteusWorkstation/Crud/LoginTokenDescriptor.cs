@@ -14,14 +14,11 @@ namespace TheXDS.Proteus.Crud
         {
             FriendlyName("Token de inicio de sesión");
             OnModuleMenu(Annotations.InteractionType.Tool);
-
-            ObjectProperty(p => p.Login).Label("Otorgado a").Required();
+            Property(p => p.Login).Label("Otorgado a").Required();
             Property(p => p.OnceOnly).Label("Token de único uso");
-            DateProperty(p => p.Void).WithTime().Nullable().Label("Vencimiento");
-
+            Property(p => p.Void).WithTime().Nullable().Label("Vencimiento");
             ShowAllInDetails();
             AllListColumn();
-
             CanCreate(false);
         }
     }

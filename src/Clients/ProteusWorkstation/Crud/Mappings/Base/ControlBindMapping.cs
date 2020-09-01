@@ -24,7 +24,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         private readonly DependencyProperty _prop;
         public override void ClearControlValue()
         {
-            _control.SetCurrentValue(_prop, Description.UseDefault ? Description.Default : Property.PropertyType.Default());
+            _control.SetCurrentValue(_prop, Description.UseDefault() ? Description.Default() : Property.PropertyType.Default());
             _binding.UpdateSource();
         }
 

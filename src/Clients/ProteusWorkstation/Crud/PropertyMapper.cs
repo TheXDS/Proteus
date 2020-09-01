@@ -112,11 +112,11 @@ namespace TheXDS.Proteus.Crud
         /// Un <see cref="PropertyMapping"/> que puede utilizarse para
         /// generar un control de edición para la propiedad especificada.
         /// </returns>
-        public static IPropertyMapping GetMapping(IEntityViewModel? parentVm, IPropertyDescription property)
+        public static IPropertyMapping? GetMapping(IEntityViewModel? parentVm, IPropertyDescription property)
         {
             if (property is null) throw new ArgumentNullException(nameof(property));
-            if (property.Hidden) return null;
-            if (property.ReadOnly) return new ReadOnlyMapping(property);
+            if (property.Hidden()) return null;
+            if (property.ReadOnly()) return new ReadOnlyMapping(property);
 
             PropertyMapper m = null;
             lock (_mappers)

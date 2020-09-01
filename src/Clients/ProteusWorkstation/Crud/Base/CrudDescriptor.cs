@@ -90,9 +90,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// de Crud.
         /// </returns>
         [DebuggerStepThrough]
-        public IPropertyDescriptor<TModel, TProperty> VmProperty<TProperty>(Expression<Func<TModel, TProperty>> propertySelector)
+        public IPropertyDescriptor<TModel, TProperty> VmProperty<TProperty>(Expression<Func<TViewModel, TProperty>> propertySelector)
         {
-            return Property(propertySelector, PropertyLocation.Model);
+            return Property(propertySelector, PropertyLocation.ViewModel);
         }
 
         /// <summary>
@@ -761,6 +761,5 @@ namespace TheXDS.Proteus.Crud.Base
             return _properties.FirstOrDefault(q => q.Property == p) as IPropertyDescriptor<T, TProperty>
                 ?? new CrudPropertyDescriptor<T, TProperty>(p, location);
         }
-
     }
 }

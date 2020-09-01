@@ -56,7 +56,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
             Description = property;
             Property = property.Property;
             Control = control;
-            switch (property.Nullability)
+            switch (property.NullabilityMode())
             {
                 case NullMode.Infer:
                     var pt = property.Property.PropertyType;
@@ -129,14 +129,14 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
                     _containingControl = rbt;
                     break;
             }
-            Control.ToolTip = property.Tooltip;
-            ProteusProp.SetWatermark(control, property.Label.OrNull() ?? property.Property.Name);
-            //if (property.ShowWatermark)
+            Control.ToolTip = property.Tooltip();
+            ProteusProp.SetWatermark(control, property.Label().OrNull() ?? property.Property.Name);
+            if (property.WatermarkAlwaysVisible())
             ProteusProp.SetWatermarkAlwaysVisible(control, true);
-            if (!property.Icon.IsEmpty()) ProteusProp.SetIcon(control, property.Icon);
+            if (!property.Icon().IsEmpty()) ProteusProp.SetIcon(control, property.Icon());
 
-            if (!(property.CustomBindings is null))
-                foreach (var j in property.CustomBindings) control.SetBinding(j.Key, j.Value);
+            if (!(property.CustomBindings() is null))
+                foreach (var j in property.CustomBindings()) control.SetBinding(j.Key, j.Value);
         }
 
         /// <summary>

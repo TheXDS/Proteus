@@ -57,14 +57,14 @@ namespace TheXDS.Proteus.Crud.Mappings
             var b = new Binding(property.GetBindingString())
             {
                 Mode = BindingMode.OneWay,
-                StringFormat = property.ReadOnlyFormat,
+                StringFormat = property.Format(),
                 Converter = rop
             };
             run.SetBinding(Run.TextProperty, b);
 
-            tb.Inlines.Add($"{property.Label}: ");
+            tb.Inlines.Add($"{property.Label()}: ");
             tb.Inlines.Add(run);
-            tb.ToolTip = property.Tooltip.OrNull() ?? property.Label;
+            tb.ToolTip = property.Tooltip().OrNull() ?? property.Label();
             return;
         }
 

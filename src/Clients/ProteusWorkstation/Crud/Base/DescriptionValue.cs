@@ -12,6 +12,7 @@ namespace TheXDS.Proteus.Crud.Base
     public enum DescriptionValue
     {
         Default,
+        UseDefault,
         Label,
         Icon,
         Format,

@@ -48,7 +48,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         protected void Control_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var _control = sender as FrameworkElement ?? throw new TamperException();
-            var m = Description.PropertySource == PropertyLocation.Model 
+            var m = Description.Location == PropertyLocation.Model 
                 ? (_control.DataContext as IEntityViewModel)?.Entity 
                 : _control.DataContext;
 

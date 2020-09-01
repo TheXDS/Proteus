@@ -226,7 +226,7 @@ namespace TheXDS.Proteus.ViewModels
         private void OnOkSelect()
         {
             Selection = TempSelection;
-            _description.Property.SetValue(_description.PropertySource == PropertyLocation.ViewModel ? _parentVm : _parentVm.Entity, TempSelection);
+            _description.Property.SetValue(_description.Location == PropertyLocation.ViewModel ? _parentVm : _parentVm.Entity, TempSelection);
             OnCancelSelect();
         }
 
@@ -250,8 +250,8 @@ namespace TheXDS.Proteus.ViewModels
         {
             _description = description;
             _parentVm = parentVm;
-            FieldName = description.Label;
-            FieldIcon = description.Icon;
+            FieldName = description.Label();
+            FieldIcon = description.Icon();
             CanSelect = description.Selectable;
             ShowEditControls = description.Creatable;
             SelectCommand = new SimpleCommand(OnSelect);
@@ -262,7 +262,7 @@ namespace TheXDS.Proteus.ViewModels
                 ?? description.PropertyType.Derivates().Select(p => p.ResolveToDefinedType()!).Distinct().Where(TypeExtensions.IsInstantiable).OrNull()?.ToList()
                 ?? new[] { description.PropertyType }.ToList();
 
-            ModelLabel = description.Label;
+            ModelLabel = description.Label();
             ActiveModel = SelectableModels.FirstOrDefault();
             SelectionSource = description.UseVmSource ? description.VmSource(parentVm, this) : selectionSource;
 

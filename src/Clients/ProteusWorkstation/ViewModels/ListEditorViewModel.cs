@@ -119,8 +119,8 @@ namespace TheXDS.Proteus.ViewModels
         {
             CanAdd = description.Creatable;
             if (CanSelect = description.Selectable) ClearSearch();
-            FieldName = description.Label;
-            FieldIcon = description.Icon;
+            FieldName = description.Label();
+            FieldIcon = description.Icon();
             CustomColumns.AddRange(description.Columns);
             if (Selector is ListView lv)
             {

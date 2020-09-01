@@ -17,9 +17,9 @@ namespace TheXDS.Proteus.Crud
 
             base.DescribeModel();
 
-            ListProperty(u => u.Members)
+            Property(u => u.Members)
                 .Column("Entidad", p => p.Name)
-                .Selectable()
+                .AllowSelection()
                 .ShowInDetails()
                 .Label("Miembros");
 

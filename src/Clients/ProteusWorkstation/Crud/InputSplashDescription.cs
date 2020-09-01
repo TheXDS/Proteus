@@ -15,6 +15,8 @@ namespace TheXDS.Proteus.Crud
 {
     internal struct InputSplashDescription : IPropertyDescription
     {
+        public object? this[DescriptionValue property] => throw new NotImplementedException();
+
         public PropertyLocation PropertySource => PropertyLocation.ViewModel;
         public bool Hidden => false;
         public bool ReadOnly => false;
@@ -34,5 +36,9 @@ namespace TheXDS.Proteus.Crud
         public string Label { get; set; }
         public PropertyInfo Property { get; set; }
         public string Tooltip { get; set; }
+
+        public PropertyLocation Location => throw new NotImplementedException();
+
+        public Type ModelType => throw new NotImplementedException();
     }
 }

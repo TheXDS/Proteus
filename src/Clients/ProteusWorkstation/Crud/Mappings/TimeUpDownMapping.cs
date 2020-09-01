@@ -18,7 +18,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             Control.Format = DateTimeFormat.ShortTime;
         }
 
-        public override object ControlValue
+        public override object? ControlValue
         {
             get => Control.Value?.TimeOfDay;
             set => Control.Value = (value as TimeSpan?).HasValue ? (DateTime.MinValue + ((value as TimeSpan?) ?? default)) : (DateTime?)null;
@@ -26,7 +26,7 @@ namespace TheXDS.Proteus.Crud.Mappings
 
         public override void ClearControlValue()
         {
-            ControlValue = Description.Default;
+            ControlValue = Description.Default();
         }
     }
 }

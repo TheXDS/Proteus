@@ -164,7 +164,7 @@ namespace TheXDS.Proteus.ViewModels
             DisableIdCtrls();
             foreach (var k in _element.EditControls)
             {
-                k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)entity! : SelectedElement!.ViewModel);
+                k.GetValue(k.Description.Location == PropertyLocation.Model ? (object)entity! : SelectedElement!.ViewModel);
             }
             Title = $"Editar {Entity}";
         }

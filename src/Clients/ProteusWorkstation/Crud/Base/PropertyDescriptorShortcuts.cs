@@ -171,21 +171,6 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        /// Marca una lista como únicamente creable, lo cual permite hacer
-        /// Binding de orígen de lista personalizado.
-        /// </summary>
-        /// <param name="p">Propiedad a configurar.</param>
-        /// <returns>
-        /// La misma instancia que <paramref name="p"/>.
-        /// </returns>
-        [Sugar]
-        public static IPropertyDescriptor<TModel, TProperty> CreatableOnly<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p) where TModel : ModelBase where TProperty : IEnumerable<ModelBase>
-        {
-            p.Source(null).AllowCreate();
-            return p;
-        }
-
-        /// <summary>
         /// Marca un campo para no ser una cadena vacía.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
@@ -198,19 +183,6 @@ namespace TheXDS.Proteus.Crud.Base
             return p.Required().Validator(CheckNotEmpty);
         }
         
-        /// <summary>
-        /// Marca un campo para no ser una cadena nula.
-        /// </summary>
-        /// <param name="p">Propiedad a configurar.</param>
-        /// <returns>
-        /// La misma instancia que <paramref name="p"/>.
-        /// </returns>
-        [Sugar]
-        public static IPropertyDescriptor<TModel, TProperty> NotNull<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> p) where TModel : ModelBase
-        {
-            return p.Required().Validator(CheckNotNull);
-        }
-
         /// <summary>
         /// Marca una colección para indicar que debe contener al menos un elemento.
         /// </summary>

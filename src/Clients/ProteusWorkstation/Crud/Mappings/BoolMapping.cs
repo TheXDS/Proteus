@@ -14,7 +14,7 @@ namespace TheXDS.Proteus.Crud.Mappings
     {
         public BoolMapping(IPropertyDescription p) : base(p, ToggleButton.IsCheckedProperty)
         {
-            Control.Content = p.Label;
+            Control.Content = p.Label();
             if (p.Property.PropertyType.IsClass)
             {
                 Control.IsThreeState = true;

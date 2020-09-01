@@ -67,7 +67,7 @@ namespace TheXDS.Proteus.ViewModels.Base
 
             foreach (var j in SelectedElement.Description.Descriptions)
             {
-                var f = j.Validator?.Invoke(e!, j.Property)?.ToList();
+                var f = j.Validator()?.Invoke(e!, j.Property)?.ToList();
                 if (f?.Any() ?? false)
                 {
                     fail = true;
@@ -134,16 +134,16 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
             {
-                if (k.Description.UseDefault && k.Property.CanWrite)
+                if (k.Description.UseDefault() && k.Property.CanWrite)
                 {
                     if (k.Property.DeclaringType == entity?.GetType())
                     {
-                        k.Property.SetValue(entity, k.Description.Default);
+                        k.Property.SetValue(entity, k.Description.Default());
                         k.GetValue(entity);
                     }
                     else if (k.Property.DeclaringType == GetType())
                     {
-                        k.Property.SetValue(this, k.Description.Default);
+                        k.Property.SetValue(this, k.Description.Default());
                         k.GetValue(this);
                     }
 
