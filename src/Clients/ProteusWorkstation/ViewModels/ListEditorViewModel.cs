@@ -117,11 +117,11 @@ namespace TheXDS.Proteus.ViewModels
         /// </param>
         public ListEditorViewModel(IPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.ListSource().OrNull()), new List<ModelBase>(), models)
         {
-            CanAdd = description.Creatable;
-            if (CanSelect = description.Selectable) ClearSearch();
+            CanAdd = description.AllowCreate();
+            if (CanSelect = description.AllowSelect()) ClearSearch();
             FieldName = description.Label();
             FieldIcon = description.Icon();
-            CustomColumns.AddRange(description.Columns);
+            CustomColumns.AddRange(description.Columns());
             if (Selector is ListView lv)
             {
                 lv.SelectionChanged += ListViewSelector_SelectionChanged;

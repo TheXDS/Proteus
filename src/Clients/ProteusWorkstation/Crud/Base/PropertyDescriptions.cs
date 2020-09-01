@@ -22,7 +22,7 @@ namespace TheXDS.Proteus.Crud.Base
     /// Implementa la mayoría de descripciones comunes de propiedades como
     /// métodos de extensión genéricos.
     /// </summary>
-    public static class PropertyDescriptions
+    public static partial class PropertyDescriptions
     {
         /// <summary>
         /// Establece un valor predeterminado para el campo.
@@ -628,105 +628,8 @@ namespace TheXDS.Proteus.Crud.Base
 
 
 
-        public static TextKindEnum? TextKind(this IPropertyDescription description)
-        {
-            return description[DescriptionValue.TextKind] is TextKindEnum k ? k : (TextKindEnum?)null;
-        }
-        public static int? TextMinLength(this IPropertyDescription description)
-        {
-            return description[DescriptionValue.TextKindMetadata] is TextKindMetadata { MinLength: int m } ? m : (int?)null;
-        }
-        public static int? TextMaxLength(this IPropertyDescription description)
-        {
-            return description[DescriptionValue.TextKindMetadata] is TextKindMetadata { MaxLength: int m } ? m : (int?)null;
-        }
-        public static string? TextMask(this IPropertyDescription description)
-        {
-            return description[DescriptionValue.TextKindMetadata] is TextKindMetadata { Mask: string m } ? m : default;
-        }
-        public static IEnumerable<FileExtension>? FileExtensions(this IPropertyDescription description)
-        {
-            return description[DescriptionValue.TextKindMetadata] is TextKindMetadata { FileExtensions: IEnumerable<FileExtension> m } ? m : new[] { FileExtension.AllFiles };
-        }
 
 
-        public static IPropertyDescriptor<TModel, string> Big<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.Big);
-            return descriptor;
-        }
-
-        public static IPropertyDescriptor<TModel, string> Rich<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.Rich);
-            return descriptor;
-        }
-
-        public static IPropertyDescriptor<TModel, string> FilePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
-        {
-            return FilePath(descriptor, new FileExtension("Todos los archivos", "*") );
-        }
-        
-        public static IPropertyDescriptor<TModel, string> FilePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor, params FileExtension[] fileExtensions) where TModel : ModelBase
-        {
-            return FilePath(descriptor, fileExtensions.AsEnumerable());
-        }
-        
-        public static IPropertyDescriptor<TModel, string> FilePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor, IEnumerable<FileExtension> fileExtensions) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.FilePath);
-            return SetTextKindMetadata(descriptor, p => p.FileExtensions, fileExtensions);
-        }
-
-        public static IPropertyDescriptor<TModel, string> PicturePath<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.PicturePath);
-            return SetTextKindMetadata(descriptor, p => p.FileExtensions, new[] 
-            {
-                new FileExtension("Todos los archivos de imagen", "png", "jpg", "jpeg", "jpe", "bmp", "gif"),
-                new FileExtension("Imagen PNG", "png"),
-                new FileExtension("Imagen Jpeg", "jpg", "jpeg", "jpe"),
-                new FileExtension("Imagen de mapa de bits", "bmp"),
-                new FileExtension("Archivo Gif", "gif")
-            });
-        }
-
-        public static IPropertyDescriptor<TModel, string> DirectoryPath<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.DirectoryPath);
-            return descriptor;
-        }
-
-        public static IPropertyDescriptor<TModel, string> Url<TModel>(this IPropertyDescriptor<TModel, string> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.TextKind, TextKindEnum.Url);
-            return descriptor;
-        }
-
-        public static IPropertyDescriptor<TModel, string> MinLength<TModel>(this IPropertyDescriptor<TModel, string> descriptor, int minLength) where TModel : ModelBase
-        {
-            return SetTextKindMetadata(descriptor, p => p.MinLength, minLength);
-        }
-
-        public static IPropertyDescriptor<TModel, string> MaxLength<TModel>(this IPropertyDescriptor<TModel, string> descriptor, int maxLength) where TModel : ModelBase
-        {
-            return SetTextKindMetadata(descriptor, p => p.MaxLength, maxLength);
-        }
-
-        public static IPropertyDescriptor<TModel, string> Mask<TModel>(this IPropertyDescriptor<TModel, string> descriptor, string mask) where TModel : ModelBase
-        {
-            return SetTextKindMetadata(descriptor, p => p.Mask, mask);
-        }
-
-        private static IPropertyDescriptor<TModel, string> SetTextKindMetadata<TModel, T>(IPropertyDescriptor<TModel, string> descriptor, Expression<Func<TextKindMetadata, T>> property, T metadata) where TModel : ModelBase
-        {
-            if (!(descriptor[DescriptionValue.TextKindMetadata] is TextKindMetadata m))
-            {
-                descriptor.SetValue(DescriptionValue.TextKindMetadata, m = new TextKindMetadata());
-            }
-            ReflectionHelpers.GetProperty(property).SetValue(m, metadata);
-            return descriptor;
-        }
 
         
         public static IPropertyDescriptor<TModel, TProperty> Range<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, TProperty min, TProperty max) where TModel : ModelBase where TProperty : IComparable<TProperty>
@@ -812,6 +715,8 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
+
+
         public static IPropertyDescriptor<TModel, TProperty> AllowSelection<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) 
             where TModel : ModelBase
             where TProperty : IEnumerable<ModelBase>
@@ -848,6 +753,49 @@ namespace TheXDS.Proteus.Crud.Base
             descriptor.SetValue(DescriptionValue.Creatable, models);
             return descriptor;
         }
+
+        public static bool AllowCreate(this IPropertyDescription description)
+        {
+            return CreatableModels(description).Any();
+        }
+        public static bool AllowSelect(this IPropertyDescription description)
+        {
+            return SelectableModels(description).Any();
+        }
+        public static bool AllowEdit(this IPropertyDescription description)
+        {
+            return EditableModels(description).Any();
+        }
+
+        public static IEnumerable<Type> CreatableModels(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.Creatable] switch{
+                IEnumerable<Type> e => e,
+                Type t => new[] { t },
+                _ => Type.EmptyTypes
+            };
+        }
+        public static IEnumerable<Type> SelectableModels(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.Selectable] switch
+            {
+                IEnumerable<Type> e => e,
+                Type t => new[] { t },
+                _ => Type.EmptyTypes
+            };
+        }
+        public static IEnumerable<Type> EditableModels(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.Editable] switch
+            {
+                IEnumerable<Type> e => e,
+                Type t => new[] { t },
+                _ => Type.EmptyTypes
+            };
+        }
+
+
+
 
         public static IPropertyDescriptor<TModel, TProperty> Source<TModel, TProperty, TElement>(
             this IPropertyDescriptor<TModel, TProperty> descriptor, 
