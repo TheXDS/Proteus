@@ -3,9 +3,10 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Models;
-using System.Linq;
 using System;
+using System.Linq;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Crud
 {
@@ -18,7 +19,7 @@ namespace TheXDS.Proteus.Crud
             base.DescribeModel();
 
             Property(u => u.Members)
-                .Column("Entidad", p => p.Name)
+                .Column("Entidad", (ProteusHierachicalCredential p) => p.Name)
                 .AllowSelection()
                 .ShowInDetails()
                 .Label("Miembros");

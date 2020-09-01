@@ -18,8 +18,8 @@ namespace TheXDS.Proteus.Crud
 
             base.DescribeModel();
 
-            Property(u => u.Children)
-                .Column("Entidad", p => p.Name)
+            Property(u => u.Children)                
+                .Column("Entidad", (ProteusHierachicalCredential p) => p.Name)
                 .AllowSelection()
                 .ShowInDetails()
                 .Label("Miembros");

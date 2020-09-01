@@ -69,5 +69,10 @@ namespace TheXDS.Proteus.Crud.Base
                 Format = (string?)this[DescriptionValue.Format]
             };
         }
+
+        string GetBindingString()
+        {
+            return $"{(Location == PropertyLocation.Model ? "Entity." : null)}{Property.Name}";
+        }
     }
 }

@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Data;
 using TheXDS.MCART;
 using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types;
@@ -38,6 +40,18 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
+        /// <summary>
+        /// Obtiene un valor que indica si se utilizará el valor predeterminado
+        /// configurado para la propiedad.
+        /// </summary>
+        /// <param name="description">
+        /// Descriptor desde el cual obtener el valor configurado.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> se se debe utilizar un valor predeterminado
+        /// específico para la propiedad, <see langword="false"/> en caso
+        /// contrario.
+        /// </returns>
         public static bool UseDefault(this IPropertyDescription description)
         {
             return (bool?)description[DescriptionValue.UseDefault] ?? false;
@@ -349,7 +363,6 @@ namespace TheXDS.Proteus.Crud.Base
             return description[DescriptionValue.ReadOnly] is bool b && b;
         }
 
-
         /// <summary>
         /// Indica que la propiedad se mostrará en el panel autogenerado de
         /// detalles.
@@ -386,6 +399,65 @@ namespace TheXDS.Proteus.Crud.Base
             return (bool?)description[DescriptionValue.ShowInDetails] ?? false;
         }
 
+        public static IPropertyDescriptor<TModel, TProperty> Bind<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, DependencyProperty path, BindingBase binding) where TModel : ModelBase
+        {
+            if (!(descriptor[DescriptionValue.Bindings] is Dictionary<DependencyProperty, BindingBase> dic))
+            {
+                descriptor.SetValue(DescriptionValue.Bindings, dic = new Dictionary<DependencyProperty, BindingBase>());
+            }
+            dic.Add(path, binding);
+            return descriptor;
+        }
+        
+        public static IPropertyDescriptor<TModel, TProperty> Bind<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, DependencyProperty path, string binding) where TModel : ModelBase
+        {
+            return Bind(descriptor, path, new Binding(binding));
+        }
+        
+        public static IPropertyDescriptor<TModel, TProperty> Bind<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, DependencyProperty path, string binding, object source) where TModel : ModelBase
+        {
+            return Bind(descriptor, path, new Binding(binding) { Source = source });
+        }
+        
+        public static IPropertyDescriptor<TModel, TProperty> Bind<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, DependencyProperty path, PropertyPath binding) where TModel : ModelBase
+        {
+            return Bind(descriptor, path, new Binding() { Path = binding });
+        }
+        
+        public static IPropertyDescriptor<TModel, TProperty> Bind<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, DependencyProperty path, PropertyPath binding, object source) where TModel : ModelBase
+        {
+            return Bind(descriptor, path, new Binding() { Path = binding, Source = source });
+        }
+        
+        public static IDictionary<DependencyProperty, BindingBase> CustomBindings(this IPropertyDescription description)
+        {
+            return ((Dictionary<DependencyProperty, BindingBase>?)description[DescriptionValue.ShowInDetails]) ?? new Dictionary<DependencyProperty, BindingBase>();
+        }
+
+
+        public static IEnumerable<Column> Columns(this IPropertyDescription description)
+        {
+            return ((IEnumerable<Column>?)description[DescriptionValue.ListColumns]) ?? Array.Empty<Column>();
+        }
+
+        public static IPropertyDescriptor<TModel, TProperty> Column<TModel, TProperty, TElement>(
+            this IPropertyDescriptor<TModel, TProperty> descriptor, string header, Expression<Func<TElement, object>> property)
+            where TModel : ModelBase
+            where TProperty : IEnumerable<TElement>
+            where TElement : ModelBase
+        {
+            if (!(descriptor[DescriptionValue.ListColumns] is List<Column> lst))
+            {
+                descriptor.SetValue(DescriptionValue.Bindings, lst = new List<Column>());
+            }
+            lst.Add(new Column(header, property.Name));
+            return descriptor;
+        }
+
+
+
+
+
 
 
 
@@ -410,7 +482,6 @@ namespace TheXDS.Proteus.Crud.Base
         {
             return (description[DescriptionValue.Nullability] is NullMode n && n == NullMode.Required) || !InferNullability(description);
         }
-
         
         private static bool InferNullability(IPropertyDescription description)
         {
@@ -442,6 +513,18 @@ namespace TheXDS.Proteus.Crud.Base
         {
             return description[DescriptionValue.Nullability] is NullMode n ? n : default;
         }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
