@@ -213,7 +213,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(IEntityViewModel parentVm, IObjectPropertyDescription description, params Type[] models) : this(parentVm, AppInternal.GetSource(description.Source), description, models) { }
+        public ObjectEditorViewModel(IEntityViewModel parentVm, IPropertyDescription description, params Type[] models) : this(parentVm, AppInternal.GetSource(description.ListSource()), description, models) { }
 
         private void OnCancelSelect()
         {
@@ -230,7 +230,7 @@ namespace TheXDS.Proteus.ViewModels
             OnCancelSelect();
         }
 
-        private readonly IObjectPropertyDescription _description;
+        private readonly IPropertyDescription _description;
         private readonly IEntityViewModel _parentVm;
 
         /// <summary>
@@ -246,19 +246,19 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(IEntityViewModel parentVm, ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
+        public ObjectEditorViewModel(IEntityViewModel parentVm, ICollection<ModelBase>? selectionSource, IPropertyDescription description, params Type[] models) : base(models)
         {
             _description = description;
             _parentVm = parentVm;
             FieldName = description.Label();
             FieldIcon = description.Icon();
-            CanSelect = description.Selectable;
-            ShowEditControls = description.Creatable;
+            CanSelect = description.AllowSelect();
+            ShowEditControls = description.AllowCreate();
             SelectCommand = new SimpleCommand(OnSelect);
             OkSelectCommand = new SimpleCommand(OnOkSelect);
             CancelSelectCommand = new SimpleCommand(OnCancelSelect);
 
-            SelectableModels = description.ChildModels?.ToList()
+            SelectableModels = description.SelectableModels().OrNull()?.ToList()
                 ?? description.PropertyType.Derivates().Select(p => p.ResolveToDefinedType()!).Distinct().Where(TypeExtensions.IsInstantiable).OrNull()?.ToList()
                 ?? new[] { description.PropertyType }.ToList();
 

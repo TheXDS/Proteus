@@ -3,21 +3,21 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using SourceChord.FluentWPF;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using TheXDS.MCART.Controls;
+using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Crud.Mappings.Base;
 using TheXDS.Proteus.Models.Base;
-using System.Linq;
-using System.Windows.Controls;
-using TheXDS.MCART.Types.Base;
-using System.Windows.Controls.Primitives;
-using System.Windows;
-using System.Windows.Data;
-using TheXDS.MCART.Controls;
-using TheXDS.MCART.Types.Extensions;
-using TheXDS.Proteus.Api;
-using System.Threading.Tasks;
-using System.Data.Entity;
-using SourceChord.FluentWPF;
 
 namespace TheXDS.Proteus.Crud.Mappings
 {
@@ -26,22 +26,22 @@ namespace TheXDS.Proteus.Crud.Mappings
         private readonly ComboBox _selector = new ComboBox();
         private readonly ToggleButton _btnNew = new ToggleButton { Content = "+" };
         private readonly CrudElement _crud;
-        private readonly ILinkPropertyDescription _descr;
+        private readonly IPropertyDescription _descr;
         private readonly IQueryable<ModelBase> _source;
         private readonly Service _svc;
 
         public CreatableLinkMapping(IPropertyDescription property) : base(property, new DockPanel())
         {
-            if (!(property is ILinkPropertyDescription i)) return;
+            if (!(property is IPropertyDescription i)) return;
             _descr = i;
-            _svc = Proteus.InferService(i.Model);
-            _source = i.Source.AsQueryable();
-            _selector.ItemsSource = i.Source.ToList();
+            _svc = Proteus.InferService(i.ModelType);
+            _source = i.ListSource().AsQueryable();
+            _selector.ItemsSource = i.ListSource().ToList();
             _selector.SelectedValuePath = "Id";
-            _selector.DisplayMemberPath = i.DisplayMemberPath;
+            _selector.DisplayMemberPath = i.DisplayMemberPath();
             _btnNew.Click += BtnNew_Click;
 
-            _crud = new CrudElement(i.Model, null);
+            _crud = new CrudElement(i.ModelType, null);
 
 
             var btnOk = new Button { Content="Aceptar" };
@@ -94,7 +94,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         private void BtnNew_Click(object sender, RoutedEventArgs e)
         {
             _crud.ClearAll();
-            _crud.ViewModel.Entity = _descr.Model.New<ModelBase>();
+            _crud.ViewModel.Entity = _descr.ModelType.New<ModelBase>();
             _btnNew.IsChecked = true;
         }
 

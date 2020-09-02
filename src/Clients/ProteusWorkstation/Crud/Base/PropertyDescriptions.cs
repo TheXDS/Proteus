@@ -605,7 +605,6 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
-
         /// <summary>
         /// Agrega esta propiedad como columna de lista al presentarse en
         /// un control <see cref="System.Windows.Controls.ListView"/>.
@@ -632,29 +631,6 @@ namespace TheXDS.Proteus.Crud.Base
 
 
         
-        public static IPropertyDescriptor<TModel, TProperty> Range<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, TProperty min, TProperty max) where TModel : ModelBase where TProperty : IComparable<TProperty>
-        {
-            descriptor.SetValue(DescriptionValue.Range, new Range<TProperty>(min, max));
-            return descriptor;
-        }
-
-        public static IPropertyDescriptor<TModel, TProperty?> Range<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty?> descriptor, TProperty min, TProperty max) where TModel : ModelBase where TProperty : struct, IComparable<TProperty>
-        {
-            descriptor.SetValue(DescriptionValue.Range, new Range<TProperty>(min, max));
-            return descriptor;
-        }
-
-        public static IPropertyDescriptor<TModel, DateTime> WithTime<TModel>(this IPropertyDescriptor<TModel, DateTime> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.WithTime, true);
-            return descriptor;
-        }
-        
-        public static IPropertyDescriptor<TModel, DateTime?> WithTime<TModel>(this IPropertyDescriptor<TModel, DateTime?> descriptor) where TModel : ModelBase
-        {
-            descriptor.SetValue(DescriptionValue.WithTime, true);
-            return descriptor;
-        }
 
         public static IPropertyDescriptor<TModel, TProperty> Selectable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : ModelBase where TProperty : ModelBase
         {
@@ -695,6 +671,8 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
    
+
+
         public static IPropertyDescriptor<TModel, TProperty> DisplayMember<TModel, TProperty>(
             this IPropertyDescriptor<TModel, TProperty> descriptor,
             Expression<Func<TProperty, object?>> selector)
@@ -715,7 +693,10 @@ namespace TheXDS.Proteus.Crud.Base
             return descriptor;
         }
 
-
+        public static string? DisplayMemberPath(this IPropertyDescription description)
+        {
+            return description[DescriptionValue.DisplayMember] as string;
+        }
 
         public static IPropertyDescriptor<TModel, TProperty> AllowSelection<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) 
             where TModel : ModelBase

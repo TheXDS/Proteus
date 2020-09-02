@@ -185,7 +185,7 @@ namespace TheXDS.Proteus.Crud
         /// Vista personalizada de detalles a asociar a este
         /// <see cref="CrudElement"/>.
         /// </param>
-        public CrudElement(Type model, FrameworkElement details)
+        public CrudElement(Type model, FrameworkElement? details)
         {
             Model = model;
             Description = GetDescription(model);
