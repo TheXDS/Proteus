@@ -163,6 +163,14 @@ namespace TheXDS.Proteus.Seeders
             {
                 Name = "Bodega principal",                
             };
+            var bod2 = new Bodega
+            {
+                Name = "Bodega de reserva"
+            };
+            var bod3 = new Bodega
+            {
+                Name = "Alcoholes"
+            };
             var est = new Estacion
             {
                 Id = Environment.MachineName,
@@ -170,7 +178,7 @@ namespace TheXDS.Proteus.Seeders
                 Name = "POS de demostración",
                 PrintDriver = PrintDriverSource.GetDrivers().ToList().FirstOrDefault()?.DriverGuid,
                 Printer = PrinterSource.GetPrinters().ToList().FirstOrDefault()?.Printer,
-                Bodega = bodega,
+                Bodegas = { bodega, bod2, bod3 },
                 Entidad = new Entidad
                 {
                     Id = "TLFK",
