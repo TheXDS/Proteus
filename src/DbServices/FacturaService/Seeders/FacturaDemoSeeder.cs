@@ -69,7 +69,7 @@ namespace TheXDS.Proteus.Seeders
             var cat2 = new FacturableCategory
             {
                 Name = "Artículos",
-                Isv = 0.15f,
+                Isv = 15f,
                 Children =
                 {
                     (prods[3] = new Producto
@@ -117,7 +117,7 @@ namespace TheXDS.Proteus.Seeders
             var cat3 = new FacturableCategory
             {
                 Name = "Bebidas alcohólicas",
-                Isv = 0.18f,
+                Isv = 18f,
                 Children =
                 {
                     (prods[6] = new Producto
@@ -153,7 +153,7 @@ namespace TheXDS.Proteus.Seeders
             var cat4 = new FacturableCategory
             {
                 Name = "Servicios",
-                Isv = 0.15f,
+                Isv = 15f,
                 Children =
                 {
                     svc
