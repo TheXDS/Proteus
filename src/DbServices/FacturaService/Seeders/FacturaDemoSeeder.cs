@@ -243,9 +243,10 @@ namespace TheXDS.Proteus.Seeders
             return service.SaveAsync();
         }
 
-        public Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter? reporter)
+        public async Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter? reporter)
         {
-            return service.AnyAsync<Cai>();
+            var r = await service.AnyAsync<Cai>();
+            return !r;
         }
     }
 }
