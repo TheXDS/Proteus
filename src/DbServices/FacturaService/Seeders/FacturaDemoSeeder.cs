@@ -178,7 +178,6 @@ namespace TheXDS.Proteus.Seeders
                 Name = "POS de demostración",
                 PrintDriver = PrintDriverSource.GetDrivers().ToList().FirstOrDefault()?.DriverGuid,
                 Printer = PrinterSource.GetPrinters().ToList().FirstOrDefault()?.Printer,
-                Bodegas = { bodega, bod2, bod3 },
                 Entidad = new Entidad
                 {
                     Id = "TLFK",
@@ -203,16 +202,34 @@ namespace TheXDS.Proteus.Seeders
                 SecondScreen = 2
             };
 
+            est.Bodegas.AddRange(new[]
+            {
+                new EstacionBodega
+                {
+                    Estacion = est,
+                    Bodega = bodega
+                },
+                new EstacionBodega
+                {
+                    Estacion = est,
+                    Bodega = bod2
+                }, new EstacionBodega
+                {
+                    Estacion = est,
+                    Bodega = bod3
+                }
+            });
+
             foreach (var j in prods)
             {
-                bodega.Batches.Add(new Batch
+                bodega.Batches.Add(new GenericBatch
                 {
                     Item = j,
                     Lote = new Lote
                     {
                         Manufactured = DateTime.Now - TimeSpan.FromDays(3)
                     },
-                    Qty = 50,
+                    InitialQty = 50,
                     Timestamp = DateTime.Now - TimeSpan.FromDays(1.5)
                 });
             }
