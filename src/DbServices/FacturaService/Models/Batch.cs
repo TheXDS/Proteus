@@ -6,7 +6,7 @@ namespace TheXDS.Proteus.Models
     {
         public virtual Bodega Bodega { get; set; }
         public virtual Producto Item { get; set; }
-        public virtual Lote Lote { get; set; }
+        public virtual Lote? Lote { get; set; }
         public decimal Costo { get; set; }
         public decimal ItemCosto => Qty > 0 ? Costo / Qty : Costo;
         public abstract int Qty { get; }
@@ -15,7 +15,7 @@ namespace TheXDS.Proteus.Models
         public abstract Batch Split(int newQty);
         public override string ToString()
         {
-            return $"{Qty} unidades de {Item.Name}";
+            return $"{Qty} unidades de {Item?.Name ?? "ítem"}";
         }
     }
 }

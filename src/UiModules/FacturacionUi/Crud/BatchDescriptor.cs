@@ -1,6 +1,12 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.Reflection;
+using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
+using Xceed.Wpf.Toolkit;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
 {
@@ -22,6 +28,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             ObjectProperty(p => p.Lote)
                 .Creatable()
                 .Label("Lote")
+                .Validator<T>(ChkLote)
                 .Required();
 
             DescribeBatch();
@@ -34,6 +41,14 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
             ShowAllInDetails();
             AllListColumn();
+        }
+
+        private IEnumerable<ValidationError> ChkLote(T batch, PropertyInfo prop)
+        {
+            if ((batch.Item?.ExpiryDays.HasValue ?? false) && batch.Lote is null)
+            {
+                yield return new NullValidationError(prop, "El ítem ha sido marcado como expirable, por lo que es obligatorio especificar la información de Lote.");
+            }
         }
 
         protected abstract void DescribeBatch();
