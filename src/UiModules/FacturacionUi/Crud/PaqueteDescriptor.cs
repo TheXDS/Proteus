@@ -21,20 +21,20 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             OnModuleMenu(InteractionType.AdminTool);
             this.DescribeFacturable();
             ListProperty(p => p.Children)
-                .Selectable()
+                .Selectable().ShowInDetails()
                 .Label("Ítems contenidos en la promoción");
             DateProperty(p => p.ValidFrom)
-                .Required()
+                .Required().ShowInDetails()
                 .Label("Válida desde")
                 .Default(DateTime.Now);
             DateProperty(p => p.Void)
-                .Nullable()
+                .Nullable().ShowInDetails()
                 .Label("Fecha de vencimiento")
                 .AsListColumn()
                 .ShowInDetails()
                 .Default(DateTime.Now.AddMonths(1));
 
-            NumericProperty(p => p.Precio).Hidden();
+            NumericProperty(p => p.Precio).ShowInDetails().AsListColumn().Hidden();
 
             VmProperty(p => p.Price)
                 .Important("Precio de venta").RadioSelectable();
