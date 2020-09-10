@@ -9,6 +9,7 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.DevelModule.Seeders
 {
@@ -24,8 +25,9 @@ namespace TheXDS.Proteus.DevelModule.Seeders
                 Rootified(NewDevelUser("devel", SecurityFlags.Root)),
                 NewDevelUser("admin", SecurityFlags.FullAdmin),
                 NewDevelUser("operator", SecurityFlags.ReadWrite),
-                NewDevelUser("viewer", SecurityFlags.Read),
-                NewDevelUser("restricted", SecurityFlags.None)
+                NewDevelUser("viewer", SecurityFlags.Read, SecurityBehavior.Visible),
+                NewDevelUser("restricted", SecurityFlags.None, SecurityBehavior.Locked),
+                NewDevelUser("user", SecurityFlags.None, null),
             });
         }
 
@@ -45,13 +47,13 @@ namespace TheXDS.Proteus.DevelModule.Seeders
             {
                 u.DefaultGranted = SecurityFlags.Root;
                 u.DefaultRevoked = SecurityFlags.None;
-                u.ButtonBehavior = Models.Base.SecurityBehavior.Unlocked;
-                u.ModuleBehavior = Models.Base.SecurityBehavior.Unlocked;
+                u.ButtonBehavior = SecurityBehavior.Unlocked;
+                u.ModuleBehavior = SecurityBehavior.Unlocked;
             }
             return u;
         }
 
-        private static User NewDevelUser(string id, SecurityFlags securityFlags)
+        private static User NewDevelUser(string id, SecurityFlags securityFlags, SecurityBehavior? visibility = SecurityBehavior.Enabled)
         {
             return new User()
             {
@@ -61,6 +63,8 @@ namespace TheXDS.Proteus.DevelModule.Seeders
                 Interactive = true,
                 ScheduledPasswordChange = false,
                 DefaultGranted = securityFlags,
+                ButtonBehavior = visibility,
+                ModuleBehavior = visibility,
                 PasswordHash = PasswordStorage.CreateHash(id.ToSecureString()),
                 Name = $"Desarrollador '{securityFlags.NameOf()}' de Proteus"
             };
