@@ -5,6 +5,7 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -14,10 +15,34 @@ using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Plugins;
+using TheXDS.Proteus.ViewModels.Base;
 using static TheXDS.MCART.Objects;
+using System.Reflection;
+using System.Collections.Generic;
+using TheXDS.Proteus.Crud;
 
 namespace TheXDS.Proteus.DevelModule.Tools
 {
+    [Name("Herramienta de limpieza rápida de Cruds generados")]
+
+    public class CrudResetTool : Tool
+    {
+        [InteractionItem, Name("Crud ➡ 🗑"), Description("Limpia la caché en memoria de los Cruds generados.")]
+        public void ClearCrudCache(object sender, EventArgs e)
+        {
+            foreach (var vm in ProteusViewModel.ActuallyActiveVms.OfType<CrudViewModelBase>())
+            {
+                if (vm.EditMode)
+                { 
+                    vm.CancelCommand.Execute(null);
+                }
+                vm.Selection = null;
+                var c = (ICollection<CrudElement>)typeof(CrudViewModelBase).GetProperty("Elements", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(vm)!;
+                c.Clear();
+            }
+        }
+    }
+
     /// <summary>
     /// Herramienta que permite capturar, loggear y generar intencionalmente
     /// excepciones en el sistema.

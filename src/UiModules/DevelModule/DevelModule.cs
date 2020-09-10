@@ -4,20 +4,13 @@ Licenciado para uso interno solamente.
 */
 
 using System;
-using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
-using TheXDS.MCART.Types;
-using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Annotations;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Component;
-using TheXDS.Proteus.Dialogs;
-using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Config;
+using TheXDS.Proteus.DevelModule.Pages;
 using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.Plugins;
-using TheXDS.Proteus.Reporting;
-using TheXDS.Proteus.DevelModule.Pages;
 using static TheXDS.Proteus.Annotations.InteractionType;
 
 [assembly: Name("Devel Module")]
@@ -28,6 +21,7 @@ namespace TheXDS.Proteus.DevelModule
     {
         public DevelModule()
         {
+            Config.Settings.Default.WindowUiMode = UiMode.Logging;
             App.UiInvoke(SetupDashboard);
         }
 

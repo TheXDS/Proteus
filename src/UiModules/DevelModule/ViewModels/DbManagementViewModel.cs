@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TheXDS.MCART.Pages;
-using TheXDS.Proteus.Pages;
 
 namespace TheXDS.Proteus.DevelModule.ViewModels
 {
@@ -60,31 +58,5 @@ namespace TheXDS.Proteus.DevelModule.ViewModels
             Proteus.MessageTarget?.Show("Operación de reinicialización", RunSvcMethod("RunSeeders", false)?.ToString() ?? "Desconocido");
             SelectedService!.Reporter?.Done();
         }
-    }
-
-    public class TelemetryViewModel : ServiceManagementViewModel
-    {
-        /// <summary>
-        /// Obtiene el comando relacionado a la acción MoreInfo.
-        /// </summary>
-        /// <returns>El comando MoreInfo.</returns>
-        public ICommand MorePluginInfoCommand { get; }
-        public ICommand MoreTechInfoCommand { get; }
-
-        public TelemetryViewModel()
-        {
-            MorePluginInfoCommand = MkObsCmd(() => Task.Run(OnMorePluginInfo));
-            MoreTechInfoCommand = MkObsCmd(() => Task.Run(OnMoreTechInfo));
-        }
-
-        private void OnMoreTechInfo()
-        {
-            App.UiInvoke(() => App.RootHost.OpenPage(HostedPage.From(new TypeDetails(SelectedService!.GetType()))));
-        }
-        private void OnMorePluginInfo()
-        {
-            App.UiInvoke(() => App.RootHost.OpenPage(HostedPage.From(new PluginDetails() { DataContext = SelectedService })));
-        }
-
     }
 }

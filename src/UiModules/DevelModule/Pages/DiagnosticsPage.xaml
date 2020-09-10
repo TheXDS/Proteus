@@ -8,6 +8,7 @@
     xmlns:vm="clr-namespace:TheXDS.Proteus.DevelModule.ViewModels"
     xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
     xmlns:proteus="clr-namespace:TheXDS.Proteus;assembly=Proteus"
+    xmlns:widgets="http://schemas.thexds.com/2019/Proteus/widgets"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
     <Page.DataContext>
@@ -30,25 +31,23 @@
         </ListView>
         <GridSplitter/>
         <TabControl Grid.Column="2">
+            <TabControl.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="0,5"/>
+                </Style>
+                <Style TargetType="Button">
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="5"/>
+                    <Setter Property="Padding" Value="10,3"/>
+                </Style>
+            </TabControl.Resources>
             <TabItem Header="Información general">
                 <StackPanel>
-                    <StackPanel.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Margin" Value="0,5"/>
-                        </Style>
-                        <Style TargetType="Button">
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <Setter Property="Margin" Value="5"/>
-                            <Setter Property="Padding" Value="10,3"/>
-                        </Style>
-                    </StackPanel.Resources>
-                    <StackPanel DataContext="{Binding SelectedService, Mode=OneWay}">
-                        <TextBlock Text="{Binding FriendlyName, Mode=OneWay}" Style="{StaticResource Title}"/>
-                        <TextBlock Text="{Binding Description, Mode=OneWay}"/>
-                        <TextBlock>Versión: <Run Text="{Binding InformationalVersion, Mode=OneWay}"/></TextBlock>
-                        <TextBlock>Copyright: <Run Text="{Binding Copyright, Mode=OneWay}"/></TextBlock>
-                        <TextBlock>Ensamblado: <Run Text="{Binding Assembly.FullName, Mode=OneWay}"/></TextBlock>
-                    </StackPanel>
+                    <TextBlock Text="{Binding SelectedService.FriendlyName, Mode=OneWay}" Style="{StaticResource Title}"/>
+                    <TextBlock Text="{Binding SelectedService.Description, Mode=OneWay}"/>
+                    <TextBlock>Versión: <Run Text="{Binding SelectedService.InformationalVersion, Mode=OneWay}"/></TextBlock>
+                    <TextBlock>Copyright: <Run Text="{Binding SelectedService.Copyright, Mode=OneWay}"/></TextBlock>
+                    <TextBlock>Ensamblado: <Run Text="{Binding SelectedService.Assembly.CodeBase, Mode=OneWay}"/></TextBlock>
                     <Button HorizontalAlignment="Center" Command="{Binding MorePluginInfoCommand, Mode=OneWay}">Información de Plugin...</Button>
                     <Button HorizontalAlignment="Center" Command="{Binding MoreTechInfoCommand, Mode=OneWay}">Información de tipo...</Button>
                 </StackPanel>
@@ -62,6 +61,22 @@
                         </GridView>
                     </ListView.View>                    
                 </ListView>
+            </TabItem>
+            <TabItem Header="Elevación">                
+                <StackPanel>
+                    <TextBlock>
+                        Sesión activa en el servicio: <Run Text="{Binding SelectedService.Session, Mode=OneWay}"/>
+                    </TextBlock>
+                    <ComboBox
+                        widgets:ProteusProp.Watermark="Modo de elevación"
+                        widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                        DisplayMemberPath="Name"
+                        SelectedValuePath="Value"
+                        ItemsSource="{x:Static vm:TelemetryViewModel.Behaviors}" 
+                        SelectedValue="{Binding SelectedService.ElevationBehavior}"/>
+                    <Button Command="{Binding ElevateCommand, Mode=OneWay}">Ejecutar elevación</Button>
+                    <Button Command="{Binding RevokeElevationCommand, Mode=OneWay}">Revocar elevación</Button>
+                </StackPanel>
             </TabItem>
         </TabControl>
     </Grid>

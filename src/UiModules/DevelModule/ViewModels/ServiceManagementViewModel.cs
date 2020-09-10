@@ -52,5 +52,10 @@ namespace TheXDS.Proteus.DevelModule.ViewModels
                 .SetCanExecute(IsServiceSelected)
                 .RegisterObservedProperty(() => SelectedService);
         }
+
+        private protected ObservingCommand MkAsyncObsCmd(Action action)
+        {
+            return MkObsCmd(() => Task.Run(action));
+        }
     }
 }
