@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
 using TheXDS.MCART.Attributes;
-using TheXDS.MCART.Math;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
@@ -42,28 +40,24 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .ShowInDetails()
                 .AsListColumn();
 
-            descriptor.CustomAction("Generar SKU", OnNewSku);
-
-            void OnNewSku(T obj)
-            {
-                var tries = 0;
-                byte len = 10;
-                if (obj.IsNew)
-                {
-                    do
-                    {
-                        if (++tries % 10 == 0) len++;
-                        obj.Id = GenNewId(len);
-                    } while (Proteus.Service<FacturaService>()!.Exists<T>(obj.Id));
-                }
-                else
-                {
-                    Proteus.MessageTarget?.Stop("No se puede generar un nuevo SKU para un ítem que ya existe.");
-                }
-            }
+            descriptor.BeforeSave(SetNewSku);
         }
 
-        private static string GenNewId(byte len = 10)
+        private static void SetNewSku(Facturable obj)
+        {
+            var tries = 0;
+            byte len = 11;
+            if (obj.IsNew && obj.Id.IsEmpty())
+            {
+                do
+                {
+                    if (++tries % 10 == 0) len++;
+                    obj.Id = GenNewId(len);
+                } while (Proteus.Service<FacturaService>()!.Exists(typeof(Facturable), obj.Id));
+                Proteus.MessageTarget?.Info($"SKU generado automáticamente: {obj.Id}");
+            }
+        }
+        private static string GenNewId(byte len = 11)
         {
             var rnd = new Random();
             var buff = new byte[8];

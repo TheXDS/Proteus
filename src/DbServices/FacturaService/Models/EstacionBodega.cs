@@ -6,9 +6,10 @@ namespace TheXDS.Proteus.Models
     {
         public virtual Estacion Estacion { get; set; }
         public virtual Bodega Bodega { get; set; }
+
         public override string ToString()
         {
-            return Bodega?.Name ?? base.ToString();
+            return Bodega?.Name ?? Estacion?.Name ?? "Enlace Estación/Bodega sin definir";
         }
     }
 }

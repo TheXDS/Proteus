@@ -4,12 +4,9 @@ Licenciado para uso interno solamente.
 */
 
 using BarcodeLib;
-using System.Drawing;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using TheXDS.MCART;
-using WpfScreenHelper;
 
 namespace TheXDS.Proteus.FacturacionUi.Lib
 {
@@ -24,25 +21,19 @@ namespace TheXDS.Proteus.FacturacionUi.Lib
                 IncludeLabel = true,
                 LabelPosition = LabelPositions.BOTTOMCENTER,
                 ImageFormat = System.Drawing.Imaging.ImageFormat.Png,
-                LabelFont = new Font("Consolas", 24)
+                //LabelFont = new Font("Consolas", 72),
+                //Width = 1200,
+                //Height = 600,
             };
             var img = barcode.Encode(barcodeType, id);
-            dc.DrawImage(img.ToSource(), new Rect { Width = img.Width, Height = img.Height });
+            dc.DrawImage(img.ToSource(), new Rect
+            { 
+                //Width = img.Width / 5,
+                //Height = img.Height / 5
+                Width = 200,
+                Height = 100
+            });
             return v;
-        }
-    }
-
-    internal static class ScreenHelper
-    {
-        public static void ToScreen(this Window window, byte screen)
-        {
-            var sc = Screen.AllScreens.ToList();
-            var s = (screen >= sc.Count ? sc.Last() : sc[screen-1]).Bounds;
-            window.Top = s.Top;
-            window.Left = s.Left;
-            window.Width = s.Width;
-            window.Height = s.Height;
-            window.WindowState = WindowState.Maximized;
         }
     }
 }
