@@ -104,8 +104,8 @@ namespace TheXDS.Proteus.Seeders
                         Id = "2001",
                         Children =
                         {
-                            svc,
-                            prods[3]
+                            new PaqueteItem{Item = svc },
+                            new PaqueteItem{Item = prods[3] },
                         },
                         Name="Promoción Cabello sano",
                         Precio=250,
