@@ -4,6 +4,9 @@ Licenciado para uso interno solamente.
 */
 
 using System.Threading.Tasks;
+using TheXDS.MCART.Component;
+using TheXDS.MCART.Security.Password;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models;
@@ -65,8 +68,10 @@ namespace TheXDS.Proteus.Seeders
                 {
                     Id = "root",
                     AllowMultiLogin = true,
-                    Enabled = false,
+                    Enabled = true,
                     Interactive = true,
+                    ScheduledPasswordChange = true,
+                    PasswordHash = PasswordStorage.CreateHash("root".ToSecureString()),
                     Name = "Superusuario"
                 }),
                 Rootified(new User()

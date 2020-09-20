@@ -33,6 +33,7 @@ namespace TheXDS.Proteus.Plugins
 		/// </summary>
 		public Export2ExcelCrudTool() : base(CrudToolVisibility.Unselected)
 		{
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 		}
 
 		/// <summary>
@@ -52,10 +53,10 @@ namespace TheXDS.Proteus.Plugins
 		/// </returns>
 		public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel vm)
 		{
-			if (vm is null) return Array.Empty<Launcher>(); 
+			if (vm is null) return Array.Empty<Launcher>();
 			return models.Select(j => new Launcher(
-				"Exportar a Excel",
-				"Exporta la lista actual a un archivo de Microsoft Excel.",
+				$"Exportar {CrudElement.GetDescription(j)?.FriendlyName ?? j.Name} a Excel",
+				$"Exporta la lista actual de elementos del tipo seleccionado a un archivo de Microsoft Excel.",
 				ReflectionHelpers.GetMethod<Export2ExcelCrudTool, Action<ICrudViewModel, Type>>(p => p.Export).FullName(),
 				new SimpleCommand(() => vm.BusyDo(Task.Run(() => Export(vm, j)))))
 			);
