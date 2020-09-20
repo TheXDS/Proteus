@@ -29,7 +29,8 @@ namespace TheXDS.Proteus.Component
             }
         }
 
-        internal static bool _forceLocalDb;
+        public static bool _forceLocalDb;
+        public static bool _forceInMemory;
         private static readonly List<FactoryRegistryEntry> _factories = new List<FactoryRegistryEntry>();
 
         /// <summary>
@@ -38,7 +39,11 @@ namespace TheXDS.Proteus.Component
         static DbConfig()
         {
             _factories.Add(new FactoryRegistryEntry(
-                () => Proteus.Settings?.UseLocalDbProvider ?? true,
+                () => Proteus.Settings is null || _forceInMemory,
+                () => new InMemoryProviderFactory()));
+
+            _factories.Add(new FactoryRegistryEntry(
+                () => Proteus.Settings?.UseLocalDbProvider ?? false || _forceLocalDb,
                 () => new LocalDbConnectionFactory("mssqllocaldb")));
 
             _factories.Add(new FactoryRegistryEntry(

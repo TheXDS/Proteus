@@ -20,7 +20,7 @@ namespace TheXDS.Proteus.Seeders
     /// </summary>
     [SeederFor(typeof(UserService))]
     public class WebServiceUserSeeder : IAsyncDbSeeder
-    {
+    {       
         /// <summary>
         /// Ejecuta la acción de semillado de la base de datos de forma
         /// asíncrona.
@@ -37,6 +37,7 @@ namespace TheXDS.Proteus.Seeders
         /// </returns>
         public async Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter? reporter)
         {
+            /*
             reporter?.UpdateStatus("Creando tokens para usuarios de servicio...");
             var us = (UserService)service;
             var r = await us.GenerateToken("apiwebservice", null, null, out var token);
@@ -46,6 +47,8 @@ namespace TheXDS.Proteus.Seeders
             File.WriteAllText(pth, token);
             reporter?.UpdateStatus(100, $"Token para 'apiwebservice':{Environment.NewLine}{token}{Environment.NewLine} se ha escrito el token en {pth}");
             return r;
+            */
+            return DetailedResult.Ok;
         }
 
         public string GetName => GetType().NameOf();
@@ -74,6 +77,7 @@ namespace TheXDS.Proteus.Seeders
         /// </returns>
         public async Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter? reporter)
         {
+            return false;
             reporter?.UpdateStatus("Comprobando tokens de servicios...");
             return !await service.AnyAsync<LoginToken>(p => p.Login.Id == "apiwebservice");
         }
