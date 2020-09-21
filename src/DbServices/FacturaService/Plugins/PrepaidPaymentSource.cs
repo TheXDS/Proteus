@@ -10,7 +10,7 @@ namespace TheXDS.Proteus.Plugins
     /// Método de pago intergado que permite cancelar el monto de una factura
     /// con fondos pre-pagados por el cliente.
     /// </summary>
-    [Name("Pre-pagado"), Description("Paga una factura con fondos pre-pagados del cliente.")]
+    [Name("Créditos del cliente"), Description("Paga una factura con fondos pre-pagados del cliente.")]
     [Guid("dabcf30e-3c02-44d3-9937-ab339c897b88")]
     public class PrepaidPaymentSource : PaymentSource
     {
@@ -21,5 +21,10 @@ namespace TheXDS.Proteus.Plugins
             fact.Cliente.Prepaid -= amount;
             return base.TryPayment(fact, amount);
         }
+    }
+
+    [Guid("89251779-7dc8-4561-a338-b7b98ca462a0")]
+    public class GiftCardPaymentSource : PaymentSource
+    {
     }
 }

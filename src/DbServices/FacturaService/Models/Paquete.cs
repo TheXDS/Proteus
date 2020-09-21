@@ -14,7 +14,7 @@ namespace TheXDS.Proteus.Models
         /// Colección de ítems a incluir en la facturación al seleccionar este
         /// ítem facturable.
         /// </summary>
-        public virtual List<Facturable> Children { get; set; } = new List<Facturable>();
+        public virtual List<PaqueteItem> Children { get; set; } = new List<PaqueteItem>();
 
         /// <summary>
         /// Indica una fecha inicial de validez del ítem. De forma

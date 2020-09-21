@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Component
 {
@@ -25,6 +26,6 @@ namespace TheXDS.Proteus.Component
         ///     Informa al <see cref="IFacturaInteractor"/> que la facturación 
         ///     se ha realizado.
         /// </summary>
-        Task OnFacturateAsync() => Task.CompletedTask;
+        Task OnFacturateAsync(Factura f) => Task.CompletedTask;
     }
 }

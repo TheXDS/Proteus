@@ -4,6 +4,7 @@ using TheXDS.MCART.Types.Base;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Dialogs;
+using TheXDS.Proteus.FacturacionUi.Modules;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.ViewModels.Base;
 
@@ -33,6 +34,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             NumericProperty(p => p.OpenBalance).Positive().Label("Balance de apertura").AsListColumn().ShowInDetails();
 
             ListProperty(p => p.Facturas).Creatable();
+            ListProperty(p => p.Drops).Creatable().Label("Salidas de efectivo");
 
             Property(p => p.TotalFacturas).Label("Total facturado").AsListColumn().ShowInDetails().ReadOnly();
             Property(p => p.TotalEfectivo).Label("Total facturado (sólo efectivo)").AsListColumn().ShowInDetails().ReadOnly();
@@ -44,23 +46,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
         private void OnCloseSession(CajaOp cajaOp, NotifyPropertyChangeBase vm)
         {
-            if (cajaOp.CloseTimestamp.HasValue)
-            {
-                Proteus.MessageTarget?.Stop("La caja ya está cerrada.");
-                return;
-            }
-            if (!InputSplash.GetNew<decimal>("Cuente el dinero de la caja, e introduzca el total en efectivo.", out var cierre)) return;
-            var totalEfectivo = cajaOp.Facturas.Sum(p => p.TotalPagadoEfectivo);
-            var cuadre = cajaOp.OpenBalance + totalEfectivo - cierre;
-            if (cuadre != 0)
-            {
-                Proteus.MessageTarget?.Warning($"El cierre de caja no cuadra por {cuadre:C}.");
-                return;
-            }
-            cajaOp.CloseBalance = cierre;
-            cajaOp.CloseTimestamp = DateTime.Now;
-            (vm as ICrudViewModel)?.SaveCommand.Execute(cajaOp);
-            Proteus.MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C} para mantener su fondo de caja de {cajaOp.Cajero.OptimBalance}");
+            FacturaService.MakeCierreCaja(cajaOp, () => (vm as ICrudViewModel)?.SaveCommand.Execute(cajaOp));
         }
     }
 }
