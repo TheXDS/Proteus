@@ -96,7 +96,10 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
         public void AdminCuentasBancarias(object sender, EventArgs e)
         {
             if (!CanOpen()) return;
-            Host.OpenPage(CrudPage.New<ContabilidadService>("Administrar cuentas bancarias",ContabilidadService.CuentasFor(ModuleStatus.ActiveEmpresa!).AsQueryable(),new[] { typeof(CuentaMovimiento)}));
+            Host.OpenPage(CrudPage.New<ContabilidadService>(
+                "Administrar cuentas bancarias",
+                ContabilidadService.CuentasFor(ModuleStatus.ActiveEmpresa!).AsQueryable(),
+                new[] { typeof(CuentaMovimiento) }));
         }
 
 
@@ -136,6 +139,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Modules
 
         public ContabilidadModule()
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             RegisterDictionary("Templates/Templates.xaml");
             RegisterLauncher(new Launcher("Catálogo de cuentas", "Administra el catálogo de cuentas para la empresa activa.", OpenAdminCatCuentas), InteractionType.Catalog);
             RegisterLauncher(new Launcher("Balance general", "Genera un balance general de la empresa y periodo activos.", MakeBalanceGeneral), InteractionType.Reports);

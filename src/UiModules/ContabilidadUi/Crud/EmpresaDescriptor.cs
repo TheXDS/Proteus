@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using TheXDS.MCART.Types.Base;
-using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.ContabilidadUi.Modules;
 using TheXDS.Proteus.ContabilidadUi.ViewModels;
@@ -24,7 +22,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
     {
         protected override void DescribeModel()
         {
-            OnModuleMenu(AdminTool);
+            OnModuleMenu(Settings);
 
             Property(p => p.Name).AsName().AsListColumn();
             TextProperty(p => p.RTN).Mask("0000-0000-000000").Nullable().AsListColumn();
@@ -61,7 +59,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 (arg1.Entity.Costos = m.Costos).Prefix = 5;
                 (arg1.Entity.Gastos = m.Gastos).Prefix = 6;
             }
-
             else
             {
                 arg1.Entity.Activo = new Cuenta() { Name = "Activo", Prefix = 1 };

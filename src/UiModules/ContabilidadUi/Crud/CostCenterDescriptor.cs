@@ -17,7 +17,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            OnModuleMenu(AdminTool, ContabilidadModule.CanOpen);
+            OnModuleMenu(Catalog, ContabilidadModule.CanOpen);
             FriendlyName("Centro de costo");
             ObjectProperty(p => p.Parent)
                 .Selectable()

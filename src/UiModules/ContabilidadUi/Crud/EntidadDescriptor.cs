@@ -20,7 +20,7 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            OnModuleMenu(AdminTool, ContabilidadModule.CanOpen);
+            OnModuleMenu(Settings, ContabilidadModule.CanOpen);
             Property(p => p.Name).AsName();
             BeforeSave(SetParent);
             ListProperty(p => p.CostCenters)

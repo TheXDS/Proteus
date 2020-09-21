@@ -18,7 +18,6 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             ListProperty(p => p.Partidas).Creatable().Label("Partidas del período").ShowInDetails().Required();
             //AfterSave(ContabilidadModule.ModuleStatus.InitViewModel);
             AfterSave(async () => await ContabilidadModule.ModuleStatus.InitViewModel());
-
         }
     }
 }

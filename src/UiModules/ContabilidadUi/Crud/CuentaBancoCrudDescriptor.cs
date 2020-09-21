@@ -20,5 +20,4 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             ObjectProperty(p => p.Cuenta).Selectable().Required().Important("Auxiliar contable de registro");
         }
     }
-
 }

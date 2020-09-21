@@ -23,5 +23,4 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
                 .Label("Archivo de referencia");
         }
     }
-
 }

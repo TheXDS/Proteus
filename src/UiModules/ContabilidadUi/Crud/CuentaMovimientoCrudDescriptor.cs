@@ -28,5 +28,4 @@ namespace TheXDS.Proteus.ContabilidadUi.Crud
             Property(p => p.ExternalTarget).RadioSelectable().Label("Otro tipo de transacción");
         }
     }
-
 }
