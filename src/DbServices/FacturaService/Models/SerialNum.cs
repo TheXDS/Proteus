@@ -13,9 +13,4 @@ namespace TheXDS.Proteus.Models
             return Id;
         }
     }
-
-    public class Warranty
-    {
-
-    }
 }
