@@ -180,7 +180,7 @@ namespace TheXDS.Proteus.Seeders
                 Printer = PrinterSource.GetPrinters().ToList().FirstOrDefault()?.Printer,
                 Entidad = new Entidad
                 {
-                    Id = "TLFK",
+                    Id = $"0801-{DateTime.Today.Year}-123456",
                     Name = "Tiendas \"La Fake\"",
                     Banner = "Tienda fictícia, pero ofertas reales!",
                     Address = "6th ave, 12 & 13 Pinoa street, #206",
