@@ -164,29 +164,13 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         /// <param name="sender">Objeto que ha producido el evento.</param>
         /// <param name="e">Parámetros del evento.</param>
         [InteractionItem, Essential, InteractionType(InteractionType.Operation), Name("Cerrar caja")]
-        public async void CloseCaja(object sender, EventArgs e)
+        public void CloseCaja(object sender, EventArgs e)
         {
-            if (!FacturaService.IsCajaOpOpen)
+            FacturaService.MakeCierreCaja(FacturaService.GetCajaOp, async () => 
             {
-                Proteus.MessageTarget?.Stop("La caja ya está cerrada.");
-                return;
-            }
-            if (!InputSplash.GetNew<decimal>("Cuente el dinero de la caja, e introduzca el total en efectivo.", out var cierre)) return;
-            var cajaOp = FacturaService.GetCajaOp!;
-            var totalEfectivo = cajaOp.Facturas.Sum(p => p.TotalPagadoEfectivo);
-            var cuadre = cajaOp.OpenBalance + totalEfectivo - cierre;
-            if (cuadre > 0.00m) // Epsilon de monedas. Únicamente afecta a la condición de cierre de caja, no al balance general.
-            {
-                Proteus.MessageTarget?.Warning($"El cierre de caja no cuadra por {cuadre:C}.");
-                return;
-            }
-            Reporter?.UpdateStatus("Cerrando caja...");
-            cajaOp.CloseBalance = cierre;
-            cajaOp.CloseTimestamp = DateTime.Now;
-            await Service!.SaveAsync();
-            Reporter?.Done();
-            ProteusViewModel.Get<FacturacionDashboardViewModel>().RefreshDashboard();
-            Proteus.MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C} para mantener su fondo de caja de {cajaOp.Cajero.OptimBalance:C}");
+                await Service!.SaveAsync();
+                ProteusViewModel.Get<FacturacionDashboardViewModel>().RefreshDashboard();
+            });
         }
 
         /// <summary>
@@ -208,7 +192,6 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         [InteractionItem, Name("Bloque de inventario"), InteractionType(InteractionType.AdminTool)]
         public void OpenBatchCrudPage(object sender, EventArgs e)
         {
-            //Host.OpenPage(CrudPage.New<FacturaService>("Administrador de bloques de inventario", Proteus.Service<FacturaService>()!.AllBase<Batch>().AsQueryable(), new[] { typeof(GenericBatch), typeof(SerialBatch) }.AsEnumerable()));
             Host.OpenPage(CrudPage.New(
                 "Administrador de bloques de inventario",
                 typeof(GenericBatch),

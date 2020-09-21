@@ -9,6 +9,7 @@ namespace TheXDS.Proteus.Context
         public DbSet<Cai> Cais { get; set; }
         public DbSet<CaiRango> CaiRangos { get; set; }
         public DbSet<CajaOp> CajaOps { get; set; }
+        public DbSet<CajaDrop> CajaDrops { get; set; }
         public DbSet<Cajero> Cajeros { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<ClienteCategory> ClienteCategories { get; set; }

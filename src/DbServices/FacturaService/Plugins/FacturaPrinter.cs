@@ -38,5 +38,13 @@ namespace TheXDS.Proteus.Plugins
         /// <param name="f"></param>
         /// <param name="i"></param>
         public abstract void PrintProforma(Factura f, IFacturaInteractor? i);
+
+        /// <summary>
+        /// Imprime un corte de sesión de caja.
+        /// </summary>
+        /// <param name="op">
+        /// Sesión de caja a imprimir.
+        /// </param>
+        public abstract void PrintCajaOpCut(CajaOp op);
     }
 }

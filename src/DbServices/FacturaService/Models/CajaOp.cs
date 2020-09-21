@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
@@ -45,7 +48,25 @@ namespace TheXDS.Proteus.Models
         /// </summary>
         public virtual List<Factura> Facturas { get; set; } = new List<Factura>();
 
+        public virtual List<CajaDrop> Drops { get; set; } = new List<CajaDrop>();
         public decimal TotalFacturas => Facturas.Sum(p => p.Total);
-        public decimal TotalEfectivo => Facturas.Sum(p => p.TotalPagadoEfectivo);
+        public decimal TotalDrops => Drops.Sum(p => p.Amount);
+        public decimal TotalEfectivo => Facturas.Sum(p => p.TotalPagadoEfectivo) - TotalDrops;
+
+        public override string ToString()
+        {
+            return $"Sesión de caja{Estacion?.ToString().OrNull(" en {0}")}{Cajero?.ToString().OrNull(" por {0}")}";
+        }
+    }
+
+    public class CajaDrop : TimestampModel<int>
+    {
+        public virtual CajaOp Parent { get; set; }
+        public decimal Amount { get; set; }
+        public string Concept { get; set; }
+        public override string ToString()
+        {
+            return $"Salida de {Parent?.Estacion.Name ?? "caja"} por {Amount:C}";
+        }
     }
 }

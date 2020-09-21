@@ -48,6 +48,6 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// Obtiene la suma de los precios de todos los ítems incluidos en el 
         /// paquete.
         /// </summary>
-        public decimal BulkPrice => Entity?.Children.Sum(p => p.Precio) ?? 0m;
+        public decimal BulkPrice => Entity?.Children.Select(p => p.Item).Sum(p => p.Precio) ?? 0m;
     }
 }

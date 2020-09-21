@@ -24,7 +24,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// <summary>
         /// Valor a mostrar para representar el lote relacionado.
         /// </summary>
-        public string Lote => Entity.Lote.Id;
+        public string? Lote => Entity.Lote?.Id;
 
         /// <summary>
         /// Batch desde el cual se realizará un movimiento de inventario.

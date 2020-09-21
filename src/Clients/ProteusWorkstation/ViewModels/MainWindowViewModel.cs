@@ -104,6 +104,7 @@ namespace TheXDS.Proteus.ViewModels
         private void EarlySetup(params Argument[] additional)
         {
             Proteus.MessageTarget = new MessageSplashTarget();
+            Proteus.InputTarget = new InputSplashTarget();
             Proteus.CommonReporter = this;
             App.RootHost = this;
 

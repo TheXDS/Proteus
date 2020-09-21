@@ -185,14 +185,15 @@ namespace TheXDS.Proteus.Api
             try
             {
                 PrintFactura(f, i);
+                i?.OnFacturateAsync(f);
             }
             catch (FileNotFoundException fnfex)
             {
                 MessageTarget?.Warning($"Hubo un problema al cargar un componente necesario para imprimir la factura. Asegúrese que la aplicación se encuentre correctamente instalada.\n{fnfex.Message}");
             }
-            catch
+            catch (Exception ex)
             {
-                MessageTarget?.Warning("La factura se guardó, pero hubo un problema al imprimirla.");
+                MessageTarget?.Warning($"La factura se guardó, pero hubo un problema al imprimirla. {ex.Message}");
             }
             return true;
         }
@@ -204,5 +205,41 @@ namespace TheXDS.Proteus.Api
             else
                 MessageTarget?.Warning("La estación de facturación no tiene una impresora configurada.");
         }
+
+        public static void MakeCierreCaja(CajaOp? cajaOp, Action saveAction)
+        {
+            if (cajaOp is null || cajaOp.CloseTimestamp.HasValue)
+            {
+                MessageTarget?.Stop("La caja ya está cerrada.");
+                return;
+            }
+            decimal cierre=0m;
+            var totalEfectivo = cajaOp.Facturas.Sum(p => p.TotalPagadoEfectivo);
+            if (InputTarget is { } i)
+            {
+                if (!i.Get("Cuente el dinero de la caja, e introduzca el total en efectivo.", ref cierre)) return;
+            }
+            else
+            {
+                cierre = cajaOp.OpenBalance + totalEfectivo;
+            }
+            var cuadre = cajaOp.OpenBalance + totalEfectivo - cierre;
+            if (cuadre > 0.00m) // Epsilon de monedas. Únicamente afecta a la condición de cierre de caja, no al balance general.
+            {
+                MessageTarget?.Warning($"El cierre de caja no cuadra por {cuadre:C}.");
+                return;
+            }
+            CommonReporter?.UpdateStatus("Cerrando caja...");
+            cajaOp.CloseBalance = cierre;
+            cajaOp.CloseTimestamp = DateTime.Now;
+            saveAction();
+            CommonReporter?.Done();
+            if (GetEstation?.ResolveDriver() is { } d)
+            {
+                d.PrintCajaOpCut(cajaOp);
+            }
+            MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C} para mantener su fondo de caja de {cajaOp.Cajero.OptimBalance:C}");
+        }
+
     }
 }
