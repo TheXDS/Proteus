@@ -170,6 +170,8 @@ namespace TheXDS.Proteus
         /// ensamblados.
         /// </summary>
         public static IElevator? Elevator { get; } = FindSingleObject<IElevator>();
+
+        public static IInputTarget? InputTarget { get; set; }
         
         /// <summary>
         /// Obtiene o establece el objetivo de mensajes predeterminado de
