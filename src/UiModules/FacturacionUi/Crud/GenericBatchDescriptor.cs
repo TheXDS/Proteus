@@ -1,5 +1,4 @@
 ﻿using TheXDS.Proteus.Annotations;
-using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud

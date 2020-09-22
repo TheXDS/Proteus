@@ -22,9 +22,4 @@ namespace TheXDS.Proteus.Plugins
             return base.TryPayment(fact, amount);
         }
     }
-
-    [Guid("89251779-7dc8-4561-a338-b7b98ca462a0")]
-    public class GiftCardPaymentSource : PaymentSource
-    {
-    }
 }

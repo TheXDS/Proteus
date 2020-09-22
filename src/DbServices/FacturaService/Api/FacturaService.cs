@@ -18,6 +18,7 @@ namespace TheXDS.Proteus.Api
     {
         public static List<PaymentSource> PaymentSources { get; } = Objects.FindAllObjects<PaymentSource>().ToList();
         public static List<FacturaPrintDriver> FactPrintDrivers { get; } = Objects.FindAllObjects<FacturaPrintDriver>().ToList();
+        public static List<IFacturableAutomation> Automators { get; } = Objects.FindAllObjects<IFacturableAutomation>().ToList();
 
         /// <summary>
         /// Obtiene una referencia al cliente genérico.
