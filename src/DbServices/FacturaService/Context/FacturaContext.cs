@@ -6,6 +6,7 @@ namespace TheXDS.Proteus.Context
     public class FacturaContext : ProteusContext
     {
         public DbSet<Abono> Abonos { get; set; }
+        public DbSet<AutomationItem> AutomationItems { get; set; }
         public DbSet<Cai> Cais { get; set; }
         public DbSet<CaiRango> CaiRangos { get; set; }
         public DbSet<CajaOp> CajaOps { get; set; }
@@ -33,6 +34,7 @@ namespace TheXDS.Proteus.Context
         public DbSet<ProveedorContacto> ProveedorContactos { get; set; }
         public DbSet<Bodega> Bodegas { get; set; }
         public DbSet<GenericBatch> GenericBatches { get; set; }
+        public DbSet<GiftCard> GiftCards { get; set; }
         public DbSet<SerialBatch> SerialBatches { get; set; }
         public DbSet<SerialNum> SerialNums { get; set; }
         public DbSet<Lote> Lotes { get; set; }

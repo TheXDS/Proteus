@@ -26,7 +26,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor SelectedPrintDriver.
+        /// Obtiene o establece el valor SelectedPrintDriver.
         /// </summary>
         /// <value>El valor de SelectedPrintDriver.</value>
         public PrintDriverSource SelectedPrintDriver

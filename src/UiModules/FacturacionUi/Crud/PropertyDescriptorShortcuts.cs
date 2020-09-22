@@ -1,6 +1,5 @@
 ﻿using System;
 using TheXDS.MCART.Attributes;
-using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
@@ -40,6 +39,12 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Label("ISV")
                 .ShowInDetails()
                 .AsListColumn();
+
+            descriptor.ListProperty(p => p.Automations)
+                .Creatable()
+                .Required()
+                .Label("Herramientas de automatización")
+                .ShowInDetails();
 
             descriptor.BeforeSave(SetNewSku);
         }
