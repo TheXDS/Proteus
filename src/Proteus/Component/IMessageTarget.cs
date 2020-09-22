@@ -49,6 +49,17 @@ namespace TheXDS.Proteus.Component
         void Warning(string message);
 
         /// <summary>
+        /// Notifica de una advertencia.
+        /// </summary>
+        /// <param name="ex">
+        /// Excepción producida a notificar.
+        /// </param>
+        void Warning(Exception ex)
+        {
+            Warning(ex.Message);
+        }
+
+        /// <summary>
         /// Notifica de un mensaje producido por una operación que debe
         /// detenerse.
         /// </summary>
@@ -64,6 +75,17 @@ namespace TheXDS.Proteus.Component
         /// Mensaje a enviar al objetivo.
         /// </param>
         void Error(string message);
+
+        /// <summary>
+        /// Notifica de un mensaje de error.
+        /// </summary>
+        /// <param name="ex">
+        /// Excepción producida a notificar.
+        /// </param>
+        void Error(Exception ex)
+        {
+            Error(ex.Message);
+        }
 
         /// <summary>
         /// Notifica de un error crítico.
