@@ -19,6 +19,23 @@ namespace TheXDS.Proteus.Seeders
     [SeederFor(typeof(FacturaService))]
     public class FacturaDemoSeeder : IAsyncDbSeeder
     {
+        private static Servicio GenGiftCard(int value)
+        {
+            return new Servicio
+            {
+                Name = $"GiftCard de {value:C}",
+                Isv = 0,
+                Precio = value,
+                Automations =
+                {
+                    new AutomationItem
+                    {
+                        Automator = Guid.Parse("93b7f8f8-398f-4591-9f01-a8189b631157")
+                    }
+                }
+            };
+
+        }
         public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter? reporter)
         {            
             var prods = new Producto[9];
@@ -156,7 +173,11 @@ namespace TheXDS.Proteus.Seeders
                 Isv = 15f,
                 Children =
                 {
-                    svc
+                    svc,
+                    GenGiftCard(100),
+                    GenGiftCard(200),
+                    GenGiftCard(500),
+                    GenGiftCard(1000),
                 }
             };
             var bodega = new Bodega
