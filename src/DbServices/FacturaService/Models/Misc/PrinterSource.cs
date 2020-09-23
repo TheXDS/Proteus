@@ -39,7 +39,6 @@ namespace TheXDS.Proteus.Models.Misc
 
         public static IQueryable<PrinterSource> Printers { get; } = GetPrinters();
 
-
         public string? Printer { get; set; }
 
         public override string ToString() => Printer ?? string.Empty;

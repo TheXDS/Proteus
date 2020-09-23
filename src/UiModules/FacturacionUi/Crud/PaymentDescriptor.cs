@@ -15,8 +15,9 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            Property(p => p.Source);
+            Property(p => p.ResolvedSource).AsListColumn().ShowInDetails().Label("Origen d pago").ReadOnly();
             NumericProperty(p => p.Amount).Range(decimal.Zero, decimal.MaxValue).Important("Monto");
+            Property(p => p.Tag).ShowInDetails().Label("Referencia de pago").ReadOnly();
         }
     }
 }

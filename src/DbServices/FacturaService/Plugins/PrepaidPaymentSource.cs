@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
 using TheXDS.Proteus.Models;
 
@@ -12,14 +11,28 @@ namespace TheXDS.Proteus.Plugins
     /// </summary>
     [Name("Créditos del cliente"), Description("Paga una factura con fondos pre-pagados del cliente.")]
     [Guid("dabcf30e-3c02-44d3-9937-ab339c897b88")]
-    public class PrepaidPaymentSource : PaymentSource
+    public class PrepaidPaymentSource : RuleBasedPaymentSource<Cliente, int>
     {
-        public override Task<Payment?> TryPayment(Factura fact, decimal amount)
+
+        /// <summary>
+        ///     Inicializa la clase <see cref="PrepaidPaymentSource"/>
+        /// </summary>
+        static PrepaidPaymentSource()
         {
-            if (fact?.Cliente is null) return Task.FromResult<Payment?>(null);
-            if (fact.Cliente.Prepaid < amount) return Task.FromResult<Payment?>(null);
-            fact.Cliente.Prepaid -= amount;
-            return base.TryPayment(fact, amount);
+            Failures.Add(((c, _) => !c.CanPrepay, "El cliente no fue autorizado a precargar sus créditos."));
+            Failures.Add((CheckCredit, "El cliente no tiene créditos suficientes."));
+
+        }
+        protected override string Prompt => "Ingrese o escanee la tarjeta de miembro del cliente";
+
+        private static bool CheckCredit(Cliente c, PaymentInfo info)
+        {
+            return c.Prepaid < info.Amount;
+        }
+
+        protected override void OnGeneratePayment(Factura f, Cliente entity, PaymentInfo info)
+        {
+           entity.Prepaid -= info.Amount;
         }
     }
 }

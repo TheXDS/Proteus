@@ -10,6 +10,7 @@ using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Component.Attributes;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Plugins;
 
@@ -17,22 +18,23 @@ namespace TheXDS.Proteus.PosFacturaPrinter
 {
     public enum PosSettings
     {
-        [Name("Impresora POS predeterminada")] PrinterName,
-        [Name("Página de códigos")] PrinterCodePage,
-        [Name("Número de columnas")] PrinterColumns,
-        [Name("Líneas de búffer post-impresión")] LeadOut
+        [Name("Impresora POS predeterminada"), Default("")] PrinterName,
+        [Name("Página de códigos"), Default("iso-8859-1")] PrinterCodePage,
+        [Name("Número de columnas"), Default("42")] PrinterColumns,
+        [Name("Líneas de búffer post-impresión"), Default("6")] LeadOut,
+        [Name("Soporte gráfico"), Default("false")] Graphics,
+        [Name("Dejar que la impresora formatee el texto"), Default("false")] PrinterFormat
     }
 
     [Name("Impresora de POS"), Guid("8e4ebc2e-da07-4ecb-abcd-fd0ecc7d7ea1")]
     public class PosSettingsRepository : SettingsRepository<PosSettings>
     {
-        protected override IEnumerable<KeyValuePair<string, string>> Defaults()
-        {
-            yield return new KeyValuePair<string, string>("PrinterName", "");
-            yield return new KeyValuePair<string, string>("PrinterCodePage", "iso-8859-1");
-            yield return new KeyValuePair<string, string>("PrinterColumns", "42");
-            yield return new KeyValuePair<string, string>("PrinterColumns", "0");
-        }
+        public string PrinterName => this[PosSettings.PrinterName].Value;
+        public string PrinterCodePage => this[PosSettings.PrinterCodePage].Value;
+        public int PrinterColumns => GetAs<int>();
+        public int LeadOut => GetAs<int>();
+        public bool Graphics => GetAs<bool>();
+        public bool PrinterFormat => GetAs<bool>();
     }
 
     [Name("Impresora de POS"), Description("Utiliza un sistema de impresión compatible con POS para imprimir la factura.")]
@@ -53,6 +55,7 @@ namespace TheXDS.Proteus.PosFacturaPrinter
         private static Printer GetPrinter()
         {
             if (_maxCols == 0) _maxCols = int.TryParse(_settings[PosSettings.PrinterColumns].Value, out var c) ? c : 42;
+            
             return new Printer(FacturaService.GetEstation?.Printer
                 ?? _settings[PosSettings.PrinterName].Value
                 ?? PrinterSettings.InstalledPrinters[0] 
@@ -62,30 +65,69 @@ namespace TheXDS.Proteus.PosFacturaPrinter
 
         private static Printer PrintHeader(string title)
         {
-            var e = FacturaService.GetEstation?.Entidad;
+            var e = FacturaService.GetEstation?.Entidad!;
             var p = GetPrinter();
-            p.AlignCenter();
-            p.Append(e?.Name);
-            if (!e?.Banner.IsEmpty() ?? false) p.Append(e!.Banner);
-            p.Append(e?.Address);
-            p.Append($"{e?.City}, {e?.Country}");
-            p.Append($"RTN: {e?.Id}");
-            p.Append($"Tel. {string.Join(", ", (e?.Phones.AsEnumerable() ?? Array.Empty<Phone>()).Select(p=>p.Number))}");
-            p.Append($"Email {string.Join(", ", (e?.Emails.AsEnumerable() ?? Array.Empty<Email>()).Select(p => p.Address))}");
-            Line(p);
-            p.Append(title.ToUpper().Spell());
-            Line(p);
-            p.AlignLeft();
+
+            if (_settings.PrinterFormat)
+            {
+                p.AlignCenter();
+                p.Append(e.Name);
+                if (!e.Banner.IsEmpty()) p.Append(e!.Banner);
+                p.Append(e.Address);
+                p.Append($"{e.City}, {e.Country}");
+                p.Append($"RTN: {e.Id}");
+                p.Append($"Tel. {string.Join(", ", e.Phones.AsEnumerable().Select(p=>p.Number))}");
+                p.Append($"Email {string.Join(", ", e.Emails.AsEnumerable().Select(p => p.Address))}");
+                Line(p);
+                p.Append(title.ToUpper().Spell());
+                Line(p);
+                p.AlignLeft();
+            }
+            else
+            {
+                Center(p, e.Name);
+                if (!e.Banner.IsEmpty()) Center(p, e!.Banner);
+                Center(p, e.Address);
+                Center(p, $"{e.City}, {e.Country}");
+                Center(p, $"RTN: {e.Id}");
+                Center(p, $"Tel. {string.Join(", ", e.Phones.AsEnumerable().Select(p => p.Number))}");
+                Center(p, $"Email {string.Join(", ", e.Emails.AsEnumerable().Select(p => p.Address))}");
+                Line(p);
+                Center(p, title.ToUpper().Spell());
+                Line(p);
+            }
             return p;
         }
-        private static void Line(Printer p, char c = '-')
+
+        private static void Line(Printer p, in char c = '-')
         {
             p.Append(new string(c, _maxCols));
         }
 
+        private static void Center(Printer p, string text)
+        {
+            var b = "";
+            void Commit() => p.Append($"{new string(' ', (_maxCols - b.Length) / 2)}{b}");
+
+            foreach (var j in text.Split().ToList())
+            {
+                if (b.Length + j.Length + 1 <= _maxCols)
+                {
+                    if (b != "") b += " ";
+                    b += j;
+                }
+                else
+                {
+                    Commit();
+                    b = j;
+                }
+            }
+            Commit();
+        }
+
         private static void FooterAndPrint(Printer p)
         {
-            if (int.TryParse(_settings[PosSettings.LeadOut].Value, out var v) && v > 0) p.NewLines(v);
+            p.NewLines(_settings.LeadOut);
             p.FullPaperCut();
             p.OpenDrawer();
             p.PrintDocument();
@@ -120,7 +162,6 @@ namespace TheXDS.Proteus.PosFacturaPrinter
                 p.Append($"{j.Qty,5}{j.StaticPrecio.ToString("C", ci),15}{j.SubTotal.ToString("C", ci).PadLeft(_maxCols - 20)}");
             }
             Line(p);
-            p.AlignRight();
             AddSubt("Subtotal", f.SubTotal);
             AddSubt("15% ISV", f.SubTGravable);
             AddSubt("Gravado 15%", f.SubTGravado);
@@ -137,11 +178,20 @@ namespace TheXDS.Proteus.PosFacturaPrinter
                 p.Append(f.Notas);
             }
             Line(p, '=');
-            p.AlignLeft();
-            p.Append("Gracias por su compra.");
-            p.Append($"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
-            p.Append("Original - Cliente");
-            p.Append("CC - Comercio");
+            if (_settings.PrinterFormat) { 
+                p.AlignCenter();
+                p.Append("Gracias por su compra.");
+                p.Append($"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
+                p.Append("Original - Cliente");
+                p.Append("CC - Comercio");
+            }
+            else
+            {
+                Center(p, "Gracias por su compra.");
+                Center(p, $"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
+                Center(p, "Original - Cliente");
+                Center(p, "CC - Comercio");
+            }
             FooterAndPrint(p);
             f.Impresa = true;
         }
@@ -217,7 +267,7 @@ namespace TheXDS.Proteus.PosFacturaPrinter
             }
             else
             {
-                p.Append(" - SESIÓN ACTIVA -");
+                p.Append("- SESIÓN DE CAJA ACTIVA -");
             }
             p.Append("FACTURAS:");
             p.Append($"Facturas generadas: {op.Facturas.Count}");

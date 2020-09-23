@@ -64,7 +64,10 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .AsListColumn()
                 .ShowInDetails()
                 .ReadOnly();
-            ListProperty(p => p.Payments).Creatable().Label("Pagos");
+            ListProperty(p => p.Payments)
+                .Creatable()
+                .Label("Pagos")
+                .ShowInDetails();
             Property(p => p.Paid)
                 .AsListColumn()
                 .ShowInDetails()

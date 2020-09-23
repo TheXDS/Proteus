@@ -91,12 +91,21 @@ namespace TheXDS.Proteus.Api
                 return false;
             }
             if (!RebajarInventario(f)) return false;
-            if (register)
-            {
-                if (!RegisterFactura(f, i)) return false;
-            }
-            GetCajaOp.Facturas.Add(f);
+            RunAutomations(f);
+            if (register && !RegisterFactura(f, i)) return false;
+            GetCajaOp!.Facturas.Add(f);
             return true;
+        }
+
+        private static void RunAutomations(Factura f)
+        {
+            foreach (var j in f.Items)
+            {
+                foreach ( var k in j.Item.Automations)
+                {
+                    k.ResolveAutomator()?.OnFacturate(f, j.Item, j.Qty);
+                }
+            }
         }
 
         private static bool RebajarInventario(Factura f)

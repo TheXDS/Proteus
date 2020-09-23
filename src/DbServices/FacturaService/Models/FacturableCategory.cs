@@ -3,8 +3,11 @@ using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
 {
-    public class FacturableCategory : FacturableBase<int>
+    public class FacturableCategory : Nameable<int>
     {
         public virtual List<Facturable> Children { get; set; } = new List<Facturable>();
+        
+        public float? Isv { get; set; }
+        public virtual List<AutomationItem> Automations { get; set; } = new List<AutomationItem>();
     }
 }

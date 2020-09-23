@@ -14,6 +14,7 @@ using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.FacturacionUi.Component;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.FacturacionUi.ViewModels
@@ -319,6 +320,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                             }
                         }
                         RefreshSubtotals();
+                        if (!(CurrentFactura is null)) CurrentFactura.Cliente = value;
                     }
 
                     _interactor?.OnClienteSelected();                    
@@ -356,7 +358,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         
         private void OnNewCliente()
         {
-            NewCliente ??= new Cliente()
+            NewCliente = new Cliente()
             {
                 Timestamp = DateTime.Now
             };
@@ -534,9 +536,9 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 foreach (var j in NewPayments)
                 {
                     if (j is null) continue;
-                    if (!(await j.Source.TryPayment(CurrentFactura, j.Amount) is { } payment))
+                    if (j.Source is null || !(await j.Source.TryPayment(CurrentFactura, new PaymentInfo(j.Amount, j.Tag)) is { } payment))
                     {
-                        Proteus.MessageTarget?.Stop($"El método de pago '{j.Source.Name}' por {j.Amount:C} no funcionó.");
+                        Proteus.MessageTarget?.Stop($"El método de pago '{j.Source?.Name}' por {j.Amount:C} no funcionó.");
                         Cleanup();
                         return;
                     }
