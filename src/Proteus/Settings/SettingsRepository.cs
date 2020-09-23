@@ -14,6 +14,7 @@ using TheXDS.MCART;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.Types;
+using System.Runtime.CompilerServices;
 
 namespace TheXDS.Proteus.Component
 {
@@ -33,6 +34,16 @@ namespace TheXDS.Proteus.Component
                     yield return new KeyValuePair<string, string>(j.ToString(), v.Value);
                 }
             }
+        }
+
+        protected TValue GetAs<TValue>([CallerMemberName]string value = null!)
+        {
+            return GetAs<TValue>((T)Enum.Parse(typeof(T), value));
+        }
+
+        protected TValue GetAs<TValue>(T value)
+        {
+            return Common.FindConverter<TValue>()?.ConvertFromString(this[value].Value.OrNull() ?? value.GetAttr<DefaultAttribute>()?.Value ?? default(TValue)?.ToString() ?? "") is TValue v ? v! : default!;
         }
     }
 

@@ -21,6 +21,7 @@ namespace TheXDS.Proteus.Models.Misc
         public static IQueryable<PrintDriverSource> Drivers { get; } = GetDrivers();
 
         public Guid DriverGuid { get; set; }
+
         public override string ToString()
         {
             return FacturaService.FactPrintDrivers.FirstOrDefault(p => p.Guid == DriverGuid)?.Name ?? "n/a";

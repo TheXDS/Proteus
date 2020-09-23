@@ -17,6 +17,11 @@ namespace TheXDS.Proteus.Models
         public virtual Factura Parent { get; set; } = null!;
 
         /// <summary>
+        /// Información extra opcional sobre el pago.
+        /// </summary>
+        public string? Tag { get; set; }
+
+        /// <summary>
         /// Referencia al <see cref="Guid"/> del <see cref="PaymentSource"/>
         /// utilizado para crear este pago.
         /// </summary>
@@ -33,8 +38,10 @@ namespace TheXDS.Proteus.Models
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{ResolveSource()?.Name}: {Amount:C}";
+            return $"{ResolveSource()?.Describe(Tag)}: {Amount:C}";
         }
+
+        public PaymentSource? ResolvedSource => ResolveSource();
 
         public PaymentSource? ResolveSource() => FacturaService.PaymentSources.FirstOrDefault(p => p.Guid == Source);
     }

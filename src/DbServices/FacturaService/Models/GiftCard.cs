@@ -7,5 +7,6 @@ namespace TheXDS.Proteus.Models
     {
         public decimal Amount { get; set; }
         public DateTime? Void { get; set; }
+        public DateTime? Used { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Models;
@@ -11,27 +10,46 @@ namespace TheXDS.Proteus.Plugins
     /// Método de pago que admite dejar un saldo pendiente a ser cancelado al
     /// crédito.
     /// </summary>
-    [Name("Crédito"), Description("Paga una factura por medio del crédito disponible del cliente.")]
+    [Name("Al crédito"), Description("Paga una factura por medio del crédito disponible del cliente.")]
     [Guid("4b919e69-0108-45d7-95eb-9b3c60c5ae93")]
-    public class CreditPaymentSource : PaymentSource
+    public class CreditPaymentSource : RuleBasedPaymentSource<Cliente, int>
     {
-        public override Task<Payment?> TryPayment(Factura fact, decimal amount)
+        public override PaymentInfo? Automatic(Factura? f)
         {
-            if (!(fact is {Cliente: Cliente c })) return Task.FromResult<Payment?>(null);
-            if (!c.CanCredit || IsCreditLimitReached(c,amount)) return Task.FromResult<Payment?>(null);
-            
-            Proteus.Service<FacturaService>()!.Add(new FacturaXCobrar
-            {
-                Cliente = fact!.Cliente!,
-                Parent = fact,
-                Total = amount,
-            });
-            return base.TryPayment(fact, amount);
+           return PaymentInfo.Manual(f?.Cliente?.Id.ToString());
         }
 
-        private bool IsCreditLimitReached(Cliente c, decimal amount)
+        /// <summary>
+        /// Inicializa la clase <see cref="CreditPaymentSource"/>
+        /// </summary>
+        static CreditPaymentSource()
         {
-            return c.AvailableCredit is { } v && amount > v;
+            Failures.Add(((c, _) => c is null, "El cliente no existe."));
+            Failures.Add(((c, _) => !c!.CanCredit, "No se puede otorgar crédito al cliente."));
+            Failures.Add((CheckCredit, "El cliente excede su límite permitido de crédito."));
+        }
+
+        protected override string Prompt => "Ingrese o escanee la tarjeta de miembro del cliente";
+
+        private static bool CheckCredit(Cliente? c, PaymentInfo info)
+        {
+            return c!.AvailableCredit is { } v && info.Amount > v;
+        }
+        protected override Cliente? GetEntity(Factura fact, PaymentInfo? info)
+        {
+            return fact.Cliente ?? base.GetEntity(fact, info);
+        }
+        protected override void OnGeneratePayment(Factura f, Cliente entity, PaymentInfo info)
+        {
+            FacturaXCobrar fxc = new FacturaXCobrar
+            {
+                Cliente = entity,
+                Parent = f,
+                Total = info.Amount,
+            };
+            Proteus.Service<FacturaService>()!.Add(fxc);
+            Proteus.Service<FacturaService>()!.SaveAsync().GetAwaiter().GetResult();
+            info.Tag = fxc.StringId;
         }
     }
 }
