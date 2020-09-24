@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{E7EA
 		..\targets\bundle.ps1 = ..\targets\bundle.ps1
 		..\targets\Bundle.targets = ..\targets\Bundle.targets
 		..\targets\CompileOptions.targets = ..\targets\CompileOptions.targets
+		..\targets\Copy-Deps.ps1 = ..\targets\Copy-Deps.ps1
 		..\targets\Frameworks.props = ..\targets\Frameworks.props
 		..\targets\GlobalDirectives.targets = ..\targets\GlobalDirectives.targets
 		..\targets\Mcart.targets = ..\targets\Mcart.targets
