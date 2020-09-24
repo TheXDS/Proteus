@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
@@ -8,4 +8,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DbServices\FacturaService\FacturaService.csproj" />
   </ItemGroup>
+
+  <Target Name="ManuallyCopyDeps" AfterTargets="PostBuildEvent">
+    <Exec Command="pwsh -Command &quot;$(TargetsDir)Copy-Deps.ps1 -RootDir $(Root) -Dependencies ESC-POS-USB-NET&quot;" />
+  </Target>
+
 </Project>

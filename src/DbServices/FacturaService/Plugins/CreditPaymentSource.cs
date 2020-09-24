@@ -19,10 +19,7 @@ namespace TheXDS.Proteus.Plugins
            return PaymentInfo.Manual(f?.Cliente?.Id.ToString());
         }
 
-        /// <summary>
-        /// Inicializa la clase <see cref="CreditPaymentSource"/>
-        /// </summary>
-        static CreditPaymentSource()
+        public CreditPaymentSource()
         {
             Failures.Add(((c, _) => c is null, "El cliente no existe."));
             Failures.Add(((c, _) => !c!.CanCredit, "No se puede otorgar crédito al cliente."));

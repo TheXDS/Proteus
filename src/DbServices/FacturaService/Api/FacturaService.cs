@@ -97,6 +97,14 @@ namespace TheXDS.Proteus.Api
             return true;
         }
 
+        private static void SetItemsInfo(Factura f)
+        {
+            foreach (var j in f.Items)
+            {
+                j.StaticPrecio = j.Item.Precio;
+            }
+        }
+
         private static void RunAutomations(Factura f)
         {
             foreach (var j in f.Items)

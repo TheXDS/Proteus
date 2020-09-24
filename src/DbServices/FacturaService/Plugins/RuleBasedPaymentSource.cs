@@ -16,7 +16,7 @@ namespace TheXDS.Proteus.Plugins
         /// <summary>
         /// Colección con las reglas de validez del origen de pago.
         /// </summary>
-        protected static readonly HashSet<(Func<T?, PaymentInfo, bool> Predicate, string Message)> Failures = new HashSet<(Func<T?, PaymentInfo, bool> Predicate, string Message)>();
+        protected readonly HashSet<(Func<T?, PaymentInfo, bool> Predicate, string Message)> Failures = new HashSet<(Func<T?, PaymentInfo, bool> Predicate, string Message)>();
         
         /// <summary>
         /// Obtiene el mensaje a mostrar cuando se solicite obtener el objeto

@@ -6,9 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="5.3.1" />
+    <PackageReference Include="EPPlus" Version="5.3.2" />
     <PackageReference Include="BarcodeLib" Version="2.2.6" />
     <PackageReference Include="WpfScreenHelper" Version="1.0.0" />
     <ProjectReference Include="..\..\DbServices\FacturaService\FacturaService.csproj" />
   </ItemGroup>
+  
+  <Target Name="ManuallyCopyDeps" AfterTargets="PostBuildEvent">
+    <Exec Command="pwsh -Command &quot;$(TargetsDir)Copy-Deps.ps1 -RootDir $(Root) -Dependencies EPPlus, BarcodeLib, WpfScreenHelper&quot;" />
+  </Target>
+  
 </Project>
