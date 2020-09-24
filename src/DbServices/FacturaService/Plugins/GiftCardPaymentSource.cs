@@ -12,7 +12,7 @@ namespace TheXDS.Proteus.Plugins
         /// <summary>
         /// Inicializa la clase <see cref="GiftCardPaymentSource"/>
         /// </summary>
-        static GiftCardPaymentSource()
+        public GiftCardPaymentSource()
         {
             Failures.Add(((p, _) => p is null, "Tarjeta de regalo inválida."));
             Failures.Add(((p, _) => p.Void < DateTime.Now, "La tarjeta ha expirado."));

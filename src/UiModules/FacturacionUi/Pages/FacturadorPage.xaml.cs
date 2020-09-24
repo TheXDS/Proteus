@@ -135,7 +135,10 @@ namespace TheXDS.Proteus.Pages
             {
                 ViewModel = new FacturadorViewModel(this, interactor, factura);
             }
-            ClienteSelector.DataContext = new ObjectEditorViewModel((FacturadorViewModel)ViewModel, new ClientePd((FacturadorViewModel)ViewModel), typeof(Cliente));
+            ClienteSelector.DataContext = new ObjectEditorViewModel((FacturadorViewModel)ViewModel, new ClientePd((FacturadorViewModel)ViewModel), typeof(Cliente))
+            {
+                OnSaveAction = ((FacturadorViewModel)ViewModel).OnOkCliente
+            };
             if (!(factura is null))
             {
                 ((ObjectEditorViewModel)ClienteSelector.DataContext).Selection = factura.Cliente;

@@ -356,6 +356,9 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             Descuento = Total * 0.25m;
         }
         
+
+
+
         private void OnNewCliente()
         {
             NewCliente = new Cliente()
@@ -382,6 +385,24 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 Clientes.RefreshItem(NewCliente);
             }
         }
+
+
+
+
+        public void OnOkCliente(ModelBase arg)
+        {
+            var nc = (Cliente)arg;
+            if (!Clientes.Contains(nc))
+            {
+                Clientes.Add(nc);
+                NewCliente = nc;
+            }
+            else
+            {
+                Clientes.RefreshItem(nc);
+            }
+        }
+
         private void OnCancelCliente()
         {
             if (!(NewCliente is null))
@@ -401,6 +422,11 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             return Task.CompletedTask;
         }
 
+
+
+
+
+
         public CrudElement ClienteEditor { get; } = CrudElement.ForModel<Cliente>();
 
         public bool IsEditingCliente
@@ -408,6 +434,11 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             get => _isEditingCliente;
             set => Change(ref _isEditingCliente, value);
         }
+
+
+
+
+
 
         /// <summary>
         ///     Obtiene el comando relacionado a la acción AddNew.
@@ -433,6 +464,11 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// <returns>El comando RemovePatment.</returns>
         public SimpleCommand RemovePaymentCommand { get; }
 
+
+
+
+
+
         /// <summary>
         /// Obtiene el comando que permite crear a un nuevo cliente.
         /// </summary>
@@ -447,6 +483,12 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// Obtiene un comando que permite cancelar la operación de selección o la creación de un nuevo cliente.
         /// </summary>
         public SimpleCommand CancelClienteCommand { get; }
+
+
+
+
+
+
 
 
         /// <summary>

@@ -13,11 +13,7 @@ namespace TheXDS.Proteus.Plugins
     [Guid("dabcf30e-3c02-44d3-9937-ab339c897b88")]
     public class PrepaidPaymentSource : RuleBasedPaymentSource<Cliente, int>
     {
-
-        /// <summary>
-        ///     Inicializa la clase <see cref="PrepaidPaymentSource"/>
-        /// </summary>
-        static PrepaidPaymentSource()
+        public PrepaidPaymentSource()
         {
             Failures.Add(((c, _) => !c.CanPrepay, "El cliente no fue autorizado a precargar sus créditos."));
             Failures.Add((CheckCredit, "El cliente no tiene créditos suficientes."));

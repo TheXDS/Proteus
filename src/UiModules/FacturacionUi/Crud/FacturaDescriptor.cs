@@ -22,7 +22,8 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         {
             OnModuleMenu(InteractionType.AdminTool);
 
-            VmProperty(p => p.FacturaNumber).AsListColumn().OnlyInDetails("Número de factura");
+            Property(p => p.FactNum).AsListColumn()
+                .OnlyInDetails("Número de factura");
             DateProperty(p => p.Timestamp)
                 .WithTime()
                 .Default(DateTime.Now)
@@ -30,7 +31,9 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .AsListColumn()
                 .ShowInDetails()
                 .ReadOnly();
-            ObjectProperty(p => p.Cliente).Selectable().Important().AsListColumn()
+            ObjectProperty(p => p.Cliente)
+                .Selectable()
+                .AsListColumn()
                 .ShowInDetails()
                 .Required();
             ListProperty(p => p.Items).Creatable().ShowInDetails();
@@ -59,11 +62,14 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             NumericProperty(p => p.OtrosCargos)
                 .Range(0m, decimal.MaxValue)
                 .AsListColumn()
-                .ShowInDetails();
+                .ShowInDetails()
+                .Label("Otros cargos");
             Property(p => p.Total).Label("Total a pagar")
                 .AsListColumn()
                 .ShowInDetails()
                 .ReadOnly();
+            Property(p => p.CompraExentaRef)
+                .Label("Número de referencia de compra exenta");
             ListProperty(p => p.Payments)
                 .Creatable()
                 .Label("Pagos")
@@ -71,6 +77,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             Property(p => p.Paid)
                 .AsListColumn()
                 .ShowInDetails()
+                .Label("Monto cancelado")
                 .ReadOnly();
             TextProperty(p => p.Notas).Big().ShowInDetails();
             Property(p => p.Impresa).Label("Impresa").AsListColumn().ShowInDetails().ReadOnly();
@@ -85,16 +92,16 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         {
             if (obj.Impresa)
             {
-                FacturaService.PrintFactura(obj, App.Module<FacturacionModule>().Interactor);
+                FacturaService.PrintFactura(obj, App.Module<FacturacionModule>()!.Interactor);
             }
             else
             {
-                FacturaService.AddFactura(obj, true, App.Module<FacturacionModule>().Interactor);
+                FacturaService.AddFactura(obj, true, App.Module<FacturacionModule>()!.Interactor);
             }
             CurrentEditor?.SaveCommand.Execute(obj);
         }
 
-        private async void OnNullify(Factura obj)
+        private void OnNullify(Factura obj)
         {
             obj.Nula = true;
             CurrentEditor?.SaveCommand.Execute(obj);
@@ -102,7 +109,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
         private void SetCajaOp(Factura obj)
         {
-            obj.Parent = FacturaService.GetCajaOp;
+            obj.Parent ??= FacturaService.GetCajaOp!;
         }
 
         private void SetCorrel(Factura factura)
