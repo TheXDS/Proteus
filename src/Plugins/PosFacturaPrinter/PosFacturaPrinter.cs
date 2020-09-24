@@ -1,10 +1,11 @@
 ﻿using ESC_POS_USB_NET.Printer;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing.Printing;
+using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Types.Extensions;
@@ -13,6 +14,7 @@ using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Component.Attributes;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Plugins;
+using static ESC_POS_USB_NET.Enums.PrinterModeState;
 
 namespace TheXDS.Proteus.PosFacturaPrinter
 {
@@ -41,8 +43,51 @@ namespace TheXDS.Proteus.PosFacturaPrinter
     [Guid("8e4ebc2e-da07-4ecb-abcd-fd0ecc7d7ea1")]
     public class PosFacturaPrinter : FacturaPrintDriver
     {
+        private class ColumnInfo
+        {
+            public string Header { get; }
+            public Func<ItemFactura, string> Selector { get; }
+            public int Width { get; }
+
+            public ColumnInfo(string header, int width, Func<ItemFactura, string> selector)
+            {
+                Header = header;
+                Width = width;
+                Selector = selector;
+            }
+        }
+        private class ColumnCollection : Collection<ColumnInfo>
+        {
+            public int LogicalWidth => this.Sum(p => p.Width);
+
+            public string GetHeader()
+            {
+                var l = new StringBuilder();
+                var w = LogicalWidth;
+                foreach (var j in this)
+                {
+                    var max = j.Width * _maxCols / w;
+                    l.Append(j.Header.Truncate(max).PadLeft(max));
+                }
+                return l.ToString();
+            }
+
+            public string GetLine(ItemFactura i)
+            {
+                var l = new StringBuilder();
+                var w = LogicalWidth;
+                foreach (var j in this)
+                {
+                    var max = j.Width * _maxCols / w;
+                    l.Append(j.Selector(i).Truncate(max).PadLeft(max));
+                }
+                return l.ToString();
+            }
+        }
+
         private static readonly PosSettingsRepository _settings = new PosSettingsRepository();
         private static int _maxCols = 0;
+        private static CultureInfo ci = CultureInfo.CreateSpecificCulture("es-HN");
 
         /// <summary>
         ///     Inicializa la clase <see cref="PosFacturaPrinter"/>
@@ -50,6 +95,10 @@ namespace TheXDS.Proteus.PosFacturaPrinter
         static PosFacturaPrinter()
         {
             Proteus.RegisterExternalSettingsRepo(_settings);
+            Columns.Add(new ColumnInfo("Cant.", 5, p => p.Qty.ToString()));
+            Columns.Add(new ColumnInfo("Precio", 12, p => p.StaticPrecio.ToString("C")));
+            Columns.Add(new ColumnInfo("ISV", 8, p => p.StaticIsv.HasValue && p.StaticIsv.Value > 0 ? p.MontoGravado.ToString("C"):""));
+            Columns.Add(new ColumnInfo("SubTotal", 15, p => p.SubTotal.ToString("C")));
         }
 
         private static Printer GetPrinter()
@@ -133,19 +182,25 @@ namespace TheXDS.Proteus.PosFacturaPrinter
             p.PrintDocument();
         }
 
-        public override void PrintFactura(Factura f, IFacturaInteractor? i)
+        private static void ChkReImpresion(Printer p, Factura f)
         {
-            var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
-            var p = PrintHeader("factura");
-            void AddSubt(string label, decimal value) => p.Append($"{$"{label}:",25}{value.ToString("C", ci).PadLeft(_maxCols - 25)}");
+            if (f.Impresa)
+            {
+                Center(p, "ESTA ES UNA RE-IMPRESIÓN");
+                Line(p, '=');
+            }
+        }
+
+        private static void PrintFacturaHeader(Printer p, Factura f)
+        {
             p.Append("C.A.I.:");
             p.Append($"{f.CaiRangoParent.Parent.Id}");
-            p.Append($"Rango autorizado de facturacion:");
+            p.Append($"Rango autorizado de facturación:");
             p.Append($"{f.CaiRangoParent.RangoString()}");
-            p.Append($"Fecha lim. de emision: {f.CaiRangoParent.Parent.Void:dd/MM/yyyy}");
+            p.Append($"Fecha lim. de emisión: {f.CaiRangoParent.Parent.Void:dd/MM/yyyy}");
             Line(p);
             p.Append($"Factura # {f.FactNum}");
-            p.Append($"Fecha de facturacion: {f.Timestamp:dd/MM/yyyy}");
+            p.Append($"Fecha de facturación: {f.Timestamp:dd/MM/yyyy}");
             p.Append($"Cliente: {f.Cliente.Name ?? "Consumidor final"}");
             p.Append($"RTN: {f.Cliente?.Rtn ?? "9999-9999-999999"}");
             p.Append("No. Compra exenta:");
@@ -153,20 +208,36 @@ namespace TheXDS.Proteus.PosFacturaPrinter
             p.Append($"{f.Cliente!.Exoneraciones.FirstOrDefault(p => DateTime.Today.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1)))?.Id}");
             p.Append("No. Registro SAG:");
             Line(p, '=');
-            p.Append("Descripcion");
-            p.Append($"{"Cant.",-5}{"Precio",15}{"Subtotal".PadLeft( _maxCols - 20)}");
+            ChkReImpresion(p, f);
+        }
+
+        private static readonly ColumnCollection Columns = new ColumnCollection();
+
+        public override void PrintFactura(Factura f, IFacturaInteractor? i)
+        {
+            var p = PrintHeader("factura");
+            PrintFacturaHeader(p, f);
+            p.Append("Descripción");
+            p.Append(Columns.GetHeader());
             Line(p);
             foreach (var j in f.Items)
             {
-                p.Append(j.Item.Name);
-                p.Append($"{j.Qty,5}{j.StaticPrecio.ToString("C", ci),15}{j.SubTotal.ToString("C", ci).PadLeft(_maxCols - 20)}");
+                p.Append($"{j.Item.Name}{(j.StaticIsv.HasValue && j.StaticIsv.Value > 0 ? $" (G {j.StaticIsv}%)":"")}");
+                p.Append(Columns.GetLine(j));
             }
             Line(p);
+
+            void AddSubt(string label, decimal value) => p.Append($"{$"{label}:".PadLeft(_maxCols - 20)}{value.ToString("C", ci),20}");
+
             AddSubt("Subtotal", f.SubTotal);
-            AddSubt("15% ISV", f.SubTGravable);
-            AddSubt("Gravado 15%", f.SubTGravado);
+            AddSubt("Total ISV", f.SubTGravable);
+            AddSubt("Subtotal Gravado", f.SubTGravado);
             AddSubt("Descuentos", f.Descuentos);
+
+            p.BoldMode(On);
             AddSubt("TOTAL", f.Total);
+            p.BoldMode(Off);
+
             foreach (var j in f.Payments)
             {
                 AddSubt(j.ResolveSource()?.Name ?? "Pago misc.", j.Amount);
@@ -177,18 +248,36 @@ namespace TheXDS.Proteus.PosFacturaPrinter
                 Line(p);
                 p.Append(f.Notas);
             }
+
             Line(p, '=');
+            ChkReImpresion(p, f);
+
             if (_settings.PrinterFormat) { 
                 p.AlignCenter();
-                p.Append("Gracias por su compra.");
-                p.Append($"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
+                if (!f.Impresa)
+                {
+                    p.Append("Gracias por su compra.");
+                    p.Append($"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
+                }
+                else
+                {
+                    p.Append("Reimpresión únicamente para propósitos de referencia y archivo.");
+                }
                 p.Append("Original - Cliente");
                 p.Append("CC - Comercio");
             }
             else
             {
-                Center(p, "Gracias por su compra.");
-                Center(p, $"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
+                if (!f.Impresa)
+                {
+                    Center(p, "Gracias por su compra.");
+                    Center(p, $"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
+
+                }
+                else
+                {
+                    Center(p, "Reimpresión únicamente para propósitos de referencia y archivo.");
+                }
                 Center(p, "Original - Cliente");
                 Center(p, "CC - Comercio");
             }
