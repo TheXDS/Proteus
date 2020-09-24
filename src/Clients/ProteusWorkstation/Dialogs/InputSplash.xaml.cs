@@ -50,6 +50,19 @@ namespace TheXDS.Proteus.Dialogs
         }
     }
 
+    public class InputSplashTarget : IInputTarget
+    {
+        public bool Get<T>(string prompt, ref T value)
+        {
+            return InputSplash.Get<T>(prompt, ref value);
+        }
+
+        public bool GetNew<T>(string prompt, out T value)
+        {
+            return InputSplash.GetNew<T>(prompt, out value);
+        }
+    }
+
     public class InputSplashViewModel<T> : NotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
