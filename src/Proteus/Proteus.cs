@@ -570,6 +570,16 @@ namespace TheXDS.Proteus
             return Services.FirstOrDefault(p => p.Hosts(tEntity));
         }
 
+        public static Service DeepInferService(ModelBase entity)
+        {
+            return Services.FirstOrDefault(p => p.DeepSearchFor(entity));
+        }
+
+        public static bool DeepSearchFor(ModelBase entity)
+        {
+            return Services.Any(p => p.DeepSearchFor(entity));
+        }
+
         /// <summary>
         /// Infiere un servicio que pueda manejar entidades del tipo base
         /// especificado.

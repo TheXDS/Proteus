@@ -85,7 +85,14 @@ namespace TheXDS.Proteus.Models.Base
         /// </returns>
         public bool ChangesPending()
         {
-            return Proteus.Infer(GetType().ResolveToDefinedType()).ChangesPending(this);
+            var t = GetType().ResolveToDefinedType();
+            return 
+                (
+                //Proteus.Infer(t) ??
+                //Proteus.InferBaseService(t) ??
+                Proteus.DeepInferService(this)
+                )
+                .ChangesPending(this);
         }
 
         /// <summary>
@@ -147,8 +154,8 @@ namespace TheXDS.Proteus.Models.Base
         {
             get
             {
-                var t = GetType().ResolveCollectionType().ResolveToDefinedType();
-                return !(HasId && Proteus.InferService(t).Exists(this));
+                var t = GetType().ResolveCollectionType().ResolveToDefinedType()!;
+                return !(HasId && (Proteus.InferService(t)?.Exists(this) ?? Proteus.DeepSearchFor(this)));
             }
         }
 
