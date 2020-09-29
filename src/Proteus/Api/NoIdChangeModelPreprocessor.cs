@@ -42,7 +42,9 @@ namespace TheXDS.Proteus.Api
         public void Process(DbEntityEntry entry)
         {
             var e = entry.Entity as ModelBase;
-            var s = Proteus.Infer(e.GetType().ResolveToDefinedType());
+            var t = e.GetType().ResolveToDefinedType();
+            var s = Proteus.Infer(t)
+                ?? Proteus.DeepInferService(e);
             foreach (var j in s.OldValues(e))
             {
                 if (!j.Key.HasAttr<KeyAttribute>()) continue;

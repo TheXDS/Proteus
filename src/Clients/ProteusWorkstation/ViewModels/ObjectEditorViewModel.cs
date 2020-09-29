@@ -324,7 +324,7 @@ namespace TheXDS.Proteus.ViewModels
         /// </returns>
         protected override Task<DetailedResult> PerformSave(ModelBase entity)
         {
-            OnSaveAction(entity);
+            OnSaveAction?.Invoke(entity);
             return Task.FromResult(DetailedResult.Ok);
         }
 
