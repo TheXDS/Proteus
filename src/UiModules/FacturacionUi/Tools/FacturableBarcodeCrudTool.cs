@@ -6,11 +6,10 @@ Licenciado para uso interno solamente.
 using BarcodeLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
-using TheXDS.MCART.Types.Base;
+using System.Windows.Documents;
 using TheXDS.MCART.Types.Extensions;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
@@ -23,85 +22,48 @@ namespace TheXDS.Proteus.FacturacionUi.Tools
 {
     public class FacturableBarcodeCrudTool : CrudTool<Facturable>
     {
-        public FacturableBarcodeCrudTool() : base(CrudToolVisibility.Selected)
+        public FacturableBarcodeCrudTool() : base(CrudToolVisibility.Unselected)
         {
+
         }
 
         public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
         {
             yield return Launcher.FromMethod(
-                "Generar código de barras",
-                $"Permite generar un código de barras para este ítem.",
-                GenBarcode, () => vm);
-
+                "Generar códigos de barras",
+                $"Permite generar un código de barras para todos los ítems.",
+                () => GenBarcodes(vm, p => p.EnumerableResults.OfType<Facturable>()));
             yield return Launcher.FromMethod(
-                "Clonar y editar",
-                "Crea una copia de este ítem, y permite editarlo. Útil para crear nuevos SKU de ítems similares.",
-                GenNewItem, ()=> vm);
+                "Generar códigos de barras",
+                $"Permite generar un código de barras para todos los ítems en existencia.",
+                () => GenBarcodes(vm, o => o.EnumerableResults.OfType<Producto>().SelectMany(p => Multip(p, p.Batches.OfType<SerialBatch>().Sum(p => p.Qty)))));
         }
 
-        private void GenNewItem(ICrudViewModel vm)
+        private IEnumerable<Producto> Multip(Producto p, int v)
         {
-            var entity = (Facturable)vm!.Selection!;
-            var copy = entity.GetType().New<Facturable>();
-            CopyInfo(entity, copy);
-            vm.CreateNewFrom(copy);
+            for (var j = 0; j < v; j++) yield return p;
         }
 
-        private static void CopyInfo(Facturable entity, Facturable copy)
-        {
-            copy.Name = entity.Name;
-            copy.Isv = entity.Isv;
-            copy.Precio = entity.Precio;
-            copy.Category = entity.Category;
-            if (entity is Producto p1 && copy is Producto p2)
-            {
-                p2.Description = p1.Description;
-                p2.Picture = p1.Picture;
-                p2.StockMin = p1.StockMin;
-                p2.StockMax = p1.StockMax;
-                p2.ExpiryDays = p1.ExpiryDays;
-            }
-        }
-
-        private void GenBarcode(ICrudViewModel? vm)
+        private void GenBarcodes(ICrudViewModel? vm, Func<ISearchViewModel,IEnumerable<Facturable>> query)
         {
             var m = TYPE.CODE128B;
             if (!InputSplash.Get("Seleccione el tipo de código de barra a generar", ref m)) return;
             try
             {
+                /*
                 var pd = new PrintDialog();
                 if (pd.ShowDialog() ?? false)
                 {
-                    var pnl = new DockPanel
-                    {
-                        Children =
-                        {
-                            new Image 
-                            { 
-                                Source = GetBarcode(m, vm!.Selection!.StringId),
-                                MaxWidth = 200, MaxHeight = 150,
-                                Margin = new System.Windows.Thickness(20, 0, 10, 0)
-                            },
-                            new StackPanel
-                            {
-                                Children =
-                                {
-                                    new TextBlock { Text = ((Facturable)vm!.Selection!).Name },
-                                    new Separator(),
-                                    new TextBlock { Text = GetDetails(vm) }
-                                },
-                                VerticalAlignment=System.Windows.VerticalAlignment.Top,
-                                HorizontalAlignment = System.Windows.HorizontalAlignment.Left
-                            }
-                        },
-                        Margin = new System.Windows.Thickness(0, 20, 0, 0),
-                        VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Left
-                    };
-
-                    pd.PrintVisual(pnl, $"Código de barras {m.NameOf()} para {vm!.SelectedElement!.Description.FriendlyName} {vm!.Selection!.StringId} - {App.Info.Name}");
+                    //pd.PrintVisual(GenerateBarcodes(m, vm is ISearchViewModel bb ? query(bb) : Array.Empty<Facturable>().AsEnumerable()), );
                 }
+                */
+                var fd = new FlowDocument();
+                fd.SetDpi(new System.Windows.DpiScale(1200, 1200));
+                foreach (var j in vm is ISearchViewModel bb ? query(bb) : Array.Empty<Facturable>().AsEnumerable())
+                {
+                    fd.Blocks.Add(new BlockUIContainer(GenerateBarcodeBlock(m, j)));
+                }
+                fd.Print($"Código de barras {m.NameOf()} - {App.Info.Name}");
             }
             catch (Exception ex)
             {
@@ -109,56 +71,5 @@ namespace TheXDS.Proteus.FacturacionUi.Tools
             }
         }
 
-        private string? GetDetails(ICrudViewModel vm)
-        {
-            return (vm is { Selection: Producto p }) ? p.Description : string.Empty;
-        }
-    }
-
-    public class FacturableSkuCrudTool : CrudTool<Facturable>
-    {
-        public FacturableSkuCrudTool() : base(CrudToolVisibility.Editing)
-        {
-        }
-        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
-        {
-            yield break;
-            foreach (var j in models)
-            {
-                yield return Launcher.FromMethod(
-                    "Generar SKU",
-                    $"Permite generar un nuevo SKU para el {CrudElement.GetDescription(j)?.FriendlyName ?? j.Name}.",
-                    GenSku, () => vm);
-            }
-        }
-
-        private static string GenNewId(byte len = 11)
-        {
-            var rnd = new Random();
-            var buff = new byte[8];
-            rnd.NextBytes(buff);
-            var c = BitConverter.ToInt64(buff, 0) & long.MaxValue;
-            return c.ToString().PadLeft(len, '0').Substring(0, len);
-        }
-
-        private void GenSku(ICrudViewModel? vm)
-        {
-            var tries = 0;
-            byte len = 11;
-            if (vm!.Selection!.IsNew)
-            {
-                do
-                {
-                    if (++tries % 10 == 0) len++;
-                    vm!.Selection!.Id = GenNewId(len);
-                } while (Proteus.Service<FacturaService>()!.Exists(vm!.Selection!.GetType(),vm!.Selection!.StringId));
-                (vm as NotifyPropertyChangeBase)?.Notify("Id");
-            }
-            else
-            {
-                Proteus.MessageTarget?.Stop("No se puede generar un nuevo SKU para un ítem que ya existe.");
-            }
-            return;
-        }
     }
 }
