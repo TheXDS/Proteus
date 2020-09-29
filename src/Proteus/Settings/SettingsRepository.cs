@@ -16,7 +16,6 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component.Attributes;
 using TheXDS.Proteus.Models;
-using TheXDS.MCART.Types;
 
 namespace TheXDS.Proteus.Component
 {
@@ -27,18 +26,19 @@ namespace TheXDS.Proteus.Component
             get => this[setting.ToString()];
             set => this[setting.ToString()] = value;
         }
+
         protected override IEnumerable<KeyValuePair<string, string>> Defaults()
         {
             foreach (T j in typeof(T).GetEnumValues())
             {
-                if (j.HasAttr<DefaultAttribute>(out var v))
+                if (j!.HasAttr<DefaultAttribute>(out var v))
                 {
-                    yield return new KeyValuePair<string, string>(j.ToString(), v.Value);
+                    yield return new KeyValuePair<string, string>(j!.ToString(), v!.Value!);
                 }
             }
         }
 
-        protected TValue GetAs<TValue>([CallerMemberName]string value = null!)
+        protected TValue GetAs<TValue>([CallerMemberName]string value = null!) where TValue : notnull
         {
             return GetAs<TValue>((T)Enum.Parse(typeof(T), value));
         }
@@ -90,11 +90,11 @@ namespace TheXDS.Proteus.Component
                     Repo.Settings.Add(new Setting { Id = customSetting, Value = value.Value });
                 else
                     this[customSetting].Value = value.Value;
-                Proteus.Service<UserService>().SaveAsync();
+                Proteus.Service<UserService>()!.SaveAsync();
             }
         }
 
-        public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter reporter)
+        public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter? reporter)
         {
             reporter?.UpdateStatus($"Creando repositorio de configuración {Guid}");
             var r = new ConfigRepository { Id = Guid };
@@ -107,7 +107,7 @@ namespace TheXDS.Proteus.Component
             yield break;
         }
 
-        public async Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter reporter)
+        public async Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter? reporter)
         {
             reporter?.UpdateStatus($"Comprobando repositorio de configuración {Guid}...");
             return await service.GetAsync<ConfigRepository, Guid>(Guid) is null;
