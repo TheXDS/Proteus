@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using BarcodeLib;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using TheXDS.MCART;
 
 namespace TheXDS.Proteus.FacturacionUi.Lib
@@ -16,24 +17,25 @@ namespace TheXDS.Proteus.FacturacionUi.Lib
         {
             var v = new DrawingVisual();
             using var dc = v.RenderOpen();
+            dc.DrawImage(GetBarcode(barcodeType, id), new Rect
+            { 
+                Width = 200,
+                Height = 100
+            });
+            return v;
+        }
+
+        public static BitmapSource GetBarcode(TYPE barcodeType, string id)
+        {
+            var v = new DrawingVisual();
+            using var dc = v.RenderOpen();
             using var barcode = new Barcode
             {
                 IncludeLabel = true,
                 LabelPosition = LabelPositions.BOTTOMCENTER,
                 ImageFormat = System.Drawing.Imaging.ImageFormat.Png,
-                //LabelFont = new Font("Consolas", 72),
-                //Width = 1200,
-                //Height = 600,
             };
-            var img = barcode.Encode(barcodeType, id);
-            dc.DrawImage(img.ToSource(), new Rect
-            { 
-                //Width = img.Width / 5,
-                //Height = img.Height / 5
-                Width = 200,
-                Height = 100
-            });
-            return v;
+            return barcode.Encode(barcodeType, id).ToSource();
         }
     }
 }

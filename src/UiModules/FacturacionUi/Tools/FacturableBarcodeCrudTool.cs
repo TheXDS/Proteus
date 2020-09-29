@@ -73,13 +73,45 @@ namespace TheXDS.Proteus.FacturacionUi.Tools
                 var pd = new PrintDialog();
                 if (pd.ShowDialog() ?? false)
                 {
-                    pd.PrintVisual(RenderBarcode(m, vm!.Selection!.StringId), $"Código de barras {m.NameOf()} para {vm!.SelectedElement!.Description.FriendlyName} {vm!.Selection!.StringId} - {App.Info.Name}");
+                    var pnl = new DockPanel
+                    {
+                        Children =
+                        {
+                            new Image 
+                            { 
+                                Source = GetBarcode(m, vm!.Selection!.StringId),
+                                MaxWidth = 200, MaxHeight = 150,
+                                Margin = new System.Windows.Thickness(20, 0, 10, 0)
+                            },
+                            new StackPanel
+                            {
+                                Children =
+                                {
+                                    new TextBlock { Text = ((Facturable)vm!.Selection!).Name },
+                                    new Separator(),
+                                    new TextBlock { Text = GetDetails(vm) }
+                                },
+                                VerticalAlignment=System.Windows.VerticalAlignment.Top,
+                                HorizontalAlignment = System.Windows.HorizontalAlignment.Left
+                            }
+                        },
+                        Margin = new System.Windows.Thickness(0, 20, 0, 0),
+                        VerticalAlignment = System.Windows.VerticalAlignment.Top,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Left
+                    };
+
+                    pd.PrintVisual(pnl, $"Código de barras {m.NameOf()} para {vm!.SelectedElement!.Description.FriendlyName} {vm!.Selection!.StringId} - {App.Info.Name}");
                 }
             }
             catch (Exception ex)
             {
                 Proteus.MessageTarget?.Warning($"No se pudo utilizar el tipo {m.NameOf()} para generar el código de barra: {ex.Message}");
             }
+        }
+
+        private string? GetDetails(ICrudViewModel vm)
+        {
+            return (vm is { Selection: Producto p }) ? p.Description : string.Empty;
         }
     }
 
