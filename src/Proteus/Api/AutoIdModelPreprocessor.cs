@@ -42,7 +42,7 @@ namespace TheXDS.Proteus.Api
         public void Process(DbEntityEntry entry)
         {
             var entity = (ModelBase)entry.Entity;
-            entity!.GetType().GetProperty("Id", typeof(T))!.SetValue(entity,GetNewValue());
+            entity.GetType().GetProperty("Id",typeof(T))!.SetValue(entity,GetNewValue());
         }
 
         /// <summary>

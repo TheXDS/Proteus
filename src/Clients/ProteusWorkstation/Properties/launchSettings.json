@@ -27,6 +27,10 @@
     "Recovery": {
       "commandName": "Project",
       "commandLineArgs": "--RecoveryMode"
+    },
+    "Full": {
+      "commandName": "Project",
+      "commandLineArgs": "--FullCheck"
     }
   }
 }
