@@ -25,7 +25,8 @@ namespace TheXDS.Proteus.PosFacturaPrinter
         [Name("Número de columnas"), Default("42")] PrinterColumns,
         [Name("Líneas de búffer post-impresión"), Default("6")] LeadOut,
         [Name("Soporte gráfico"), Default("false")] Graphics,
-        [Name("Dejar que la impresora formatee el texto"), Default("false")] PrinterFormat
+        [Name("Dejar que la impresora formatee el texto"), Default("false")] PrinterFormat,
+        [Name("Modo de prueba (Dump a la consola)"), Default("true")] TestMode
     }
 
     [Name("Impresora de POS"), Guid("8e4ebc2e-da07-4ecb-abcd-fd0ecc7d7ea1")]
@@ -37,13 +38,14 @@ namespace TheXDS.Proteus.PosFacturaPrinter
         public int LeadOut => GetAs<int>();
         public bool Graphics => GetAs<bool>();
         public bool PrinterFormat => GetAs<bool>();
+        public bool TestMode => GetAs<bool>();
     }
 
     [Name("Impresora de POS"), Description("Utiliza un sistema de impresión compatible con POS para imprimir la factura.")]
     [Guid("8e4ebc2e-da07-4ecb-abcd-fd0ecc7d7ea1")]
     public class PosFacturaPrinter : FacturaPrintDriver
     {
-        private class ColumnInfo
+        private struct ColumnInfo
         {
             public string Header { get; }
             public Func<ItemFactura, string> Selector { get; }
@@ -56,54 +58,52 @@ namespace TheXDS.Proteus.PosFacturaPrinter
                 Selector = selector;
             }
         }
+
         private class ColumnCollection : Collection<ColumnInfo>
         {
             public int LogicalWidth => this.Sum(p => p.Width);
 
-            public string GetHeader()
+            public void Add(string header, int width, Func<ItemFactura, string> selector)
+            {
+                Add(new ColumnInfo(header, width, selector));
+            }
+
+            public string Get(Func<ColumnInfo,string> text)
             {
                 var l = new StringBuilder();
                 var w = LogicalWidth;
                 foreach (var j in this)
                 {
                     var max = j.Width * _maxCols / w;
-                    l.Append(j.Header.Truncate(max).PadLeft(max));
+                    l.Append(text(j).Truncate(max).PadLeft(max));
                 }
                 return l.ToString();
             }
 
-            public string GetLine(ItemFactura i)
-            {
-                var l = new StringBuilder();
-                var w = LogicalWidth;
-                foreach (var j in this)
-                {
-                    var max = j.Width * _maxCols / w;
-                    l.Append(j.Selector(i).Truncate(max).PadLeft(max));
-                }
-                return l.ToString();
-            }
+            public string GetHeader() => Get(j => j.Header);
+
+            public string GetLine(ItemFactura i) => Get(j => j.Selector(i));
         }
 
+        private static readonly ColumnCollection _columns = new ColumnCollection();
         private static readonly PosSettingsRepository _settings = new PosSettingsRepository();
         private static int _maxCols = 0;
-        private static CultureInfo ci = CultureInfo.CreateSpecificCulture("es-HN");
 
         /// <summary>
-        ///     Inicializa la clase <see cref="PosFacturaPrinter"/>
+        /// Inicializa la clase <see cref="PosFacturaPrinter"/>
         /// </summary>
         static PosFacturaPrinter()
         {
             Proteus.RegisterExternalSettingsRepo(_settings);
-            Columns.Add(new ColumnInfo("Cant.", 5, p => p.Qty.ToString()));
-            Columns.Add(new ColumnInfo("Precio", 12, p => p.StaticPrecio.ToString("C")));
-            Columns.Add(new ColumnInfo("ISV", 8, p => p.StaticIsv.HasValue && p.StaticIsv.Value > 0 ? p.MontoGravado.ToString("C"):""));
-            Columns.Add(new ColumnInfo("SubTotal", 15, p => p.SubTotal.ToString("C")));
+            _columns.Add("Cant.", 5, p => p.Qty.ToString());
+            _columns.Add("Precio", 12, p => p.StaticPrecio.ToString("C"));
+            //Columns.Add("ISV", 9, p => p.MontoGravado > 0m ? p.MontoGravado.ToString("C") : "");
+            _columns.Add("SubTotal", 16, p => p.SubTotal.ToString("C"));
         }
 
         private static Printer GetPrinter()
         {
-            if (_maxCols == 0) _maxCols = int.TryParse(_settings[PosSettings.PrinterColumns].Value, out var c) ? c : 42;
+            if (_maxCols == 0) _maxCols = _settings.PrinterColumns;
             
             return new Printer(FacturaService.GetEstation?.Printer
                 ?? _settings[PosSettings.PrinterName].Value
@@ -117,40 +117,44 @@ namespace TheXDS.Proteus.PosFacturaPrinter
             var e = FacturaService.GetEstation?.Entidad!;
             var p = GetPrinter();
 
+            Action<string> write;
             if (_settings.PrinterFormat)
             {
                 p.AlignCenter();
-                p.Append(e.Name);
-                if (!e.Banner.IsEmpty()) p.Append(e!.Banner);
-                p.Append(e.Address);
-                p.Append($"{e.City}, {e.Country}");
-                p.Append($"RTN: {e.Id}");
-                p.Append($"Tel. {string.Join(", ", e.Phones.AsEnumerable().Select(p=>p.Number))}");
-                p.Append($"Email {string.Join(", ", e.Emails.AsEnumerable().Select(p => p.Address))}");
-                Line(p);
-                p.Append(title.ToUpper().Spell());
-                Line(p);
-                p.AlignLeft();
+                write = p.Append;
             }
             else
             {
-                Center(p, e.Name);
-                if (!e.Banner.IsEmpty()) Center(p, e!.Banner);
-                Center(p, e.Address);
-                Center(p, $"{e.City}, {e.Country}");
-                Center(p, $"RTN: {e.Id}");
-                Center(p, $"Tel. {string.Join(", ", e.Phones.AsEnumerable().Select(p => p.Number))}");
-                Center(p, $"Email {string.Join(", ", e.Emails.AsEnumerable().Select(p => p.Address))}");
-                Line(p);
-                Center(p, title.ToUpper().Spell());
-                Line(p);
+                write = t => Center(p, t);
             }
+
+            write(e.Name);
+            if (!e.Banner.IsEmpty()) write(e!.Banner);
+            write(e.Address);
+            write($"{e.City}, {e.Country}");
+            write($"RTN: {e.Id}");
+            write($"Tel. {string.Join(", ", e.Phones.AsEnumerable().Select(p => p.Number))}");
+            write($"Email {string.Join(", ", e.Emails.AsEnumerable().Select(p => p.Address))}");
+            Line(p);
+            write(title.ToUpper().Spell());
+            Line(p);
+
+            p.AlignLeft();
+
             return p;
         }
 
         private static void Line(Printer p, in char c = '-')
         {
-            p.Append(new string(c, _maxCols));
+            if (_settings.PrinterFormat)
+            {
+                p.Separator(c);
+            }
+            else
+            {
+                p.Append(new string(c, _maxCols));
+            }
+
         }
 
         private static void Center(Printer p, string text)
@@ -176,10 +180,15 @@ namespace TheXDS.Proteus.PosFacturaPrinter
 
         private static void FooterAndPrint(Printer p)
         {
-            p.NewLines(_settings.LeadOut);
+            p.Append(new string('\n', _settings.LeadOut));
             p.FullPaperCut();
             p.OpenDrawer();
-            p.PrintDocument();
+            if (_settings.TestMode)
+            {
+
+                return;
+            }
+            p.PrintDocument();            
         }
 
         private static void ChkReImpresion(Printer p, Factura f)
@@ -211,83 +220,105 @@ namespace TheXDS.Proteus.PosFacturaPrinter
             ChkReImpresion(p, f);
         }
 
-        private static readonly ColumnCollection Columns = new ColumnCollection();
-
-        public override void PrintFactura(Factura f, IFacturaInteractor? i)
+        private static void PrintTotals(Printer p, Factura f)
         {
-            var p = PrintHeader("factura");
-            PrintFacturaHeader(p, f);
-            p.Append("Descripción");
-            p.Append(Columns.GetHeader());
-            Line(p);
-            foreach (var j in f.Items)
+            void AddSubt(string label, decimal value) => p.Append($"{$"{label}:".PadLeft(_maxCols - 18)}{value,18:C}");
+            void AddSubtGroup(Func<ItemFactura, decimal> selector, string gravFormat, string? exformat = null)
             {
-                p.Append($"{j.Item.Name}{(j.StaticIsv.HasValue && j.StaticIsv.Value > 0 ? $" (G {j.StaticIsv}%)":"")}");
-                p.Append(Columns.GetLine(j));
+                foreach (var j in f.Items.GroupBy(p => p.StaticIsv ?? 0f))
+                {
+                    if (j.Key > 0f)
+                    {
+                        AddSubt(string.Format(gravFormat,j.Key), j.Sum(selector));
+                    }
+                    else if (exformat is string s)
+                    {
+                        AddSubt(s, j.Sum(selector));
+                    }
+                }
             }
-            Line(p);
-
-            void AddSubt(string label, decimal value) => p.Append($"{$"{label}:".PadLeft(_maxCols - 20)}{value.ToString("C", ci),20}");
-
-            AddSubt("Subtotal", f.SubTotal);
-            AddSubt("Total ISV", f.SubTGravable);
-            AddSubt("Subtotal Gravado", f.SubTGravado);
-            AddSubt("Descuentos", f.Descuentos);
-
+            AddSubtGroup(p => p.StaticPrecio * p.Qty, "Importe gravado {0}%", "Importe excento");
+            AddSubt("Descuentos otorgados", f.Descuentos);
+            AddSubt("Cargos adicionales", f.OtrosCargos);
+            AddSubtGroup(p => p.StaticPrecio * p.Qty * (decimal)((p.StaticIsv / 100f) ?? 0f), "I.S.V {0}%");
             p.BoldMode(On);
-            AddSubt("TOTAL", f.Total);
+            AddSubt("TOTAL A PAGAR", f.Total);
             p.BoldMode(Off);
-
             foreach (var j in f.Payments)
             {
                 AddSubt(j.ResolveSource()?.Name ?? "Pago misc.", j.Amount);
             }
             AddSubt("Cambio", -f.Vuelto);
+        }
+
+        private static void PrintFacturaFooter(Printer p, Factura f)
+        {
+            Line(p, '=');
+            ChkReImpresion(p, f);
+            Action<string> write;
+            if (_settings.PrinterFormat)
+            {
+                p.AlignCenter();
+                write = p.Append;
+            }
+            else
+            {
+                write = t => Center(p, t);
+            }
+            if (!f.Impresa)
+            {
+                write("Gracias por su compra.");
+                write($"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
+            }
+            else
+            {
+                write("Reimpresión únicamente para propósitos de referencia y archivo.");
+            }
+            write("Original - Cliente");
+            write("CC - Comercio");
+            p.AlignLeft();
+
+        }
+
+        public override void PrintFactura(Factura f, IFacturaInteractor? i)
+        {
+            // Headers
+            var p = PrintHeader("factura");
+            PrintFacturaHeader(p, f);
+
+            // Items
+            p.Append("Descripción");
+            p.Append(_columns.GetHeader());
+            Line(p);
+            foreach (var j in f.Items)
+            {
+                p.Append($"{j.Item.Name}{(j.StaticIsv.HasValue && j.StaticIsv.Value > 0 ? $" (G {j.StaticIsv}%)":"")}");
+                p.Append(_columns.GetLine(j));
+            }
+            Line(p);
+
+            // Totales
+            PrintTotals(p, f);
             if (!f.Notas.IsEmpty())
             {
                 Line(p);
                 p.Append(f.Notas);
             }
 
-            Line(p, '=');
-            ChkReImpresion(p, f);
+            // Footer
+            PrintFacturaFooter(p, f);
 
-            if (_settings.PrinterFormat) { 
-                p.AlignCenter();
-                if (!f.Impresa)
-                {
-                    p.Append("Gracias por su compra.");
-                    p.Append($"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
-                }
-                else
-                {
-                    p.Append("Reimpresión únicamente para propósitos de referencia y archivo.");
-                }
-                p.Append("Original - Cliente");
-                p.Append("CC - Comercio");
-            }
-            else
-            {
-                if (!f.Impresa)
-                {
-                    Center(p, "Gracias por su compra.");
-                    Center(p, $"Atendido por: {FacturaService.GetCajero?.UserEntity?.Name ?? FacturaService.GetCajero?.UserId ?? Proteus.Session?.Id}");
-
-                }
-                else
-                {
-                    Center(p, "Reimpresión únicamente para propósitos de referencia y archivo.");
-                }
-                Center(p, "Original - Cliente");
-                Center(p, "CC - Comercio");
-            }
             FooterAndPrint(p);
             f.Impresa = true;
         }
 
+
+
+
+
+
         public override void PrintProforma(Factura f, IFacturaInteractor? i)
         {
-            var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
             var p = PrintHeader("PROFORMA");
             p.BoldMode($"Código de orden: {f.Id:000000}");
             p.Append($"Fecha de generacion: {f.Timestamp:dd/MM/yyyy}");
@@ -317,11 +348,11 @@ namespace TheXDS.Proteus.PosFacturaPrinter
                 if (!exonerar)
                     precio += (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
                 p.AlignRight();
-                p.Append($"{j.Qty,-5}{precio.ToString("C", ci),15}{(j.Qty * precio).ToString("C", ci).PadLeft(_maxCols - 20)}");
+                p.Append($"{j.Qty,-5}{precio,15:C}{(j.Qty * precio).ToString("C").PadLeft(_maxCols - 20)}");
                 tot += precio * j.Qty;
             }
             Line(p);
-            void AddSubt(string label, decimal value) => p.Append($"{$"{label}:",25}{value.ToString("C", ci).PadLeft(_maxCols - 25)}");
+            void AddSubt(string label, decimal value) => p.Append($"{$"{label}:",25}{value.ToString("C").PadLeft(_maxCols - 25)}");
             p.AlignLeft();
             p.Append($"Total de ítems: {f.Items.Sum(j => j.Qty)}");
             p.AlignRight();
@@ -344,15 +375,14 @@ namespace TheXDS.Proteus.PosFacturaPrinter
 
         public override void PrintCajaOpCut(CajaOp op)
         {
-            var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
             var p = PrintHeader("CORTE DE CAJA");
             p.Append($"Estación: {op.Estacion.Id}");
             p.Append($"Cajero: {op.Cajero.UserEntity?.Name ?? op.Cajero.UserId}");
-            p.Append($"Balance de apertura: {op.OpenBalance.ToString("C", ci)}");
+            p.Append($"Balance de apertura: {op.OpenBalance:C}");
             if (op.CloseTimestamp.HasValue)
             {
                 p.Append($"Corte: {op.CloseTimestamp}");
-                p.Append($"Balance de corte: {op.CloseBalance!.Value.ToString("C", ci)}");
+                p.Append($"Balance de corte: {op.CloseBalance!.Value:C}");
             }
             else
             {
@@ -368,11 +398,11 @@ namespace TheXDS.Proteus.PosFacturaPrinter
                     p.Append($"Factura #{j.FactNum ?? j.Id.ToString()}");
                     p.Append($"Cliente: {j.Cliente.Name}");
                     if (j.Cliente is {Rtn: string rtn }) p.Append($"RTN: {rtn}");
-                    p.Append($"Total: {j.Total.ToString("C", ci)}");
-                    p.Append($"Efectivo: {j.TotalPagadoEfectivo.ToString("C", ci)}");
+                    p.Append($"Total: {j.Total:C}");
+                    p.Append($"Efectivo: {j.TotalPagadoEfectivo:C}");
                     Line(p);
                 }
-                p.Append($"Ingreso total: {op.TotalFacturas.ToString("C", ci)}");
+                p.Append($"Ingreso total: {op.TotalFacturas:C}");
             }
             Line(p,'=');
             p.Append("RETIROS:");
@@ -382,12 +412,12 @@ namespace TheXDS.Proteus.PosFacturaPrinter
                 Line(p);
                 foreach (var j in op.Drops)
                 {
-                    p.Append($"Retiro de: {j.Amount.ToString("C", ci)}");
+                    p.Append($"Retiro de: {j.Amount:C}");
                     p.Append("Motivo:");
                     p.Append(j.Concept);
                     Line(p);
                 }
-                p.Append($"Retiro total: {op.TotalDrops.ToString("C", ci)}");
+                p.Append($"Retiro total: {op.TotalDrops:C}");
             }
             FooterAndPrint(p);
         }
