@@ -3,18 +3,12 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Config;
-using TheXDS.Proteus.Pages.Base;
-using TheXDS.Proteus.Resources;
-using TheXDS.Proteus.ViewModels.Base;
-using TheXDS.Proteus.Widgets;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using TheXDS.MCART.Component;
-using TheXDS.MCART.Dialogs;
-using TheXDS.MCART.Pages;
+using TheXDS.Proteus.Config;
+using TheXDS.Proteus.Pages.Base;
+using TheXDS.Proteus.ViewModels.Base;
+using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.Pages
 {

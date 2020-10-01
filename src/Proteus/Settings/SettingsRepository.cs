@@ -21,10 +21,26 @@ namespace TheXDS.Proteus.Component
 {
     public abstract class SettingsRepository<T> : SettingsRepository where T : Enum
     {
+        public override IEnumerable<Setting> Settings => base.Settings.Select(AppendTypeMetadata);
+
         public Setting this[T setting]
         {
-            get => this[setting.ToString()];
+            get
+            {
+                var s = this[setting.ToString()];                
+                return AppendTypeMetadata(s, setting);
+            }
             set => this[setting.ToString()] = value;
+        }
+
+        private Setting AppendTypeMetadata(Setting s, T setting)
+        {
+            s.DataType = setting.GetAttr<SettingTypeAttribute>()?.Type ?? typeof(string);
+            return s;
+        }
+        private Setting AppendTypeMetadata(Setting s)
+        {
+            return AppendTypeMetadata(s, (T)Enum.Parse(typeof(T), s.Id));
         }
 
         protected override IEnumerable<KeyValuePair<string, string>> Defaults()
@@ -72,7 +88,7 @@ namespace TheXDS.Proteus.Component
 
         protected ConfigRepository Repo => Proteus.Service<UserService>()!.Get<ConfigRepository, Guid>(Guid);
 
-        public IEnumerable<Setting> Settings => Repo.Settings;
+        public virtual IEnumerable<Setting> Settings => Repo.Settings;
 
         public Guid Guid => _implementor.Guid;
 
