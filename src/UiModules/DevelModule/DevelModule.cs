@@ -4,9 +4,12 @@ Licenciado para uso interno solamente.
 */
 
 using System;
+using System.Runtime.InteropServices;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.Proteus.Annotations;
+using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Component.Attributes;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.DevelModule.Pages;
 using TheXDS.Proteus.Pages;
@@ -17,11 +20,30 @@ using static TheXDS.Proteus.Annotations.InteractionType;
 
 namespace TheXDS.Proteus.DevelModule
 {
+    public enum DevelTestSettings
+    {
+        [Default("")] StringValue,
+        [SettingType(typeof(int)), Default("0")] IntValue,
+        [SettingType(typeof(float)), Default("0.0")] FloatValue,
+        [SettingType(typeof(double)), Default("0.0")] DoubleValue,
+        [SettingType(typeof(decimal)), Default("0.00")] DecimalValue,
+        [SettingType(typeof(DateTime)), Default("2020-1-1")] DateTimeValue,
+        [SettingType(typeof(bool)), Default("false")] BoolValue,
+        [SettingType(typeof(DayOfWeek)), Default("Monday")] EnumValue
+    }
+
+
+    [Name("Repositorio de prueba"), Guid("8caa5b43-13ac-4eee-8217-38e74d697202")]
+    public class DevelTestSettingsRepository : SettingsRepository<DevelTestSettings>
+    {
+    }
+
     public class DevelModule : UiModule
     {
         public DevelModule()
         {
             Config.Settings.Default.WindowUiMode = UiMode.Logging;
+            Proteus.RegisterExternalSettingsRepo(new DevelTestSettingsRepository());
             App.UiInvoke(SetupDashboard);
         }
 
