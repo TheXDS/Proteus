@@ -85,7 +85,7 @@ namespace TheXDS.Proteus.Models.Base
         /// </returns>
         public bool ChangesPending()
         {
-            return Proteus.Infer(GetType().ResolveToDefinedType()).ChangesPending(this);
+            return Proteus.Infer(this)!.ChangesPending(this);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace TheXDS.Proteus.Models.Base
         /// </summary>
         public void Rollback()
         {
-            Proteus.Infer(GetType()).Rollback(this);
+            Proteus.Infer(this)!.Rollback(this);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace TheXDS.Proteus.Models.Base
             {
                 INameable nameable => nameable.Name,
                 IDescriptible descriptible => descriptible.Description!,
-                _ => $"{(!GetType().Assembly.IsDynamic ? GetType().NameOf() : GetType().BaseType.NameOf())} {StringId}",
+                _ => $"{(!GetType().Assembly.IsDynamic ? GetType().NameOf() : GetType().BaseType!.NameOf())} {StringId}",
             };
         }
     }
@@ -147,8 +147,8 @@ namespace TheXDS.Proteus.Models.Base
         {
             get
             {
-                var t = GetType().ResolveCollectionType().ResolveToDefinedType();
-                return !(HasId && Proteus.InferService(t).Exists(this));
+                var t = GetType().ResolveCollectionType().ResolveToDefinedType()!;
+                return !(HasId && (Proteus.InferService(t)?.Exists(this) ?? Proteus.DeepSearchFor(this)));
             }
         }
 

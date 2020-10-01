@@ -548,7 +548,7 @@ namespace TheXDS.Proteus
         /// tipo especificado, o <see langword="null"/> si ningún servicio
         /// puede manejar el modelo.
         /// </returns>
-        public static Service InferService<TEntity>() where TEntity : ModelBase, new()
+        public static Service? InferService<TEntity>() where TEntity : ModelBase, new()
         {
             return Services.FirstOrDefault(p => p.Hosts<TEntity>());
         }
@@ -565,9 +565,19 @@ namespace TheXDS.Proteus
         /// tipo especificado, o <see langword="null"/> si ningún servicio
         /// puede manejar el modelo.
         /// </returns>
-        public static Service InferService(Type tEntity)
+        public static Service? InferService(Type tEntity)
         {
             return Services.FirstOrDefault(p => p.Hosts(tEntity));
+        }
+
+        public static Service? DeepInferService(ModelBase entity)
+        {
+            return Services.FirstOrDefault(p => p.DeepSearchFor(entity));
+        }
+
+        public static bool DeepSearchFor(ModelBase entity)
+        {
+            return Services.Any(p => p.DeepSearchFor(entity));
         }
 
         /// <summary>
@@ -582,7 +592,7 @@ namespace TheXDS.Proteus
         /// tipo especificado, o <see langword="null"/> si ningún servicio
         /// puede manejar el tipo básico de modelos.
         /// </returns>
-        public static Service InferBaseService(Type tEntity)
+        public static Service? InferBaseService(Type tEntity)
         {
             return Services.FirstOrDefault(p => p.HostsBase(tEntity));
         }
@@ -622,6 +632,13 @@ namespace TheXDS.Proteus
             model = model.ResolveToDefinedType()!;
             return InferService(model) ?? InferBaseService(model);
         }
+
+        public static Service? Infer(ModelBase? model)
+        {
+            if (model is null) return null;
+            return Infer(model.GetType()) ?? DeepInferService(model);
+        }
+
 
         /// <summary>
         /// Durante las fases de inicialización temprana, permite

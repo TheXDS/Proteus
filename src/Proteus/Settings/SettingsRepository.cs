@@ -3,35 +3,76 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Component.Attributes;
-using TheXDS.Proteus.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TheXDS.MCART;
+using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
-using TheXDS.MCART.Types;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Component.Attributes;
+using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Component
 {
     public abstract class SettingsRepository<T> : SettingsRepository where T : Enum
     {
+        public override IEnumerable<Setting> Settings => base.Settings.Select(AppendTypeMetadata);
+
         public Setting this[T setting]
         {
-            get => this[setting.ToString()];
+            get
+            {
+                var s = this[setting.ToString()];                
+                return AppendTypeMetadata(s, setting);
+            }
             set => this[setting.ToString()] = value;
         }
+
+        private Setting AppendTypeMetadata(Setting s, T setting)
+        {
+            s.DataType = setting.GetAttr<SettingTypeAttribute>()?.Type ?? typeof(string);
+            return s;
+        }
+        private Setting AppendTypeMetadata(Setting s)
+        {
+            return AppendTypeMetadata(s, (T)Enum.Parse(typeof(T), s.Id));
+        }
+
         protected override IEnumerable<KeyValuePair<string, string>> Defaults()
         {
             foreach (T j in typeof(T).GetEnumValues())
             {
-                if (j.HasAttr<DefaultAttribute>(out var v))
+                if (j!.HasAttr<DefaultAttribute>(out var v))
                 {
-                    yield return new KeyValuePair<string, string>(j.ToString(), v.Value);
+                    yield return new KeyValuePair<string, string>(j!.ToString(), v!.Value!);
                 }
+            }
+        }
+
+        protected TValue GetAs<TValue>([CallerMemberName]string value = null!) where TValue : notnull
+        {
+            return GetAs<TValue>((T)Enum.Parse(typeof(T), value));
+        }
+
+        protected TValue GetAs<TValue>(T value) where TValue : notnull
+        {
+            var s = this[value].Value.OrNull() ?? value.GetAttr<DefaultAttribute>()?.Value ?? default(TValue)?.ToString() ?? "";
+            if (typeof(TValue) == typeof(string)) return (TValue)(object)s;
+            try
+            {
+                return typeof(TValue).GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null) is { } m
+                    ? (TValue)m.Invoke(null, new[] { s })!
+                    : Common.FindConverter<TValue>()?.ConvertFromString(s) is TValue v ? v! : default!;
+            }
+            catch (Exception ex)
+            {
+                Proteus.AlertTarget?.Alert("Hubo un problema obteniendo un valor de configuración.", $"No se pudo obtener el valor de configuración {value} a partir del valor almacenado '{s}' debido al siguiente error: {ex.Message}");
+                return default!;
             }
         }
     }
@@ -45,9 +86,9 @@ namespace TheXDS.Proteus.Component
             _implementor = new ExposeGuidImplementor(this);
         }
 
-        protected ConfigRepository Repo => Proteus.Service<UserService>().Get<ConfigRepository, Guid>(Guid);
+        protected ConfigRepository Repo => Proteus.Service<UserService>()!.Get<ConfigRepository, Guid>(Guid);
 
-        public IEnumerable<Setting> Settings => Repo.Settings;
+        public virtual IEnumerable<Setting> Settings => Repo.Settings;
 
         public Guid Guid => _implementor.Guid;
 
@@ -65,11 +106,11 @@ namespace TheXDS.Proteus.Component
                     Repo.Settings.Add(new Setting { Id = customSetting, Value = value.Value });
                 else
                     this[customSetting].Value = value.Value;
-                Proteus.Service<UserService>().SaveAsync();
+                Proteus.Service<UserService>()!.SaveAsync();
             }
         }
 
-        public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter reporter)
+        public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter? reporter)
         {
             reporter?.UpdateStatus($"Creando repositorio de configuración {Guid}");
             var r = new ConfigRepository { Id = Guid };
@@ -82,7 +123,7 @@ namespace TheXDS.Proteus.Component
             yield break;
         }
 
-        public async Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter reporter)
+        public async Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter? reporter)
         {
             reporter?.UpdateStatus($"Comprobando repositorio de configuración {Guid}...");
             return await service.GetAsync<ConfigRepository, Guid>(Guid) is null;
