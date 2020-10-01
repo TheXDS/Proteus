@@ -25,7 +25,7 @@ namespace TheXDS.Proteus.PosFacturaPrinter
         [Name("Número de columnas"), Default("42"), SettingType(typeof(int))] PrinterColumns,
         [Name("Líneas de búffer post-impresión"), Default("6"), SettingType(typeof(int))] LeadOut,
         [Name("Soporte gráfico"), Default("false"), SettingType(typeof(bool))] Graphics,
-        [Name("Dejar que la impresora formatee el texto"), Default("false"), SettingType(typeof(bool))] PrinterFormat
+        [Name("Dejar que la impresora formatee el texto"), Default("false"), SettingType(typeof(bool))] PrinterFormat,
         [Name("Modo de prueba (Dump a la consola)"), Default("true"), SettingType(typeof(bool))] TestMode
     }
 
