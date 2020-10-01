@@ -31,6 +31,10 @@
     "FullInMemory": {
       "commandName": "Project",
       "commandLineArgs": "--InMemory --FullCheck"
+    },
+    "Full": {
+      "commandName": "Project",
+      "commandLineArgs": "--FullCheck"
     }
   }
 }
