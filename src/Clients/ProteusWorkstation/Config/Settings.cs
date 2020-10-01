@@ -48,9 +48,19 @@ namespace TheXDS.Proteus.Config
             SettingsSaving += Settings_SettingsSaving;
             CancelCommand = new SimpleCommand(() => { Reload(); UnsavedChanges = false; }, false);
             CloseCommand = new SimpleCommand(Close, Launched);
-            SaveCommand = new SimpleCommand(Save, !Launched);
+            SaveCommand = new SimpleCommand(OnSave, !Launched);
             if (!Launched) Upgrade();
         }
+
+        private async void OnSave()
+        {
+            Save();
+            if (Repos.SelectMany(p => p.Settings).Any(p => p.ChangesPending()))
+            {
+                await Proteus.LogonService.SaveAsync();
+            }
+        }
+
         private void Settings_SettingsSaving(object sender, CancelEventArgs e)
         {
             UnsavedChanges = false;
