@@ -5,6 +5,7 @@ namespace TheXDS.Proteus.Models
 {
     public class SerialNum : ModelBase<string>
     {
+        public virtual SerialBatch Parent { get; set; }
         public string Notes { get; set; }
         public virtual Warranty? Warranty { get; set; }
         public DateTime? Sold { get; set; }
