@@ -15,11 +15,15 @@ namespace TheXDS.Proteus.Models
 {
     public class Setting : ModelBase<string>
     {
+        private string? friendlyName;
+
         public string Value { get; set; }
         public virtual ConfigRepository Parent { get; set; }
 
         [NotMapped]
         public Type DataType { get; internal set; } = typeof(string);
+        [NotMapped]
+        public string FriendlyName { get => friendlyName ?? Id; internal set => friendlyName = value; }
         [NotMapped]
         public int IntValue
         {
