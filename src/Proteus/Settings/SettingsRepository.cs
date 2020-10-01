@@ -21,26 +21,27 @@ namespace TheXDS.Proteus.Component
 {
     public abstract class SettingsRepository<T> : SettingsRepository where T : Enum
     {
-        public override IEnumerable<Setting> Settings => base.Settings.Select(AppendTypeMetadata);
+        public override IEnumerable<Setting> Settings => base.Settings.Select(AppendMetadata);
 
         public Setting this[T setting]
         {
             get
             {
                 var s = this[setting.ToString()];                
-                return AppendTypeMetadata(s, setting);
+                return AppendMetadata(s, setting);
             }
             set => this[setting.ToString()] = value;
         }
 
-        private Setting AppendTypeMetadata(Setting s, T setting)
+        private Setting AppendMetadata(Setting s, T setting)
         {
             s.DataType = setting.GetAttr<SettingTypeAttribute>()?.Type ?? typeof(string);
+            s.FriendlyName = setting.NameOf();
             return s;
         }
-        private Setting AppendTypeMetadata(Setting s)
+        private Setting AppendMetadata(Setting s)
         {
-            return AppendTypeMetadata(s, (T)Enum.Parse(typeof(T), s.Id));
+            return AppendMetadata(s, (T)Enum.Parse(typeof(T), s.Id));
         }
 
         protected override IEnumerable<KeyValuePair<string, string>> Defaults()
