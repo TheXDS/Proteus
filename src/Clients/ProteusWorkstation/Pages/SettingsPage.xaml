@@ -324,7 +324,7 @@
                             <GridView>
                                 <GridViewColumn
                                     Header="Configuración"
-                                    DisplayMemberBinding="{Binding Id, Mode=OneWay}"/>
+                                    DisplayMemberBinding="{Binding FriendlyName, Mode=OneWay}"/>
                                 <GridViewColumn
                                     Header="Tipo de valor"
                                     DisplayMemberBinding="{Binding DataType, Mode=OneWay}"/>
