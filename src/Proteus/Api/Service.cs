@@ -51,6 +51,17 @@ namespace TheXDS.Proteus.Api
     /// </summary>
     public abstract class Service : Plugin, IDisposable, IFullService
     {
+        public bool DeepSearchFor(ModelBase entity)
+        {
+            try
+            {
+                return Context.Set(entity.GetType().ResolveToDefinedType())?.Find(new[] { entity.IdAsObject }) is { };
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         private static readonly IEnumerable<IModelPreprocessor> _preprocessors = Objects.FindAllObjects<IModelPreprocessor>().OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).ToList();
 

@@ -68,6 +68,8 @@ namespace TheXDS.Proteus.ViewModels
         /// </summary>
         public IList<Type> SelectableModels { get; }
 
+        public Action<ModelBase> OnSaveAction { get; set; }
+
         /// <summary>
         /// Obtiene o establece el valor ActiveModel.
         /// </summary>
@@ -322,6 +324,7 @@ namespace TheXDS.Proteus.ViewModels
         /// </returns>
         protected override Task<DetailedResult> PerformSave(ModelBase entity)
         {
+            OnSaveAction?.Invoke(entity);
             return Task.FromResult(DetailedResult.Ok);
         }
 

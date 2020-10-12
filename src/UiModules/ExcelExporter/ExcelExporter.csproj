@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -8,7 +8,9 @@
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="5.3.2" />
   </ItemGroup>
+  
   <Target Name="ManuallyCopyDeps" AfterTargets="PostBuildEvent">
-    <Exec Command="pwsh -File $(TargetsDir)Copy-EPPlus.ps1" />
+    <Exec Command="pwsh -Command &quot;$(TargetsDir)Copy-Deps.ps1 -RootDir $(Root) -Dependencies EPPlus, microsoft.extensions.Primitives, microsoft.extensions.Configuration.Abstractions, microsoft.extensions.Configuration, microsoft.extensions.Configuration.Json, microsoft.extensions.Configuration.FileExtensions, microsoft.extensions.FileSystemGlobbing, microsoft.extensions.FileProviders.Abstractions, microsoft.extensions.FileProviders.Physical&quot;" />
   </Target>
+  
 </Project>

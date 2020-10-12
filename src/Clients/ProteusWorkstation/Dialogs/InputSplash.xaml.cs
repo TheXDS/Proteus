@@ -23,6 +23,12 @@ namespace TheXDS.Proteus.Dialogs
         private InputSplash()
         {
             InitializeComponent();
+            Loaded += InputSplash_Loaded;
+        }
+
+        private void InputSplash_Loaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as InputSplashViewModel)?.InputControl?.Focus();
         }
 
         public static bool GetNew<T>(string prompt, out T value)
@@ -50,61 +56,79 @@ namespace TheXDS.Proteus.Dialogs
         }
     }
 
-    public class InputSplashViewModel<T> : NotifyPropertyChanged
+    public class InputSplashTarget : IInputTarget
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public bool Get<T>(string prompt, ref T value)
+        {
+            return InputSplash.Get<T>(prompt, ref value);
+        }
 
-        private readonly ICloseable _host;
-        private T _inputValue;
+        public bool GetNew<T>(string prompt, out T value)
+        {
+            return InputSplash.GetNew<T>(prompt, out value);
+        }
+    }
+
+    public abstract class InputSplashViewModel : NotifyPropertyChanged
+    {
+        protected readonly ICloseable _host;
+
+        protected InputSplashViewModel(ICloseable host)
+        {
+            _host = host;
+        }
 
         /// <summary>
         /// Obtiene o establece el valor Title.
         /// </summary>
         /// <value>El valor de Title.</value>
-        public string Prompt { get; }
+        public string Prompt { get; protected set; }
 
         /// <summary>
         /// Obtiene un valor que indica si la obtención de un valor ha sido cancelada.
         /// </summary>
-        public bool Cancel { get; private set; }
+        public bool Cancel { get; protected set; }
 
         /// <summary>
         /// Obtiene el control de edición a utilizar para obtener el valor
         /// introducido por el usuario.
         /// </summary>
-        public FrameworkElement InputControl { get; }
+        public FrameworkElement InputControl { get; protected set; }
 
         /// <summary>
         /// Obtiene el comando relacionado a la acción Close.
         /// </summary>
         /// <returns>El comando Close.</returns>
-        public SimpleCommand CloseCommand { get; }
+        public SimpleCommand CloseCommand { get; protected set; }
 
         /// <summary>
         /// Obtiene el comando relacionado a la acción Go.
         /// </summary>
         /// <returns>El comando Go.</returns>
-        public SimpleCommand GoCommand { get; }
+        public SimpleCommand GoCommand { get; protected set; }
+    }
 
+    public class InputSplashViewModel<T> : InputSplashViewModel
+    {
+        private T _inputValue;
 
-        public InputSplashViewModel(ICloseable host, IPropertyDescription description)
+        public InputSplashViewModel(ICloseable host, IPropertyDescription description) : base(host)
         {
-            _host = host;
             CloseCommand = new SimpleCommand(OnClose);
             GoCommand = new SimpleCommand(OnGo);
             InputControl = PropertyMapper.GetMapping(null, description)?.Control;
             Prompt = description.Label;
         }
 
+        private void OnGo()
+        {
+            _host.Close();
+        }
+
         private void OnClose()
         {
             Cancel = true;
             InputValue = default!;
-            _host.Close();
-        }
-
-        private void OnGo()
-        {
             _host.Close();
         }
 

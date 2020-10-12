@@ -28,6 +28,10 @@
       "commandName": "Project",
       "commandLineArgs": "--RecoveryMode"
     },
+    "Full": {
+      "commandName": "Project",
+      "commandLineArgs": "--FullCheck"
+    },
     "FullInMemory": {
       "commandName": "Project",
       "commandLineArgs": "--InMemory --FullCheck"
