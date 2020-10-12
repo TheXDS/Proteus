@@ -22,11 +22,11 @@ namespace TheXDS.Proteus.PosFacturaPrinter
     {
         [Name("Impresora POS predeterminada"), Default("")] PrinterName,
         [Name("Página de códigos"), Default("iso-8859-1")] PrinterCodePage,
-        [Name("Número de columnas"), Default("42")] PrinterColumns,
-        [Name("Líneas de búffer post-impresión"), Default("6")] LeadOut,
-        [Name("Soporte gráfico"), Default("false")] Graphics,
-        [Name("Dejar que la impresora formatee el texto"), Default("false")] PrinterFormat,
-        [Name("Modo de prueba (Dump a la consola)"), Default("true")] TestMode
+        [Name("Número de columnas"), Default("42"), SettingType(typeof(int))] PrinterColumns,
+        [Name("Líneas de búffer post-impresión"), Default("6"), SettingType(typeof(int))] LeadOut,
+        [Name("Soporte gráfico"), Default("false"), SettingType(typeof(bool))] Graphics,
+        [Name("Dejar que la impresora formatee el texto"), Default("false"), SettingType(typeof(bool))] PrinterFormat,
+        [Name("Modo de prueba (Dump a la consola)"), Default("true"), SettingType(typeof(bool))] TestMode
     }
 
     [Name("Impresora de POS"), Guid("8e4ebc2e-da07-4ecb-abcd-fd0ecc7d7ea1")]
