@@ -163,7 +163,7 @@ namespace TheXDS.Proteus.Api
                 .Where(q => q.Item.Id == prod.Id)
                 .ToList()
                 .Where(q => q.Qty > 0)
-                .OrderBy(q => q.Lote.Manufactured)
+                .OrderBy(q => q.Lote?.Manufactured)
                 .FirstOrDefault();
         }
 
