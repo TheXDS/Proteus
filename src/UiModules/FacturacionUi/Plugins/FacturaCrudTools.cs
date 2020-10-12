@@ -31,7 +31,7 @@ namespace TheXDS.Proteus.Plugins
         private void LookupSerial()
         {
             string? s = null;
-            if (!Proteus.InputTarget?.Get("", ref s) ?? false) return;
+            if (!Proteus.InputTarget?.Get("Ingrese o escanee el número de serie a buscar", ref s) ?? false) return;
             var e = Proteus.Service<FacturaService>()!.Get<SerialNum>(s!);
             if (e is { })
             {
