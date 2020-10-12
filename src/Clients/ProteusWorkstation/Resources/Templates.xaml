@@ -1,0 +1,44 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:TheXDS.Proteus.Resources"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <DataTemplate x:Key="EnumSettingsControl">
+        <ComboBox 
+            ItemsSource="{Binding EnumValues, Mode=OneWay}"
+            SelectedValue="{Binding EnumValue}"
+            DisplayMemberPath="Name"
+            SelectedValuePath="Value"
+            MinWidth="150"/>
+    </DataTemplate>
+    <DataTemplate x:Key="StringSettingsControl">
+        <TextBox Text="{Binding Value}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="ByteSettingsControl">
+        <xctk:ByteUpDown Value="{Binding ByteValue}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="Int16SettingsControl">
+        <xctk:ShortUpDown Value="{Binding ShortValue}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="Int32SettingsControl">
+        <xctk:IntegerUpDown Value="{Binding IntValue}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="Int64SettingsControl">
+        <xctk:LongUpDown Value="{Binding LongValue}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="SingleSettingsControl">
+        <xctk:SingleUpDown Value="{Binding FloatValue}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="DoubleSettingsControl">
+        <xctk:DoubleUpDown Value="{Binding DoubleValue}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="DecimalSettingsControl">
+        <xctk:DecimalUpDown Value="{Binding DecimalValue}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="DateTimeSettingsControl">
+        <xctk:DateTimeUpDown Value="{Binding DateTimeValue}" MinWidth="150" BorderBrush="{x:Null}" BorderThickness="0" Background="Transparent"/>
+    </DataTemplate>
+    <DataTemplate x:Key="BooleanSettingsControl">
+        <CheckBox IsChecked="{Binding BoolValue}" MinWidth="150"/>
+    </DataTemplate>
+</ResourceDictionary>

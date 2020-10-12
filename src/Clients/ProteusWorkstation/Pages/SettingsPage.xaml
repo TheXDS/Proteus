@@ -1,5 +1,6 @@
 ﻿<page:ProteusPage
     xmlns:page="clr-namespace:TheXDS.Proteus.Pages.Base"
+    xmlns:pg="clr-namespace:TheXDS.Proteus.Pages"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -323,13 +324,14 @@
                             <GridView>
                                 <GridViewColumn
                                     Header="Configuración"
-                                    DisplayMemberBinding="{Binding Id, Mode=OneWay}"/>
+                                    DisplayMemberBinding="{Binding FriendlyName, Mode=OneWay}"/>
+                                <GridViewColumn
+                                    Header="Tipo de valor"
+                                    DisplayMemberBinding="{Binding DataType, Mode=OneWay}"/>
                                 <GridViewColumn Header="Valor">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBox Text="{Binding Value}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
+                                    <GridViewColumn.CellTemplateSelector>
+                                        <pg:SettingCellTemplateSelector/>
+                                    </GridViewColumn.CellTemplateSelector>
                                 </GridViewColumn>
                             </GridView>
                         </ListView.View>
