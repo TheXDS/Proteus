@@ -33,7 +33,7 @@ namespace TheXDS.Proteus.Models
             return $"\n{sb}";
         }
 
-        private DateTime? CalcFrom()
+        public DateTime? CalcFrom()
         {
             if (!(Item.Warranty is { WarrantyLength: { } i, Unit: { } u })) return null;
             return u switch

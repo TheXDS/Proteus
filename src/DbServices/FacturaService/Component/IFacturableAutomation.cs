@@ -12,7 +12,19 @@ namespace TheXDS.Proteus.Component
     /// </summary>
     public interface IFacturableAutomation : IExposeGuid
     {
-        void OnFacturate(Factura f, Facturable item, int qty);
+        bool OnFacturateSuccess(Factura f, Facturable item, int qty)
+        {
+            try
+            {
+                OnFacturate(f,item,qty);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        void OnFacturate(Factura f, Facturable item, int qty) { }
         Task OnFacturateAsync(Factura f, Facturable item, int qty)
         {
             return Task.Run(() => OnFacturate(f, item, qty));
