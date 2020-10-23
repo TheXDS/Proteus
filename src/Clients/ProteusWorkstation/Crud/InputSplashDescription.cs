@@ -10,10 +10,14 @@ using System.Windows;
 using System.Reflection;
 using TheXDS.Proteus.Models.Base;
 using System.Windows.Data;
+using System.Linq;
+using TheXDS.MCART.Types;
+using TheXDS.Proteus.ViewModels.Base;
+using System.Runtime.CompilerServices;
 
 namespace TheXDS.Proteus.Crud
 {
-    internal struct InputSplashDescription : IPropertyDescription
+    internal class InputSplashDescription : IPropertyDescription
     {
         public PropertyLocation PropertySource => PropertyLocation.ViewModel;
         public bool Hidden => false;
@@ -34,5 +38,56 @@ namespace TheXDS.Proteus.Crud
         public string Label { get; set; }
         public PropertyInfo Property { get; set; }
         public string Tooltip { get; set; }
+    }
+    internal class ListInputSplashDescription : InputSplashDescription, IListPropertyDescription
+    {
+        public bool Editable => true;
+
+        public bool Selectable => true;
+
+        public BindingBase DisplayMemberBinding => null!;
+
+        public string DisplayMemberPath => null!;
+
+        public IQueryable<ModelBase> Source => null!;
+
+        public bool UseVmSource => false;
+
+        public bool Creatable => false;
+
+        public IEnumerable<Type> ChildModels { get { yield break; } }
+
+        public IEnumerable<Column> Columns { get { yield break; } }
+
+        public ObservableListWrap<ModelBase>? VmSource(object parentVm, CrudViewModelBase? elementVm)
+        {
+            return null;
+        }
+    }
+    internal class ObjectInputSplashDescription : InputSplashDescription, IObjectPropertyDescription
+    {
+        public bool Selectable => true;
+
+        public BindingBase DisplayMemberBinding => null!;
+
+        public string DisplayMemberPath => null!;
+
+        public IQueryable<ModelBase> Source { get; }
+
+        public bool UseVmSource => false;
+
+        public bool Creatable => false;
+
+        public IEnumerable<Type> ChildModels { get { yield break; } }
+
+        public ObservableListWrap<ModelBase>? VmSource(object parentVm, CrudViewModelBase? elementVm)
+        {
+            return null;
+        }
+
+        public ObjectInputSplashDescription(Type model)
+        {
+            Source = Proteus.Infer(model)!.AllBase(model);
+        }
     }
 }

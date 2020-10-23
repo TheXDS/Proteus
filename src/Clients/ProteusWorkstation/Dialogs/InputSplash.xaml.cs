@@ -12,6 +12,10 @@ using TheXDS.Proteus.Crud.Base;
 using System.ComponentModel;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Models.Base;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace TheXDS.Proteus.Dialogs
 {
@@ -39,11 +43,30 @@ namespace TheXDS.Proteus.Dialogs
 
         public static bool Get<T>(string prompt, ref T value)
         {
-            var descr = new InputSplashDescription
+            InputSplashDescription descr;
+            
+            if (typeof(T).Implements<ModelBase>())
             {
-                Label = prompt,
-                Property = ReflectionHelpers.GetProperty<InputSplashViewModel<T>>(p => p.InputValue)!,
-            };
+                descr = new ObjectInputSplashDescription(typeof(T));
+            }
+            else if (typeof(T).Implements<IEnumerable<ModelBase>>())
+            {
+                descr = new ListInputSplashDescription();
+            }
+            else
+            {
+                descr = new InputSplashDescription();
+            }
+
+            descr.Label = prompt;
+            descr.Property = ReflectionHelpers.GetProperty<InputSplashViewModel<T>>(p => p.InputValue)!;
+                
+                
+
+
+
+
+
             var dialog = new InputSplash();
             var vm = new InputSplashViewModel<T>(dialog, descr)
             {
@@ -60,12 +83,12 @@ namespace TheXDS.Proteus.Dialogs
     {
         public bool Get<T>(string prompt, ref T value)
         {
-            return InputSplash.Get<T>(prompt, ref value);
+            return InputSplash.Get(prompt, ref value);
         }
 
         public bool GetNew<T>(string prompt, out T value)
         {
-            return InputSplash.GetNew<T>(prompt, out value);
+            return InputSplash.GetNew(prompt, out value);
         }
     }
 
@@ -108,7 +131,7 @@ namespace TheXDS.Proteus.Dialogs
         public SimpleCommand GoCommand { get; protected set; }
     }
 
-    public class InputSplashViewModel<T> : InputSplashViewModel
+    public class InputSplashViewModel<T> : InputSplashViewModel, IEntityViewModel
     {
         private T _inputValue;
 
@@ -116,7 +139,7 @@ namespace TheXDS.Proteus.Dialogs
         {
             CloseCommand = new SimpleCommand(OnClose);
             GoCommand = new SimpleCommand(OnGo);
-            InputControl = PropertyMapper.GetMapping(null, description)?.Control;
+            InputControl = PropertyMapper.GetMapping(this, description)?.Control;
             Prompt = description.Label;
         }
 
@@ -137,5 +160,6 @@ namespace TheXDS.Proteus.Dialogs
             get => _inputValue; 
             set => Change(ref _inputValue, value);
         }
+        public object? Entity { get; set; }
     }
 }

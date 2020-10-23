@@ -5,13 +5,27 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Component
 {
+    public class IdComparer<T> : IEqualityComparer<T> where T : ModelBase
+    {
+        public bool Equals([AllowNull] T x, [AllowNull] T y)
+        {
+            return x?.StringId == y?.StringId;
+        }
+
+        public int GetHashCode([DisallowNull] T obj)
+        {
+            return obj.StringId?.GetHashCode() ?? 0;
+        }
+    }
+
     public class CompoundReporter : IStatusReporter
     {
         public ICollection<IStatusReporter> Reporters { get; private set; } = new HashSet<IStatusReporter>();
