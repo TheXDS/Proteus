@@ -19,7 +19,14 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         protected override void DescribeModel()
         {
             FriendlyName("Automatización");
-            VmObjectProperty(p => p.SelectedAutomationItem).Selectable().Source(AutomationItemSource.AutomationItems).Required().Label("Herramienta de automatización");
+            VmObjectProperty(p => p.SelectedAutomationItem)
+                .Selectable()
+                .Source(AutomationItemSource.AutomationItems)
+                .Required()
+                .Label("Herramienta de automatización")
+                .AsListColumn()
+                .ShowInDetails();
+
             VmBeforeSave(SetAutomationItem);
         }
 

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
