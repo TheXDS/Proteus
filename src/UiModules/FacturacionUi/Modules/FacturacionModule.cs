@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,7 +8,6 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.FacturacionUi.Component;
 using TheXDS.Proteus.FacturacionUi.Pages;
 using TheXDS.Proteus.FacturacionUi.ViewModels;
@@ -186,7 +184,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         [InteractionItem, Name("Movimiento de inventario"), InteractionType(InteractionType.Operation)]
         public void ShowInventarioMovePage(object sender, EventArgs e)
         {
-            Host.OpenPage(new InventarioMovePage());
+            Host.OpenPage<InventarioMovePage>();
         }
 
         [InteractionItem, Name("Bloque de inventario"), InteractionType(InteractionType.AdminTool)]

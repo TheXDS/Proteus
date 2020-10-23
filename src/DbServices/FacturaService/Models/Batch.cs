@@ -8,6 +8,7 @@ namespace TheXDS.Proteus.Models
         public virtual Bodega Bodega { get; set; }
         public virtual Producto Item { get; set; }
         public virtual Lote Lote { get; set; }
+        public virtual Proveedor? Proveedor { get; set; }
         public decimal Costo { get; set; }
         public decimal ItemCosto => Qty > 0 ? Costo / Qty : Costo;
         public abstract int Qty { get; }

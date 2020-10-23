@@ -18,14 +18,20 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .AsListColumn()
                 .Required();
 
-            ObjectProperty(p => p.Lote)
-                .Creatable()
-                .Label("Lote")
+            ObjectProperty(p => p.Proveedor)
+                .Selectable().Creatable()
+                .Label("Proveedor")
+                .AsListColumn()
                 .Nullable();
 
             NumericProperty(p => p.Costo)
                 .Range(decimal.Zero,decimal.MaxValue)
                 .Label("Costo del ítem");
+
+            ObjectProperty(p => p.Lote)
+                .Creatable()
+                .Label("Lote")
+                .Nullable();
 
             DescribeBatch();
 

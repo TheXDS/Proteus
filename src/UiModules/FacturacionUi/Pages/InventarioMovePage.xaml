@@ -26,6 +26,7 @@
                     <GridViewColumn Header="Código" DisplayMemberBinding="{Binding Entity.Item.Id}"/>
                     <GridViewColumn Header="Item" DisplayMemberBinding="{Binding DisplayName}"/>
                     <GridViewColumn Header="Lote" DisplayMemberBinding="{Binding Lote}"/>
+                    <GridViewColumn Header="Proveedor" DisplayMemberBinding="{Binding Entity.Proveedor}"/>
                     <GridViewColumn Header="Existencia" DisplayMemberBinding="{Binding MaxQty}"/>
                     <GridViewColumn Header="Cantidad">
                         <GridViewColumn.CellTemplate>
