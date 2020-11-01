@@ -25,7 +25,7 @@ namespace TheXDS.Proteus.Pages.Base
 
         protected IPageViewModel ViewModel
         {
-            get => DataContext as IPageViewModel;
+            get => (IPageViewModel)DataContext!;
             set
             {
                 DataContext = value;
@@ -48,6 +48,7 @@ namespace TheXDS.Proteus.Pages.Base
             PageHost = null;
         }
         private static Thickness _thk = new Thickness(10,0,0,0);
+
         public ProteusPage()
         {
             ViewModel = new NullPageViewModel(this);

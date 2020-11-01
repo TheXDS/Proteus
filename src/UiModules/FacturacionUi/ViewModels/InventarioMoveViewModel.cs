@@ -1,11 +1,11 @@
-﻿using TheXDS.MCART.ViewModel;
-using TheXDS.Proteus.Models;
-using TheXDS.MCART.Types;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.ViewModels.Base;
-using System.Linq;
-using TheXDS.Proteus.Component;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using TheXDS.MCART.Types;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Models;
+using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.FacturacionUi.ViewModels
 {
@@ -13,8 +13,17 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
     {
         private Bodega? _origen;
         private Bodega? _destino;
+        private ObservableListWrap<Bodega> _bodegas;
 
-        public ObservableListWrap<Bodega> Bodegas { get; private set; } = null!;
+        /// <summary>
+        ///     Obtiene o establece el valor Bodegas.
+        /// </summary>
+        /// <value>El valor de Bodegas.</value>
+        public ObservableListWrap<Bodega> Bodegas
+        {
+            get => _bodegas;
+            private set => Change(ref _bodegas, value);
+        }
 
         public Bodega? Origen
         {
@@ -59,7 +68,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         {
             Bodegas = await GetObservableAsync<Bodega>();
         }
-
+        public Task StartupAsync() => OnStartup();
         private void OnSwitch()
         {
             var tmp = Origen;

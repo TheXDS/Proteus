@@ -90,105 +90,22 @@ namespace TheXDS.Proteus.Api
                 MessageTarget?.Stop("No se puede registrar esta factura. La caja está cerrada.");
                 return false;
             }
-            if (!RebajarInventario(f)) return false;
-            RunAutomations(f);
+            if (!RunAutomations(f)) return false;
             if (register && !RegisterFactura(f, i)) return false;
             GetCajaOp!.Facturas.Add(f);
             return true;
         }
 
-        private static void SetItemsInfo(Factura f)
-        {
-            foreach (var j in f.Items)
-            {
-                j.StaticPrecio = j.Item.Precio;
-            }
-        }
-
-        private static void RunAutomations(Factura f)
+        private static bool RunAutomations(Factura f)
         {
             foreach (var j in f.Items)
             {
                 foreach ( var k in j.Item.Automations)
                 {
-                    k.ResolveAutomator()?.OnFacturate(f, j.Item, j.Qty);
+                    if (!k.ResolveAutomator()?.OnFacturateSuccess(f, j.Item, j.Qty) ?? false) return false;
                 }
             }
-        }
-
-        private static bool RebajarInventario(Factura f)
-        {
-            if (!GetEstation!.Bodegas.Any())
-            {
-                MessageTarget?.Stop("Esta estación no tiene permiso para facturar productos: No hay establecida una bodega de salida.");
-                return false;
-            }
-            var op = new AutoDictionary<Batch, int>();
-
-            foreach (var j in f.Items)
-            {
-                switch (j.Item)
-                {
-                    case Producto p:
-                        if (!ProcessInvBajaItem(p, j.Qty, op)) return false;
-                        break;
-                    case Paquete paquete:
-                        foreach (var k in paquete.Children.OfType<Producto>())
-                        {
-                            if (!ProcessInvBajaItem(k, j.Qty, op)) return false;
-                        }
-                        break;
-                }
-            }
-
-            var sb = new StringBuilder();
-            foreach (var j in op)
-            {
-                sb.AppendLine($"Salida de Batch {j.Key.Id}: {j.Key.RebajarVenta(j.Value, f)}");
-            }
-
-            if (op.Any()) MessageTarget?.Info(sb.ToString());
-
             return true;
-        }
-
-        private static Batch? GetBatchFor(Producto prod)
-        {
-            var e = GetEstation!.Id;
-            return Proteus.Service<FacturaService>()!
-                .All<EstacionBodega>()
-                .Where(p => p.Estacion.Id == e)
-                .Select(p => p.Bodega)
-                .SelectMany(p => p.Batches)
-                .Where(q => q.Item.Id == prod.Id)
-                .ToList()
-                .Where(q => q.Qty > 0)
-                .OrderBy(q => q.Lote?.Manufactured)
-                .FirstOrDefault();
-        }
-
-        private static bool ProcessInvBajaItem(Producto p, int qty, AutoDictionary<Batch, int> op)
-        {
-            while(qty > 0)
-            {
-                var b = GetBatchFor(p);
-                if (b is null)
-                {
-                    MessageTarget?.Stop($"No hay suficientes existencias para completar la venta. Faltan {qty} unidades de {p.Name}");
-                    break;
-                }
-                if (b.Qty > qty)
-                {
-                    op[b] += qty;
-                    qty = 0;
-                }
-                else
-                {
-                    qty -= b.Qty;
-                    op[b] += b.Qty;
-                }
-            }
-            return qty == 0;
         }
 
         public static bool RegisterFactura(Factura f, IFacturaInteractor? i)
@@ -258,6 +175,5 @@ namespace TheXDS.Proteus.Api
             }
             MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C} para mantener su fondo de caja de {cajaOp.Cajero.OptimBalance:C}");
         }
-
     }
 }
