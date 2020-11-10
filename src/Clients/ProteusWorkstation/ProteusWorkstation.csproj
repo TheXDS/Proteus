@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="TheXDS.MCART.Cmd" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="$(McartVersion)" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>  
 
   <ItemGroup>
