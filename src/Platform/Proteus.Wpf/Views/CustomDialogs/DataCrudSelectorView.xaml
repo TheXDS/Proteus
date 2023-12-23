@@ -1,0 +1,15 @@
+﻿<UserControl
+    x:Class="TheXDS.Proteus.Views.CustomDialogs.DataCrudSelectorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="clr-namespace:TheXDS.Proteus.Controls"
+    xmlns:vm="clr-namespace:TheXDS.Proteus.ViewModels.CustomDialogs;assembly=Proteus"
+    d:DataContext="{d:DesignInstance vm:DataCrudSelectorViewModel}"
+    mc:Ignorable="d"
+    Height="400" Width="600">
+    <controls:EntitySelector
+        Provider="{Binding Provider, Mode=OneWay}"
+        SelectedEntity="{Binding SelectedEntity}"/>
+</UserControl>

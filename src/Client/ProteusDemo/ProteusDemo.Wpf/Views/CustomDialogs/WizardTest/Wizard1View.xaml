@@ -1,0 +1,12 @@
+﻿<UserControl
+    x:Class="TheXDS.Proteus.Views.CustomDialogs.WizardTest.Wizard1View"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:gn="http://schemas.thexds.local/ganymede"
+    xmlns:vm="clr-namespace:TheXDS.Proteus.ViewModels.WizardTest;assembly=ProteusDemo"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance vm:Wizard1ViewModel}">
+    <gn:TextBoxEx Label="Test text" Width="200" Text="{Binding State.Text}"/>
+</UserControl>

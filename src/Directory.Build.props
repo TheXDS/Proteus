@@ -3,20 +3,10 @@
   <PropertyGroup Condition="'$(Root)'==''">
     <Root>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</Root>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(SrcDir)'==''">
-    <SrcDir>$(Root)src\</SrcDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetsDir)'==''">
-    <TargetsDir>$(Root)targets\</TargetsDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(SolutionDir)'==''">
-    <SolutionDir>$(SrcDir)Core\</SolutionDir>
+    <SolutionDir>$(Root)src\</SolutionDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(SharedDir)'==''">
-    <SharedDir>$(SrcDir)Shared\</SharedDir>
-  </PropertyGroup>
-  <Import Project="$(TargetsDir)Frameworks.props"/>
-  <Import Project="$(TargetsDir)PackageVersion.props"/>
-  <Import Project="$(TargetsDir)PackageInfo.props"/>
-  <Import Project="$(TargetsDir)BuildPaths.props"/>
+  <Import Project="$(Root)BuildTargets\PackageVersion.props"/>
+  <Import Project="$(Root)BuildTargets\PackageInfo.props"/>
+  <Import Project="$(Root)BuildTargets\BuildPaths.props"/>
 </Project>
