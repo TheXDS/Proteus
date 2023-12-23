@@ -1,58 +1,60 @@
-# Ganymede
+# Proteus
 
-[![CodeFactor](https://www.codefactor.io/repository/github/thexds/ganymede/badge)](https://www.codefactor.io/repository/github/thexds/ganymede)
-[![Build Ganymede](https://github.com/TheXDS/Ganymede/actions/workflows/build.yml/badge.svg)](https://github.com/TheXDS/Ganymede/actions/workflows/build.yml)
-[![Publish Ganymede](https://github.com/TheXDS/Ganymede/actions/workflows/publish.yml/badge.svg)](https://github.com/TheXDS/Ganymede/actions/workflows/publish.yml)
-[![Issues](https://img.shields.io/github/issues/TheXDS/Ganymede)](https://github.com/TheXDS/Ganymede/issues)
-[![codecov](https://codecov.io/gh/TheXDS/Ganymede/branch/master/graph/badge.svg?token=Rve4awcyup)](https://codecov.io/gh/TheXDS/Ganymede)
-[![MIT](https://img.shields.io/github/license/TheXDS/Ganymede)](https://mit-license.org/)
+[![CodeFactor](https://www.codefactor.io/repository/github/thexds/proteus/badge)](https://www.codefactor.io/repository/github/thexds/proteus)
+[![Build Proteus](https://github.com/TheXDS/Proteus/actions/workflows/build.yml/badge.svg)](https://github.com/TheXDS/Proteus/actions/workflows/build.yml)
+[![Publish Proteus](https://github.com/TheXDS/Proteus/actions/workflows/publish.yml/badge.svg)](https://github.com/TheXDS/Proteus/actions/workflows/publish.yml)
+[![Issues](https://img.shields.io/github/issues/TheXDS/Proteus)](https://github.com/TheXDS/Proteus/issues)
+[![codecov](https://codecov.io/gh/TheXDS/Proteus/branch/master/graph/badge.svg?token=Rve4awcyup)](https://codecov.io/gh/TheXDS/Proteus)
+[![MIT](https://img.shields.io/github/license/TheXDS/Proteus)](https://mit-license.org/)
 
-Ganymede is an app-template using common MVVM-frameworks. It includes helpers for navigation, base ViewModel classes, custom dialog services and common entry points. You just need to provide your actual ViewModels and views, not having to worry about implementing auxiliary UI services for them.
+`Proteus` is a framework to rapidly prototype and develop apps connected to databases, implementing the logic required to dynamically generate the required UI and ViewModels to execute basic CRUD operations.
 
 ## Releases
 Release | Link
 --- | ---
-Latest public release: | [![Latest stable NuGet package](https://buildstats.info/nuget/TheXDS.Ganymede)](https://www.nuget.org/packages/TheXDS.Ganymede/)  
-Latest development release: | [![Latest development NuGet package](https://buildstats.info/nuget/TheXDS.Ganymede?includePreReleases=true)](https://www.nuget.org/packages/TheXDS.Ganymede/)
+Latest public release: | [![Latest stable NuGet package](https://buildstats.info/nuget/TheXDS.Proteus)](https://www.nuget.org/packages/TheXDS.Proteus/)  
+Latest development release: | [![Latest development NuGet package](https://buildstats.info/nuget/TheXDS.Proteus?includePreReleases=true)](https://www.nuget.org/packages/TheXDS.Proteus/)
 
 **Package Manager**  
 ```sh
-Install-Package TheXDS.Ganymede
+Install-Package TheXDS.Proteus
 ```
 
 **.NET CLI**  
 ```sh
-dotnet add package TheXDS.Ganymede
+dotnet add package TheXDS.Proteus
 ```
 
 **Paket CLI**  
 ```sh
-paket add TheXDS.Ganymede
+paket add TheXDS.Proteus
 ```
 
 **Package reference**  
 ```xml
-<PackageReference Include="TheXDS.Ganymede" Version="1.0.0" />
+<PackageReference Include="TheXDS.Proteus" Version="1.0.0" />
 ```
 
 **C# interactive window (CSI)**  
 ```
-#r "nuget: TheXDS.Ganymede, 1.0.0"
+#r "nuget: TheXDS.Proteus, 1.0.0"
 ```
 
 ## Building
-Ganymede can be built on any platform or CI environment supported by dotnet.
+Proteus can be built on any platform or CI environment supported by dotnet.
 
 ### Prerequisites
 - [.Net SDK 6.0](https://dotnet.microsoft.com/).
 
-### Build Ganymede
+### Build Proteus
 ```sh
-dotnet build ./src/Ganymede.sln
+dotnet build ./src/Proteus.sln
 ```
 The resulting binaries will be in the `./Build/bin` directory.
 
-### Testing Ganymede
-```sh
-dotnet test ./src/Ganymede.sln
-```
+## Contribute
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/default-orange.png)](https://www.buymeacoffee.com/xdsxpsivx)
+
+If `Proteus` is useful to you, or if you're interested in donating to sponsor the project, feel free to to a donation via [PayPal](https://paypal.me/thexds), [BuyMeACoffee](https://www.buymeacoffee.com/xdsxpsivx) or just contact me directly.
+
+Sadly, I cannot offer other means of sending donations as of right now due to my country (Honduras) not being supported by almost any platform.

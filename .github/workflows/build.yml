@@ -1,0 +1,32 @@
+name: "Build Proteus"
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.gitignore'
+      - '**/*.gitattributes'
+    branches-ignore:
+      - 'docs*'
+    tags-ignore:
+      - '*'
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      Solution_Name: src/Proteus.sln
+      Configuration: Debug
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Build Proteus
+      run: dotnet build $env:Solution_Name --configuration=$env:Configuration
+    - name: Create NuGet Packages
+      run: dotnet pack $env:Solution_Name --configuration=$env:Configuration --version-suffix=$env:GITHUB_SHA --include-source -p:RepositoryBranch=${{ github.ref }} -p:ContinuousIntegrationBuild=true
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Proteus-nuget-packages
+        path: Build/Bin/**/*.nupkg

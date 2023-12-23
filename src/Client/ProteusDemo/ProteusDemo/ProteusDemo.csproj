@@ -1,75 +1,74 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.Security" Version="0.17.1-alpha.4" />
-    <PackageReference Include="TheXDS.MCART.Security.Argon2" Version="0.17.1-alpha.4" />
-    <PackageReference Include="TheXDS.ServicePool" Version="1.0.5" />
-    <PackageReference Include="TheXDS.Triton.Diagnostics" Version="1.6.1-alpha3" />
-    <PackageReference Include="TheXDS.Triton.Faker" Version="1.6.1-alpha3" />
-    <PackageReference Include="TheXDS.Triton.InMemory" Version="1.6.1-alpha3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="TheXDS.MCART.Security" Version="0.17.1-alpha.4" />
+		<PackageReference Include="TheXDS.MCART.Security.Argon2" Version="0.17.1-alpha.4" />
+		<PackageReference Include="TheXDS.ServicePool" Version="1.0.5" />
+		<PackageReference Include="TheXDS.Triton.Diagnostics" Version="1.6.1-alpha3" />
+		<PackageReference Include="TheXDS.Triton.Faker" Version="1.6.1-alpha3" />
+		<PackageReference Include="TheXDS.Triton.InMemory" Version="1.6.1-alpha3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Proteus\Proteus.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Core\Proteus\Proteus.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Resources\Strings\Models\User.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>User.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Strings\ViewModels\CustomTestDialogViewModel.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CustomTestDialogViewModel.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Strings\ViewModels\DummyViewModel.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DummyViewModel.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Strings\Views\DialogDemoView.Designer.cs">
-      <DependentUpon>DialogDemoView.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Resources\Strings\Views\WelcomeView.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>WelcomeView.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Resources\Strings\Models\User.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>User.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Resources\Strings\ViewModels\CustomTestDialogViewModel.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>CustomTestDialogViewModel.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Resources\Strings\ViewModels\DummyViewModel.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>DummyViewModel.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Resources\Strings\Views\DialogDemoView.Designer.cs">
+			<DependentUpon>DialogDemoView.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Update="Resources\Strings\Views\WelcomeView.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>WelcomeView.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings\Models\User.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>User.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Strings\ViewModels\CustomTestDialogViewModel.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>CustomTestDialogViewModel.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Strings\ViewModels\DummyViewModel.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DummyViewModel.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Strings\Views\DialogDemoView.resx">
-      <LastGenOutput>DialogDemoView.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <CustomToolNamespace></CustomToolNamespace>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Strings\Views\WelcomeView.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>WelcomeView.Designer.cs</LastGenOutput>
-      <CustomToolNamespace></CustomToolNamespace>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\Strings\Models\User.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>User.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\ViewModels\CustomTestDialogViewModel.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>CustomTestDialogViewModel.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\ViewModels\DummyViewModel.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>DummyViewModel.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\Views\DialogDemoView.resx">
+			<LastGenOutput>DialogDemoView.Designer.cs</LastGenOutput>
+			<Generator>PublicResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\Views\WelcomeView.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>WelcomeView.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
 </Project>
