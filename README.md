@@ -4,7 +4,6 @@
 [![Build Proteus](https://github.com/TheXDS/Proteus/actions/workflows/build.yml/badge.svg)](https://github.com/TheXDS/Proteus/actions/workflows/build.yml)
 [![Publish Proteus](https://github.com/TheXDS/Proteus/actions/workflows/publish.yml/badge.svg)](https://github.com/TheXDS/Proteus/actions/workflows/publish.yml)
 [![Issues](https://img.shields.io/github/issues/TheXDS/Proteus)](https://github.com/TheXDS/Proteus/issues)
-[![codecov](https://codecov.io/gh/TheXDS/Proteus/branch/master/graph/badge.svg?token=Rve4awcyup)](https://codecov.io/gh/TheXDS/Proteus)
 [![MIT](https://img.shields.io/github/license/TheXDS/Proteus)](https://mit-license.org/)
 
 `Proteus` is a framework to rapidly prototype and develop apps connected to databases, implementing the logic required to dynamically generate the required UI and ViewModels to execute basic CRUD operations.
