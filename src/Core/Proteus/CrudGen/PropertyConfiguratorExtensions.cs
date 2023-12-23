@@ -488,5 +488,4 @@ public static class PropertyConfiguratorExtensions
     /// radically different kind of descriptor for the property.
     /// </exception>
     public static INullableNumericPropertyDescriptor<decimal> Property<T>(this IPropertyConfigurator<T> configurator, Expression<Func<T, decimal?>> propertySelector) where T : Model => configurator.NullableNumericProperty(propertySelector);
-
 }

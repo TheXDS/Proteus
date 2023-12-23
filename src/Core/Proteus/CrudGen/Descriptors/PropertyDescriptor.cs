@@ -48,11 +48,3 @@ public class PropertyDescriptor : IPropertyDescriptor, IPropertyDescription
     /// <inheritdoc/>
     public bool ReadOnly => ((IPropertyDescription)this).GetStructValue<bool>() ?? !Property.CanWrite;
 }
-
-/// <summary>
-/// Implements the basic functionality of a property descriptor class.
-/// </summary>
-/// <typeparam name="T">Type of the described property.</typeparam>
-public class PropertyDescriptor<T> : PropertyDescriptor, IPropertyDescriptor<T>
-{
-}

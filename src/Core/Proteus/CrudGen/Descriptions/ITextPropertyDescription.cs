@@ -18,7 +18,6 @@ public interface ITextPropertyDescription : IPropertyDescription<string>, INulla
     /// </summary>
     int? MinLength => GetStructValue<int>();
 
-
     /// <summary>
     /// Gets a value that indicates the maximum valid length for the text being
     /// inserted into the editing control/widget.

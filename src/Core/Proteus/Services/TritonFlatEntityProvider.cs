@@ -119,7 +119,7 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
         set
         {
             var total = ((IEntityProvider)this).TotalPages;
-            if (value < 1 || total > 0 && value > total) throw new ArgumentOutOfRangeException(nameof(value));
+            if (value < 1 || (total > 0 && value > total)) throw new ArgumentOutOfRangeException(nameof(value));
             if (Change(ref _page, value)) FetchDataAsync();
         }
     }

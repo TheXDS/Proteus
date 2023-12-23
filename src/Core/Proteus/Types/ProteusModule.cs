@@ -18,11 +18,3 @@ public abstract class ProteusModule
         .Where(p => p.Category.HasValue)
         .GroupBy(p => p.Category!.Value);
 }
-
-/// <summary>
-/// TODO: Implements a single module item in a Proteus Module.
-/// </summary>
-public class ModuleItem
-{
-    public ICrudDescription[] Descriptions { get; }
-}

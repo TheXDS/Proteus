@@ -80,4 +80,3 @@ public interface ITextPropertyDescriptor : IPropertyDescriptor<string>, INullabl
         return Kind(TextKind.Maskable);
     }
 }
-

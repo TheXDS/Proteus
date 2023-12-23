@@ -44,7 +44,6 @@ public class WelcomeViewModel : ViewModel
         NavigationService!.HomePage = new LoginViewModel();
     }
 
-
     /// <inheritdoc/>
     protected override Task OnCreated()
     {

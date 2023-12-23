@@ -25,7 +25,7 @@ public interface IPasswordPropertyDescription : IBlobPropertyDescription
                 {
                     bw.DynamicWrite(settings);
                     bw.Flush();
-                };
+                }
                 ms.Position = 0;
                 using var br = new BinaryReader(ms);
                 a.ConfigureFrom(br);
