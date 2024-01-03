@@ -36,10 +36,20 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>DummyViewModel.resx</DependentUpon>
 		</Compile>
+		<Compile Update="Resources\Strings\ViewModels\LoginViewModel.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>LoginViewModel.resx</DependentUpon>
+		</Compile>
 		<Compile Update="Resources\Strings\Views\DialogDemoView.Designer.cs">
 			<DependentUpon>DialogDemoView.resx</DependentUpon>
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Update="Resources\Strings\Views\PostDetailsView.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>PostDetailsView.resx</DependentUpon>
 		</Compile>
 		<Compile Update="Resources\Strings\Views\WelcomeView.Designer.cs">
 			<DesignTime>True</DesignTime>
@@ -61,9 +71,17 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>DummyViewModel.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\ViewModels\LoginViewModel.resx">
+		  <Generator>PublicResXFileCodeGenerator</Generator>
+		  <LastGenOutput>LoginViewModel.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 		<EmbeddedResource Update="Resources\Strings\Views\DialogDemoView.resx">
 			<LastGenOutput>DialogDemoView.Designer.cs</LastGenOutput>
 			<Generator>PublicResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\Views\PostDetailsView.resx">
+		  <Generator>PublicResXFileCodeGenerator</Generator>
+		  <LastGenOutput>PostDetailsView.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Resources\Strings\Views\WelcomeView.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TheXDS.Proteus.Resources.Strings.ViewModels {
+namespace TheXDS.Proteus.Resources.Strings.Views {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace TheXDS.Proteus.Resources.Strings.ViewModels {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CustomTestDialogViewModel {
+    public class PostDetailsView {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CustomTestDialogViewModel() {
+        internal PostDetailsView() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace TheXDS.Proteus.Resources.Strings.ViewModels {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Proteus.Resources.Strings.ViewModels.CustomTestDialogViewModel", typeof(CustomTestDialogViewModel).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Proteus.Resources.Strings.Views.PostDetailsView", typeof(PostDetailsView).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,47 +61,20 @@ namespace TheXDS.Proteus.Resources.Strings.ViewModels {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Close.
+        ///   Busca una cadena traducida similar a Comments.
         /// </summary>
-        public static string Close {
+        public static string Comments {
             get {
-                return ResourceManager.GetString("Close", resourceCulture);
+                return ResourceManager.GetString("Comments", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Custom dialog.
+        ///   Busca una cadena traducida similar a Posted on {0} by {1}.
         /// </summary>
-        public static string CustomDialog {
+        public static string PostedOnBy {
             get {
-                return ResourceManager.GetString("CustomDialog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a This is a custom dialog..
-        /// </summary>
-        public static string DlgMessage {
-            get {
-                return ResourceManager.GetString("DlgMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Run.
-        /// </summary>
-        public static string Run {
-            get {
-                return ResourceManager.GetString("Run", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Times ran: {0}.
-        /// </summary>
-        public static string TimesRan {
-            get {
-                return ResourceManager.GetString("TimesRan", resourceCulture);
+                return ResourceManager.GetString("PostedOnBy", resourceCulture);
             }
         }
     }

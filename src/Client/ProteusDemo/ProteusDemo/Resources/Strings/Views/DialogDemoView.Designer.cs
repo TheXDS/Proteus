@@ -70,6 +70,15 @@ namespace TheXDS.Proteus.Resources.Strings.Views {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Basic prompt dialogs.
+        /// </summary>
+        public static string BasicPromptsGroup {
+            get {
+                return ResourceManager.GetString("BasicPromptsGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Test cancellable operation dialog.
         /// </summary>
         public static string CancellableOpTest {
@@ -84,6 +93,15 @@ namespace TheXDS.Proteus.Resources.Strings.Views {
         public static string CustomDialog1 {
             get {
                 return ResourceManager.GetString("CustomDialog1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Data entry dialogs.
+        /// </summary>
+        public static string DataEntryGroup {
+            get {
+                return ResourceManager.GetString("DataEntryGroup", resourceCulture);
             }
         }
         
@@ -146,6 +164,15 @@ namespace TheXDS.Proteus.Resources.Strings.Views {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Simple message boxes.
+        /// </summary>
+        public static string MessagesGroup {
+            get {
+                return ResourceManager.GetString("MessagesGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Test message.
         /// </summary>
         public static string MessageTest {
@@ -187,6 +214,15 @@ namespace TheXDS.Proteus.Resources.Strings.Views {
         public static string OperationDemo4 {
             get {
                 return ResourceManager.GetString("OperationDemo4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Operation dialogs.
+        /// </summary>
+        public static string OperationsGroup {
+            get {
+                return ResourceManager.GetString("OperationsGroup", resourceCulture);
             }
         }
         
@@ -268,6 +304,15 @@ namespace TheXDS.Proteus.Resources.Strings.Views {
         public static string SelectItemTest {
             get {
                 return ResourceManager.GetString("SelectItemTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Special dialogs.
+        /// </summary>
+        public static string SpecialGroup {
+            get {
+                return ResourceManager.GetString("SpecialGroup", resourceCulture);
             }
         }
         

@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:TheXDS.Proteus.Models;assembly=ProteusDemo"
+    xmlns:st="clr-namespace:TheXDS.Proteus.Resources.Strings.Views;assembly=ProteusDemo"
     xmlns:crudgen="clr-namespace:TheXDS.Proteus.ViewModels.CrudGen;assembly=ProteusDemo"
     mc:Ignorable="d" 
     d:DataContext="{d:DesignInstance Type=crudgen:PostDetailsViewModel}"
@@ -12,13 +13,16 @@
     <StackPanel>
         <TextBlock Text="{Binding Entity.Title, Mode=OneWay}" FontSize="24"/>
         <TextBlock Opacity="0.5">
-            Posted on <Run Text="{Binding Entity.CreationDate, Mode=OneWay}"/> by <Run Text="{Binding Entity.Creator.DisplayName, Mode=OneWay}"/>
+            <MultiBinding StringFormat="{x:Static st:PostDetailsView.PostedOnBy}">
+                <Binding Path="Entity.CreationDate" Mode="OneWay"/>
+                <Binding Path="Entity.Creator.DisplayName" Mode="OneWay"/>
+            </MultiBinding>
         </TextBlock>
         <Separator/>
         <DockPanel>
             <Expander DockPanel.Dock="Right" ExpandDirection="Left">
                 <Expander.Header>
-                    <TextBlock Text="Comments">
+                    <TextBlock Text="{x:Static st:PostDetailsView.Comments}">
                         <TextBlock.LayoutTransform>
                             <RotateTransform Angle="-90"/>
                         </TextBlock.LayoutTransform>

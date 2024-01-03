@@ -129,4 +129,7 @@
   <data name="Run" xml:space="preserve">
     <value>Ejecutar</value>
   </data>
+  <data name="TimesRan" xml:space="preserve">
+    <value>Veces ejecutado: {0}</value>
+  </data>
 </root>

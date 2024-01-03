@@ -6,19 +6,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:gn="http://schemas.thexds.local/ganymede"
     xmlns:viewmodels="clr-namespace:TheXDS.Proteus.ViewModels;assembly=ProteusDemo"
+    xmlns:st="clr-namespace:TheXDS.Proteus.Resources.Strings.ViewModels;assembly=ProteusDemo"
     d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
     mc:Ignorable="d" Background="#80000000"
     HorizontalAlignment="Center"
     VerticalAlignment="Center">
     <StackPanel Width="300" Margin="5">
-        <TextBlock Margin="5 5 5 0" Text="Username" Foreground="White"/>
+        <TextBlock Margin="5 5 5 0" Text="{x:Static st:LoginViewModel.Username}" Foreground="White"/>
         <gn:TextBoxEx
             Margin="5"
-            Label="Username"
+            Label="{x:Static st:LoginViewModel.Username}"
             Icon="👤"
             Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBlock Margin="5 5 5 0" Text="Password" Foreground="White"/>
+        <TextBlock Margin="5 5 5 0" Text="{x:Static st:LoginViewModel.Password}" Foreground="White"/>
         <PasswordBox Margin="5" PasswordChanged="PasswordBox_PasswordChanged"/>
-        <Button Width="60" Margin="5" Command="{Binding LoginCommand, Mode=OneWay}" Content="Login"/>
+        <Button HorizontalAlignment="Center" Padding="10,2" Margin="5" Command="{Binding LoginCommand, Mode=OneWay}" Content="{x:Static st:LoginViewModel.Login}"/>
     </StackPanel>
 </UserControl>

@@ -22,14 +22,14 @@ namespace TheXDS.Proteus.Resources.Strings.ViewModels {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CustomTestDialogViewModel {
+    public class LoginViewModel {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CustomTestDialogViewModel() {
+        internal LoginViewModel() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace TheXDS.Proteus.Resources.Strings.ViewModels {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Proteus.Resources.Strings.ViewModels.CustomTestDialogViewModel", typeof(CustomTestDialogViewModel).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Proteus.Resources.Strings.ViewModels.LoginViewModel", typeof(LoginViewModel).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,47 +61,76 @@ namespace TheXDS.Proteus.Resources.Strings.ViewModels {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Close.
+        ///   Busca una cadena traducida similar a Could not log in.
         /// </summary>
-        public static string Close {
+        public static string CouldNotLogIn {
             get {
-                return ResourceManager.GetString("Close", resourceCulture);
+                return ResourceManager.GetString("CouldNotLogIn", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Custom dialog.
+        ///   Busca una cadena traducida similar a Invalid username or password.
         /// </summary>
-        public static string CustomDialog {
+        public static string InvalidUsernamePassword {
             get {
-                return ResourceManager.GetString("CustomDialog", resourceCulture);
+                return ResourceManager.GetString("InvalidUsernamePassword", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a This is a custom dialog..
+        ///   Busca una cadena traducida similar a Logging in....
         /// </summary>
-        public static string DlgMessage {
+        public static string LoggingIn {
             get {
-                return ResourceManager.GetString("DlgMessage", resourceCulture);
+                return ResourceManager.GetString("LoggingIn", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Run.
+        ///   Busca una cadena traducida similar a Login.
         /// </summary>
-        public static string Run {
+        public static string Login {
             get {
-                return ResourceManager.GetString("Run", resourceCulture);
+                return ResourceManager.GetString("Login", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Times ran: {0}.
+        ///   Busca una cadena traducida similar a Password.
         /// </summary>
-        public static string TimesRan {
+        public static string Password {
             get {
-                return ResourceManager.GetString("TimesRan", resourceCulture);
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a A Triton service instance was not found. (not included in demo?)
+        ///
+        ///At this point, the service would have validated credentials. We&apos;re just gonna navigate to the proper screen..
+        /// </summary>
+        public static string TritonNotFoundMessage {
+            get {
+                return ResourceManager.GetString("TritonNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Tritón Service not found.
+        /// </summary>
+        public static string TritonServiceNotFound {
+            get {
+                return ResourceManager.GetString("TritonServiceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Username.
+        /// </summary>
+        public static string Username {
+            get {
+                return ResourceManager.GetString("Username", resourceCulture);
             }
         }
     }

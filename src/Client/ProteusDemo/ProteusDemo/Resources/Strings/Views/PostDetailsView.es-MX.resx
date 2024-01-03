@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,19 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Close" xml:space="preserve">
-    <value>Close</value>
+  <data name="PostedOnBy" xml:space="preserve">
+    <value>Publicado el {0} por {1}</value>
   </data>
-  <data name="CustomDialog" xml:space="preserve">
-    <value>Custom dialog</value>
-  </data>
-  <data name="DlgMessage" xml:space="preserve">
-    <value>This is a custom dialog.</value>
-  </data>
-  <data name="Run" xml:space="preserve">
-    <value>Run</value>
-  </data>
-  <data name="TimesRan" xml:space="preserve">
-    <value>Times ran: {0}</value>
+  <data name="Comments" xml:space="preserve">
+    <value>Comentarios</value>
   </data>
 </root>

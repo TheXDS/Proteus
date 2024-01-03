@@ -26,19 +26,87 @@
         <Border Margin="15" Background="#b0000000" Grid.Column="1">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="5">
-                    <Button Margin="5" Command="{Binding TestMessageCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.MessageTest}"/>
-                    <Button Margin="5" Command="{Binding TestWarningCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.WarningTest}"/>
-                    <Button Margin="5" Command="{Binding TestErrorCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.ErrorTest}"/>
-                    <Button Margin="5" Command="{Binding TestQuestionCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.QuestionTest}"/>
-                    <Button Margin="5" Command="{Binding TestSelectionCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.SelectItemTest}"/>
-                    <Button Margin="5" Command="{Binding TestOperationCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.OperationTest}"/>
-                    <Button Margin="5" Command="{Binding TestCancellableOperationCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.CancellableOpTest}"/>
-                    <Button Margin="5" Command="{Binding TestTextInputCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.TestTextInput}"/>
-                    <Button Margin="5" Command="{Binding TestIntInputCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.TestIntInput}"/>
-                    <Button Margin="5" Command="{Binding TestIntRangeInputCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.TestIntRangeInput}"/>
-                    <Button Margin="5" Command="{Binding TestCredentialCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.TestCredentialInput}"/>
-                    <Button Margin="5" Command="{Binding TestCustomDialogCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.TestCustomDialog}"/>
-                    <Button Margin="5" Command="{Binding TestWizardCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.TestWizard}"/>
+                    <Expander>
+                        <Expander.Header>
+                            <TextBlock Foreground="White" Text="{x:Static str:DialogDemoView.MessagesGroup}"/>
+                        </Expander.Header>
+                        <StackPanel>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestMessageCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.MessageTest}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestWarningCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.WarningTest}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestErrorCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.ErrorTest}"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander>
+                        <Expander.Header>
+                            <TextBlock Foreground="White" Text="{x:Static str:DialogDemoView.BasicPromptsGroup}"/>
+                        </Expander.Header>
+                        <StackPanel>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestQuestionCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.QuestionTest}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestSelectionCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.SelectItemTest}"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander>
+                        <Expander.Header>
+                            <TextBlock Foreground="White" Text="{x:Static str:DialogDemoView.OperationsGroup}"/>
+                        </Expander.Header>
+                        <StackPanel>
+                            <Button Margin="5" Command="{Binding TestOperationCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.OperationTest}"/>
+                            <Button Margin="5" Command="{Binding TestCancellableOperationCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.CancellableOpTest}"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander>
+                        <Expander.Header>
+                            <TextBlock Foreground="White" Text="{x:Static str:DialogDemoView.DataEntryGroup}"/>
+                        </Expander.Header>
+                        <StackPanel>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestTextInputCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.TestTextInput}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestIntInputCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.TestIntInput}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestIntRangeInputCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.TestIntRangeInput}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestCredentialCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.TestCredentialInput}"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander>
+                        <Expander.Header>
+                            <TextBlock Foreground="White" Text="{x:Static str:DialogDemoView.SpecialGroup}"/>
+                        </Expander.Header>
+                        <StackPanel>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestCustomDialogCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.TestCustomDialog}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestWizardCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.TestWizard}"/>
+                        </StackPanel>
+                    </Expander>
                 </StackPanel>
             </ScrollViewer>
         </Border>

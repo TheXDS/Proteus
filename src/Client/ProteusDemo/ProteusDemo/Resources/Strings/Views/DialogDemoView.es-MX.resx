@@ -223,4 +223,19 @@ Como el sistema de diálogos es expandible, el servicio de diálogos incluído e
   <data name="TestWizard" xml:space="preserve">
     <value>Probar diálogo de asistente</value>
   </data>
+  <data name="MessagesGroup" xml:space="preserve">
+    <value>Mensajes simples</value>
+  </data>
+  <data name="BasicPromptsGroup" xml:space="preserve">
+    <value>Diálogos de entrada básicos</value>
+  </data>
+  <data name="DataEntryGroup" xml:space="preserve">
+    <value>Diálogos de entrada de datos</value>
+  </data>
+  <data name="OperationsGroup" xml:space="preserve">
+    <value>Diálogos de operación</value>
+  </data>
+  <data name="SpecialGroup" xml:space="preserve">
+    <value>Diálogos especiales</value>
+  </data>
 </root>

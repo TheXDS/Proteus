@@ -3,10 +3,13 @@ using TheXDS.Ganymede.Helpers;
 using TheXDS.Ganymede.Models;
 using TheXDS.Ganymede.Types.Base;
 using TheXDS.MCART.Helpers;
+using TheXDS.MCART.Security;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models;
+using TheXDS.Triton.Faker;
 using TheXDS.Triton.Services.Base;
-using SP = TheXDS.ServicePool.ServicePool;
+using Sp = TheXDS.ServicePool.ServicePool;
+using St = TheXDS.Proteus.Resources.Strings.ViewModels.LoginViewModel;
 
 namespace TheXDS.Proteus.ViewModels;
 
@@ -52,16 +55,75 @@ public class LoginViewModel : ViewModel
 
     private async Task OnLogin(IProgress<ProgressReport> progress)
     {
-        progress.Report("Logging in...");
-        using var trans = SP.CommonPool.Resolve<ITritonService>()!.GetReadTransaction();
-        var result = await trans.ReadAsync<User, string>(Username!);
-        if (result && result.Result is { } user && (PasswordStorage.VerifyPassword(Password!.ToSecureString(), user.Password) ?? false))
+        progress.Report(St.LoggingIn);
+        if (Sp.CommonPool.Resolve<ITritonService>() is { } svc)
         {
-            NavigationService!.HomePage = new WelcomeViewModel();
+            using var trans = svc.GetReadTransaction();
+            var result = await trans.ReadAsync<User, string>(Username!);
+            if (result && result.Result is { } user && (PasswordStorage.VerifyPassword(Password!.ToSecureString(), user.Password) ?? false))
+            {
+                NavigationService!.HomePage = new WelcomeViewModel();
+            }
+            else
+            {
+                await DialogService!.Error(St.CouldNotLogIn, result.Reason?.ToString() ?? St.InvalidUsernamePassword);
+            }
         }
         else
         {
-            await DialogService!.Error("Could not log in", result.Reason?.ToString() ?? "Invalid username/password!");
+            await DialogService!.Warning(St.TritonServiceNotFound, St.TritonNotFoundMessage);
+            NavigationService!.HomePage = new WelcomeViewModel();
         }
+    }
+
+    /// <inheritdoc/>
+    protected override async Task OnCreated()
+    {
+        if (IsInitialized || Sp.CommonPool.Resolve<ITritonService>() is not { } svc) return;
+        using var trans = svc.GetTransaction();
+        if (trans.All<User>().Any()) return;
+        var users = new[]
+        {
+            new User()
+            {
+                Id = "root",
+                DisplayName = "Super User",
+                Enabled = false,
+                Password = PasswordStorage.CreateHash<Pbkdf2Storage>("r00t".ToSecureString())
+            },
+            new User()
+            {
+                Id = "admin",
+                DisplayName = "Administrator",
+                Password = PasswordStorage.CreateHash<Pbkdf2Storage>("@dmin1234".ToSecureString())
+            }
+        }.Concat(Enumerable.Range(0, 10).Select(_ => Person.Adult()).Select(p => new User()
+        {
+            Id = p.UserName,
+            DisplayName = p.Name,
+            Password = PasswordStorage.CreateHash<Pbkdf2Storage>("1234".ToSecureString())
+        })).ToArray();
+
+        trans.Create(users);
+        var admPost = new Post()
+        {
+            Title = Text.Lorem(4),
+            Content = Text.Lorem(200, 8, 3),
+            CreationDate = DateTime.Now,
+            Creator = users[1],
+            Id = Guid.NewGuid(),
+        };
+        var comments = users[2..].Select(u => new Comment()
+        {
+            Id = Guid.NewGuid(),
+            Content = Text.Lorem(10),
+            CreationDate = DateTime.Now,
+            Creator = u,
+            Post = admPost
+        });
+        admPost.Comments = comments.ToList();
+        trans.Create(admPost);
+        trans.Create(comments.ToArray());
+        await trans.CommitAsync();
     }
 }

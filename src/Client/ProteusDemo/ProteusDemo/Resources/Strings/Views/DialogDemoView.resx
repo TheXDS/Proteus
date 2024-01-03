@@ -120,11 +120,17 @@
   <data name="AskText" xml:space="preserve">
     <value>Is this dialog working correctly?</value>
   </data>
+  <data name="BasicPromptsGroup" xml:space="preserve">
+    <value>Basic prompt dialogs</value>
+  </data>
   <data name="CancellableOpTest" xml:space="preserve">
     <value>Test cancellable operation dialog</value>
   </data>
   <data name="CustomDialog1" xml:space="preserve">
     <value>Times ran</value>
+  </data>
+  <data name="DataEntryGroup" xml:space="preserve">
+    <value>Data entry dialogs</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
@@ -148,6 +154,9 @@ As this dialog system is expandable, the dialog service included in Ganymede.Wpf
   <data name="Message" xml:space="preserve">
     <value>Message</value>
   </data>
+  <data name="MessagesGroup" xml:space="preserve">
+    <value>Simple message boxes</value>
+  </data>
   <data name="MessageTest" xml:space="preserve">
     <value>Test message</value>
   </data>
@@ -162,6 +171,9 @@ As this dialog system is expandable, the dialog service included in Ganymede.Wpf
   </data>
   <data name="OperationDemo4" xml:space="preserve">
     <value>Cancelling...</value>
+  </data>
+  <data name="OperationsGroup" xml:space="preserve">
+    <value>Operation dialogs</value>
   </data>
   <data name="OperationTest" xml:space="preserve">
     <value>Test operation dialog</value>
@@ -189,6 +201,9 @@ As this dialog system is expandable, the dialog service included in Ganymede.Wpf
   </data>
   <data name="SelectItemTest" xml:space="preserve">
     <value>Test item selection</value>
+  </data>
+  <data name="SpecialGroup" xml:space="preserve">
+    <value>Special dialogs</value>
   </data>
   <data name="TestCredentialInput" xml:space="preserve">
     <value>Credential input</value>

@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mcart="http://schemas.thexds.local/mcart"
+    xmlns:st="clr-namespace:TheXDS.Proteus.Resources.Strings.ViewModels;assembly=ProteusDemo"
     xmlns:vm="clr-namespace:TheXDS.Proteus.ViewModels;assembly=ProteusDemo"
     d:DataContext="{d:DesignInstance vm:CustomTestDialogViewModel}"
     mc:Ignorable="d" 
@@ -14,9 +15,7 @@
             <mcart:ProgressRing Value="{Binding RingValue}" Margin="10"/>
         </Viewbox>
         <Viewbox>
-            <TextBlock Margin="20">
-                Times ran: <Run Text="{Binding TimesRan}"/>
-            </TextBlock>
+            <TextBlock Margin="20" Text="{Binding TimesRan, Mode=OneWay, StringFormat={x:Static st:CustomTestDialogViewModel.TimesRan}}"/>
         </Viewbox>
     </UniformGrid>
 </UserControl>
