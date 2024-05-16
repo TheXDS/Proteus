@@ -65,8 +65,14 @@
                             <TextBlock Foreground="White" Text="{x:Static str:DialogDemoView.OperationsGroup}"/>
                         </Expander.Header>
                         <StackPanel>
-                            <Button Margin="5" Command="{Binding TestOperationCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.OperationTest}"/>
-                            <Button Margin="5" Command="{Binding TestCancellableOperationCommand, Mode=OneWay}" Content="{x:Static str:DialogDemoView.CancellableOpTest}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestOperationCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.OperationTest}"/>
+                            <Button
+                                Margin="5"
+                                Command="{Binding TestCancellableOperationCommand, Mode=OneWay}"
+                                Content="{x:Static str:DialogDemoView.CancellableOpTest}"/>
                         </StackPanel>
                     </Expander>
                     <Expander>

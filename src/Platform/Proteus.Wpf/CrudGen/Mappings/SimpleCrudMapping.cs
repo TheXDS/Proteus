@@ -14,7 +14,7 @@ namespace TheXDS.Proteus.CrudGen.Mappings;
 /// <typeparam name="TControl">
 /// Type of <see cref="FrameworkElement"/> to generate.
 /// </typeparam>
-public class SimpleCrudMapping<TProp, TControl> : SimpleCrudMappingBase<TProp, TControl>
+public abstract class SimpleCrudMapping<TProp, TControl> : SimpleCrudMappingBase<TProp, TControl>
     where TControl : FrameworkElement, new()
 {
     private readonly DependencyProperty valueProperty;
