@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TheXDS.MCART.Security" Version="0.17.1" />
-		<PackageReference Include="TheXDS.MCART.Security.Argon2" Version="0.17.1" />
-		<PackageReference Include="TheXDS.ServicePool" Version="1.0.5" />
+		<PackageReference Include="TheXDS.MCART.Security" Version="0.17.2" />
+		<PackageReference Include="TheXDS.MCART.Security.Argon2" Version="0.17.2" />
+		<PackageReference Include="TheXDS.ServicePool" Version="2.0.0-beta.2" />
 		<PackageReference Include="TheXDS.Triton.Diagnostics" Version="1.6.1-alpha3" />
 		<PackageReference Include="TheXDS.Triton.Faker" Version="1.6.1-alpha3" />
 		<PackageReference Include="TheXDS.Triton.InMemory" Version="1.6.1-alpha3" />

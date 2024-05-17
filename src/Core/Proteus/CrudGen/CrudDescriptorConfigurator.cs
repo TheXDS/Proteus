@@ -15,8 +15,8 @@ public class CrudDescriptorConfigurator<T> : ICrudDescription, IModelConfigurato
 {
     private readonly Dictionary<PropertyInfo, DescriptionEntry> _properties;
     private readonly IPropertyConfigurator<T> _propertyConfigurator;
-    private readonly List<Action<Model>> _savePrologs = new();
-    private readonly ICollection<PropertyInfo> _listViewProps = new List<PropertyInfo>();
+    private readonly List<Action<Model>> _savePrologs = [];
+    private readonly List<PropertyInfo> _listViewProps = [];
 
     /// <summary>
     /// Initializes a new instance of the
@@ -25,7 +25,7 @@ public class CrudDescriptorConfigurator<T> : ICrudDescription, IModelConfigurato
     public CrudDescriptorConfigurator()
     {
         FriendlyName = ResourceType.GetLabel($"{typeof(T).Name}{(ResourceType is not null && ResourceType.Name == typeof(T).Name ? "Model" : null)}");
-        _properties = new();
+        _properties = [];
         _propertyConfigurator = new PropertyDescriptorConfigurator<T>(_properties, this);
     }
 
@@ -54,7 +54,7 @@ public class CrudDescriptorConfigurator<T> : ICrudDescription, IModelConfigurato
     public Type? ResourceType { get; private set; }
 
     /// <inheritdoc/>
-    public IEnumerable<PropertyInfo> ListViewProperties => _listViewProps.Any() ? _listViewProps : InferListViewProps();
+    public IEnumerable<PropertyInfo> ListViewProperties => _listViewProps.Count != 0 ? _listViewProps : InferListViewProps();
 
     /// <inheritdoc/>
     public CrudCategory? Category { get; private set; }

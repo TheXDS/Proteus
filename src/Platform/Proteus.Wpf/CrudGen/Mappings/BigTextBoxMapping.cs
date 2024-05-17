@@ -23,7 +23,7 @@ public class BigTextBoxMapping : SimpleTextBoxMapping
     {
         base.ConfigureControl(control, description);
         if (Application.Current.FindResource("BigTextBoxEx") is Style st) control.Style = st;
-        if (((ITextPropertyDescription)description).WidgetSize != WidgetSize.Flex)
+        if (((ITextPropertyDescription)description).WidgetSize != WidgetSize.Auto)
         {
             control.Height = ((ITextPropertyDescription)description).WidgetSize switch
             {

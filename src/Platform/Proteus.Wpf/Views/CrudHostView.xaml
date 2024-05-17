@@ -70,7 +70,7 @@
                 </ItemsControl>
             </gn:DecoratedBorder>
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <gn:NavigationViewModelHost
+                <gn:NavigationHost
                     UseLayoutRounding="True"
                     SnapsToDevicePixels="True"
                     VisualResolver="{mk:ProteusCrudBuilder}"

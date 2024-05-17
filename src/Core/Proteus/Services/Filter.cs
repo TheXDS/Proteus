@@ -38,7 +38,7 @@ public class Filter : NotifyPropertyChanged
 
     /// <summary>
     /// Gets or sets a value that indicates if the filters should be aggregated
-    /// using an "AND" expression.
+    /// using an "OR" expression.
     /// </summary>
     public bool AggregateWithOr
     {
@@ -48,7 +48,7 @@ public class Filter : NotifyPropertyChanged
 
     /// <summary>
     /// Gets or sets a value that indicates if the filters should be aggregated
-    /// using an "OR" expression.
+    /// using an "AND" expression.
     /// </summary>
     public bool AggregateWithAnd
     {

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using TheXDS.Ganymede.Component;
 using TheXDS.Ganymede.Types.Base;
-using TheXDS.Ganymede.ValueConverters;
 using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ValueConverters;
 using TheXDS.Proteus.CrudGen.Descriptions;
 using TheXDS.Proteus.CrudGen.Mappings;
 using TheXDS.Proteus.CrudGen.Mappings.Base;
@@ -110,15 +109,15 @@ public class ProteusStackVisualResolver : IVisualResolver<FrameworkElement>, IVi
     /// </summary>
     public ProteusStackVisualResolver()
     {
-        _resolvers = new IVisualResolver<FrameworkElement>[]
-        {
+        _resolvers =
+        [
             new ProteusHostVisualResolver(),
             new CrudPageVisualBuilder(),
             new CrudDetailsVisualBuilder(),
             new CrudEditorVisualBuilder(EditorSettings),
             _dict = new DictionaryVisualResolver<FrameworkElement>(),
             new ConventionVisualResolver<FrameworkElement>(),
-        };
+        ];
     }
 
     /// <summary>

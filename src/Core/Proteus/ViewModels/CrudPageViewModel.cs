@@ -160,7 +160,7 @@ public class CrudPageViewModel : ViewModel
     private async Task<ICrudDescription?> SelectNew()
     {
         var options = Descriptions.Select(p => p.FriendlyName).ToArray();
-        var i = await (DialogService?.SelectOption(St.NewItem, St.NewItemHelp, options) ?? Task.FromResult(-1));
+        var i = await (DialogService?.SelectOption(St.NewItem, St.NewItemHelp, options) ?? Task.FromResult(new InputResult<int>(false, -1)));
         return i >= 0 ? Descriptions[i] : null;
     }
 
@@ -198,12 +198,12 @@ public class CrudPageViewModel : ViewModel
     {
         var vm = Descriptions[0].DetailsViewModel?.New<EntityCrudViewModelBase>() ?? ViewModelBuilder.BuildDetailsFrom(SelectedEntity!, GetCurrentDescription());
         vm.Entity = SelectedEntity!;
-        vm.CrudActions = vm.CrudActions.Concat(new ButtonInteraction[] {
+        vm.CrudActions = vm.CrudActions.Concat([
             UnselectInteraction,
             NewEntityInteraction,
             UpdateInteraction,
             DeleteInteraction
-        }).ToArray();
+        ]).ToArray();
         CrudNavService.NavigateAndReset(vm);
     }
 

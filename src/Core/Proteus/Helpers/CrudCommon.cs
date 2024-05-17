@@ -34,7 +34,7 @@ public static class CrudCommon
     public static void NavigateToCrud<TDescriptor>(this INavigationService navigationService, ITritonService tritonService) where TDescriptor : ICrudDescriptor, new()
     {
         var ep = new TritonFlatEntityProvider(tritonService, new TDescriptor().Description);
-        var vm = new CrudPageViewModel(new[] { new TDescriptor().Description }, tritonService, ep);
+        var vm = new CrudPageViewModel([new TDescriptor().Description], tritonService, ep);
         navigationService.Navigate(vm);
     }
 
@@ -78,10 +78,10 @@ public static class CrudCommon
     {
         var vm = ViewModelBuilder.BuildEditorFrom(settings.Entity, settings.Description, settings.Context);
         var b = new CommandBuilder<CrudEditorViewModel>(vm);
-        vm.CrudActions = new ButtonInteraction[] {
+        vm.CrudActions = [
             new(b.BuildBusyOperation(vm.OnSave), "Save"),
             new(b.BuildSimple(vm.OnCancel), "Back")
-        };
+        ];
         vm.DialogService = settings.DialogService;
         settings.NavigationService.Navigate(vm);
         if (await vm.WaitForCompletion())
@@ -109,7 +109,7 @@ public static class CrudCommon
     public static QueryServiceResult<Model> All(this ICrudReadTransaction transaction, Type model)
     {
         var m = transaction.GetType().GetMethod(nameof(All), 1, BindingFlags.Instance | BindingFlags.Public, null, Type.EmptyTypes, null)!.MakeGenericMethod(model);
-        object o = m.Invoke(transaction, Array.Empty<object>())!;
+        object o = m.Invoke(transaction, [])!;
         ServiceResult r = (ServiceResult)o;
         if (r.Success)
         {
@@ -134,9 +134,9 @@ public static class CrudCommon
         var cast = typeof(Enumerable).GetMethod("Cast")!.MakeGenericMethod(itemType);
 
         type.GetMethod(nameof(ICollection<object>.Clear))!.Invoke(target, Type.EmptyTypes);
-        foreach (var item in (IEnumerable)cast.Invoke(null, new object[] { source })!)
+        foreach (var item in (IEnumerable)cast.Invoke(null, [source])!)
         {
-            add.Invoke(target, new object[] { item });
+            add.Invoke(target, [item]);
         }
     }
 
@@ -197,6 +197,6 @@ public static class CrudCommon
     {
         var type = collection.GetType();
         var method = type.GetMethod(methodName)!;
-        method.Invoke(collection, new object[] { item });
+        method.Invoke(collection, [item]);
     }
 }

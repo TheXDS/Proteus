@@ -8,7 +8,7 @@ namespace TheXDS.Proteus.ViewModels;
 /// </summary>
 public abstract class CrudViewModelBase : ViewModel
 {
-    private IEnumerable<ButtonInteraction> _crudActions = Array.Empty<ButtonInteraction>();
+    private IEnumerable<ButtonInteraction> _crudActions = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CrudViewModelBase"/>

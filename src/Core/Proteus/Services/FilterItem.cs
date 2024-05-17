@@ -8,10 +8,12 @@ namespace TheXDS.Proteus.Services;
 /// Includes information on query filters that can be applied to an
 /// <see cref="IEntityProvider"/> when fetching data.
 /// </summary>
-public class FilterItem : NotifyPropertyChanged
+/// <param name="property">Property for which to filter.</param>
+/// <param name="query">Query string.</param>
+public class FilterItem(IPropertyDescription? property, string? query) : NotifyPropertyChanged
 {
-    private IPropertyDescription? property;
-    private string? query;
+    private IPropertyDescription? property = property;
+    private string? query = query;
 
     /// <summary>
     /// Property for which to filter.
@@ -32,17 +34,6 @@ public class FilterItem : NotifyPropertyChanged
     {
         get => query;
         set => Change(ref query, value);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterItem"/> class.
-    /// </summary>
-    /// <param name="property">Property for which to filter.</param>
-    /// <param name="query">Query string.</param>
-    public FilterItem(IPropertyDescription? property, string? query)
-    {
-        this.property = property;
-        this.query = query;
     }
 
     /// <summary>

@@ -23,7 +23,7 @@ public class CollectionMapping : ObjectMappingBase<ListEditor, ICollectionProper
     /// <inheritdoc/>
     protected override void ConfigureControl(ListEditor control, ICollectionPropertyDescription description)
     {
-        if (description.WidgetSize != WidgetSize.Flex)
+        if (description.WidgetSize != WidgetSize.Auto)
         {
             control.Height = description.WidgetSize switch
             {

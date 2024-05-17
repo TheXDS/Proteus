@@ -11,32 +11,23 @@ namespace TheXDS.Proteus.ViewModels;
 /// Implements a <see cref="HostViewModelBase"/> that contains functionality to
 /// generate children CRUD pages using Proteus.
 /// </summary>
-public abstract class ProteusHostViewModel : HostViewModelBase
+/// <param name="service">
+/// Service to make available to all CRUD pages that get navigated to on 
+/// this instance.
+/// </param>
+public abstract class ProteusHostViewModel(ITritonService service) : HostViewModelBase
 {
     /// <summary>
     /// Gets a reference to an <see cref="ITritonService"/> instance to make
     /// available to all CRUD pages that are navigated to.
     /// </summary>
-    protected ITritonService Service { get; }
+    protected ITritonService Service { get; } = service;
 
     /// <summary>
     /// Gets a grouped enumeration of interactions to be made available on the
     /// ViewModel.
     /// </summary>
     public IEnumerable<IGrouping<string, ButtonInteraction>>? SidebarInteractions { get; protected init; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ProteusHostViewModel"/>
-    /// class.
-    /// </summary>
-    /// <param name="service">
-    /// Service to make available to all CRUD pages that get navigated to on 
-    /// this instance.
-    /// </param>
-    protected ProteusHostViewModel(ITritonService service)
-    {
-        Service = service;
-    }
 
     /// <summary>
     /// Creates a new <see cref="CrudButtonInteraction"/> that may be shown on

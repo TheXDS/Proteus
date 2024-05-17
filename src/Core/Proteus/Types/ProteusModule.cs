@@ -7,7 +7,7 @@ namespace TheXDS.Proteus.Types;
 /// </summary>
 public abstract class ProteusModule
 {
-    private readonly ModuleItem[] _items = Array.Empty<ModuleItem>();
+    private readonly ModuleItem[] _items = [];
 
     /// <summary>
     /// Gets a reference to all the menu items exposed by a module.

@@ -8,7 +8,7 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models;
 using TheXDS.Triton.Faker;
 using TheXDS.Triton.Services.Base;
-using Sp = TheXDS.ServicePool.ServicePool;
+using Sp = TheXDS.Proteus.Shared.Globals;
 using St = TheXDS.Proteus.Resources.Strings.ViewModels.LoginViewModel;
 
 namespace TheXDS.Proteus.ViewModels;
@@ -56,7 +56,7 @@ public class LoginViewModel : ViewModel
     private async Task OnLogin(IProgress<ProgressReport> progress)
     {
         progress.Report(St.LoggingIn);
-        if (Sp.CommonPool.Resolve<ITritonService>() is { } svc)
+        if (Sp.Pool.Resolve<ITritonService>() is { } svc)
         {
             using var trans = svc.GetReadTransaction();
             var result = await trans.ReadAsync<User, string>(Username!);
@@ -79,7 +79,7 @@ public class LoginViewModel : ViewModel
     /// <inheritdoc/>
     protected override async Task OnCreated()
     {
-        if (IsInitialized || Sp.CommonPool.Resolve<ITritonService>() is not { } svc) return;
+        if (IsInitialized || Sp.Pool.Resolve<ITritonService>() is not { } svc) return;
         using var trans = svc.GetTransaction();
         if (trans.All<User>().Any()) return;
         var users = new[]

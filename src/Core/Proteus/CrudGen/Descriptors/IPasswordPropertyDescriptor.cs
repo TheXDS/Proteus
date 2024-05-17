@@ -56,6 +56,18 @@ public interface IPasswordPropertyDescriptor : IBlobPropertyDescriptor
     IPasswordPropertyDescriptor Argon2() => Algorithm<Argon2Storage, Argon2Settings>(Argon2Storage.GetDefaultSettings());
 
     /// <summary>
+    /// Shortcut to set up the hashing algorithm to Argon2 for securely
+    /// storing the password.
+    /// </summary>
+    /// <param name="settings">
+    /// Settings to use for the Argon2 algorithm.
+    /// </param>
+    /// <returns>
+    /// This same descriptor instance, allowing the use of Fluent syntax.
+    /// </returns>
+    IPasswordPropertyDescriptor Argon2(Argon2Settings settings) => Algorithm<Argon2Storage, Argon2Settings>(settings);
+
+    /// <summary>
     /// Defines the encryption algorithm used to securely store the password in
     /// a binary blob.
     /// </summary>

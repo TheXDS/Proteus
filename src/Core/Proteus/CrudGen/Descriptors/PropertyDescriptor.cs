@@ -10,7 +10,7 @@ namespace TheXDS.Proteus.CrudGen.Descriptors;
 /// </summary>
 public class PropertyDescriptor : IPropertyDescriptor, IPropertyDescription
 {
-    private readonly Dictionary<string, object?> values = new();
+    private readonly Dictionary<string, object?> values = [];
 
     /// <summary>
     /// Gets a value from this property descriptor.
@@ -29,8 +29,7 @@ public class PropertyDescriptor : IPropertyDescriptor, IPropertyDescription
     /// <param name="name">Name of the value to set.</param>
     public void SetValue(object? value, [CallerMemberName] string name = null!)
     {
-        if (!values.ContainsKey(name)) values.Add(name, value);
-        else values[name] = value;
+        if (!values.TryAdd(name, value)) values[name] = value;
     }
 
     /// <inheritdoc/>

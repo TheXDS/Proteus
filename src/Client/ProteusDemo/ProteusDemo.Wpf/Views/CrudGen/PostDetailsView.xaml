@@ -13,10 +13,12 @@
     <StackPanel>
         <TextBlock Text="{Binding Entity.Title, Mode=OneWay}" FontSize="24"/>
         <TextBlock Opacity="0.5">
-            <MultiBinding StringFormat="{x:Static st:PostDetailsView.PostedOnBy}">
-                <Binding Path="Entity.CreationDate" Mode="OneWay"/>
-                <Binding Path="Entity.Creator.DisplayName" Mode="OneWay"/>
-            </MultiBinding>
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{x:Static st:PostDetailsView.PostedOnBy}">
+                    <Binding Path="Entity.CreationDate" Mode="OneWay"/>
+                    <Binding Path="Entity.Creator.DisplayName" Mode="OneWay"/>
+                </MultiBinding>
+            </TextBlock.Text>
         </TextBlock>
         <Separator/>
         <DockPanel>

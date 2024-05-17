@@ -8,7 +8,7 @@ public enum WidgetSize
     /// <summary>
     /// Let the widget builder decide.
     /// </summary>
-    Flex,
+    Auto,
 
     /// <summary>
     /// Small size.

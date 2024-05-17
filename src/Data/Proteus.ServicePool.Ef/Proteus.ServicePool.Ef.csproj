@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
@@ -13,7 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
 		<PackageReference Include="TheXDS.ServicePool.Triton.Ef" Version="1.6.1-alpha3" />
 		<PackageReference Include="TheXDS.Triton.EFCore" Version="1.6.1-alpha3" />
 	</ItemGroup>

@@ -4,7 +4,7 @@ using TheXDS.Ganymede.Types.Base;
 using TheXDS.Proteus.CrudGen;
 using TheXDS.Proteus.Services;
 using TheXDS.Triton.Services.Base;
-using SP = TheXDS.ServicePool.ServicePool;
+using Sp = TheXDS.Proteus.Shared.Globals;
 
 namespace TheXDS.Proteus.ViewModels;
 
@@ -42,9 +42,9 @@ public class ProteusDemoViewModel : ViewModel
 
     private void OnManage<TDescriptor>() where TDescriptor : ICrudDescriptor, new()
     {
-        var svc = SP.CommonPool.Resolve<ITritonService>()!;
+        var svc = Sp.Pool.Resolve<ITritonService>()!;
         var ep = new TritonFlatEntityProvider(svc, new TDescriptor().Description);
-        var vm = new CrudPageViewModel(new[] { new TDescriptor().Description }, svc, ep) { DialogService = DialogService };
+        var vm = new CrudPageViewModel([new TDescriptor().Description], svc, ep) { DialogService = DialogService };
         NavigationService?.Navigate(vm);
     }
 }

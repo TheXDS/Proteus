@@ -27,7 +27,7 @@ namespace TheXDS.Proteus.Services;
 public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
 {
     private readonly ITritonService _dataService;
-    private readonly ObservableCollectionWrap<Model> _results = new();
+    private readonly ObservableCollectionWrap<Model> _results = [];
     private int _page = 1;
     private int _itemsPerPage = 100;
     private int totalItems;
@@ -130,7 +130,7 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
         get => _itemsPerPage;
         set
         {
-            if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
             if (Change(ref _itemsPerPage, value))
             {
                 _page = 1;
@@ -158,7 +158,7 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
     {
         status?.Report(St.FetchingData);
         await using var t = _dataService.GetReadTransaction();
-        List<Model> tempResults = new();
+        List<Model> tempResults = [];
         int totalItems = 0;
         foreach (var j in Models)
         {
@@ -234,7 +234,7 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
         return (IQueryable<Model>)typeof(TritonFlatEntityProvider)
             .GetMethod(nameof(BuildQueryGeneric), BindingFlags.NonPublic | BindingFlags.Static)!
             .MakeGenericMethod(model)
-            .Invoke(null, new object?[] { t, expression })!;
+            .Invoke(null, [t, expression])!;
     }
 
     private static bool IsValid(FilterItem item)
@@ -244,7 +244,7 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
 
     private static LambdaExpression? ToLambda(Type model, FilterItem[] items, Func<Expression, Expression, BinaryExpression> aggregator)
     {
-        if (!items.Any()) return null;
+        if (items.Length == 0) return null;
         var entExp = Expression.Parameter(model);
         return Expression.Lambda(ToFunc(model), items.Aggregate((Expression?)null,
             (p, q) => p is not null ? aggregator.Invoke(p, GetFilter(entExp, q)) : GetFilter(entExp, q))!,
@@ -264,17 +264,17 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
         return typeof(Func<,>).MakeGenericType(model, typeof(bool));
     }
 
-    private static Expression ToStringExp(Expression expression, Type valType)
+    private static MethodCallExpression ToStringExp(Expression expression, Type valType)
     {
         return Expression.Call(expression, valType.GetMethod("ToString", Type.EmptyTypes)!);
     }
 
-    private static Expression ToLower(Expression expression)
+    private static MethodCallExpression ToLower(Expression expression)
     {
         return Expression.Call(expression, ReflectionHelpers.GetMethod<string, Func<string>>(p => p.ToLower));
     }
 
-    private static Expression GetFromEntity(Expression source, PropertyInfo property)
+    private static MemberExpression GetFromEntity(Expression source, PropertyInfo property)
     {
         return Expression.Property(source, property.GetMethod!);
     }
@@ -287,7 +287,7 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
             : Contains(entExp, prop, query.Query!);
     }
 
-    private static Expression Contains(ParameterExpression entExp, PropertyInfo prop, string query)
+    private static MethodCallExpression Contains(ParameterExpression entExp, PropertyInfo prop, string query)
     {
         return Expression.Call(
             ToLower(ToStringExp(GetFromEntity(entExp, prop), prop.PropertyType)),
