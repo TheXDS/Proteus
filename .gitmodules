@@ -1,0 +1,3 @@
+[submodule "lib/Triton"]
+	path = lib/Triton
+	url = https://github.com/TheXDS/Triton

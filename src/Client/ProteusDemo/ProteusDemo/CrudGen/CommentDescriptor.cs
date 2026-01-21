@@ -15,10 +15,10 @@ public class CommentDescriptor : CrudDescriptor<Comment>
             c.Property(p => p.Post).Selectable();
             c.Property(p => p.Creator).Selectable();
             c.Property(p => p.Content).Paragraph();
-            c.Property(p => p.CreationDate).WithTime().HideFromEditor();
+            c.Property(p => p.Timestamp).Label("Creation date").WithTime().HideFromEditor();
         });
         m.AddDefaultGuidIdProlog();
-        m.AddSaveProlog(p => p.CreationDate ??= DateTime.Now);
-        m.ListViewProperties(p => p.CreationDate, p => p.Creator);
+        m.AddTimestampSetProlog();
+        m.ListViewProperties(p => p.Timestamp, p => p.Creator);
     }
 }

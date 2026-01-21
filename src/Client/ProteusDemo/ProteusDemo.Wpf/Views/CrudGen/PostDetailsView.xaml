@@ -6,8 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:TheXDS.Proteus.Models;assembly=ProteusDemo"
     xmlns:st="clr-namespace:TheXDS.Proteus.Resources.Strings.Views;assembly=ProteusDemo"
-    xmlns:crudgen="clr-namespace:TheXDS.Proteus.ViewModels.CrudGen;assembly=ProteusDemo"
-    mc:Ignorable="d" 
+    xmlns:crudgen="clr-namespace:TheXDS.Proteus.ViewModels.CrudGen;assembly=ProteusDemo" xmlns:gn="http://schemas.thexds.local/ganymede"
+    mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=crudgen:PostDetailsViewModel}"
     d:DesignHeight="450" d:DesignWidth="600">
     <StackPanel>
@@ -15,41 +15,45 @@
         <TextBlock Opacity="0.5">
             <TextBlock.Text>
                 <MultiBinding StringFormat="{x:Static st:PostDetailsView.PostedOnBy}">
-                    <Binding Path="Entity.CreationDate" Mode="OneWay"/>
+                    <Binding Path="Entity.Timestamp" Mode="OneWay"/>
                     <Binding Path="Entity.Creator.DisplayName" Mode="OneWay"/>
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
         <Separator/>
         <DockPanel>
-            <Expander DockPanel.Dock="Right" ExpandDirection="Left">
-                <Expander.Header>
-                    <TextBlock Text="{x:Static st:PostDetailsView.Comments}">
-                        <TextBlock.LayoutTransform>
-                            <RotateTransform Angle="-90"/>
-                        </TextBlock.LayoutTransform>
-                    </TextBlock>
-                </Expander.Header>
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <ItemsControl MinWidth="200" ItemsSource="{Binding Entity.Comments}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="models:Comment">
-                                    <DockPanel Margin="0,0,0,5">
-                                        <TextBlock Text="👤" Foreground="White" Background="SteelBlue" DockPanel.Dock="Left"/>
-                                        <DockPanel DockPanel.Dock="Top">
-                                            <TextBlock DockPanel.Dock="Right" Text="{Binding CreationDate}" Opacity="0.5"/>
-                                            <TextBlock Text="{Binding Creator.DisplayName}" FontWeight="Bold"/>
+            <gn:DecoratedBorder Margin="5,0,0,0" DockPanel.Dock="Right" Padding="5">
+                <Expander ExpandDirection="Left">
+                    <Expander.Header>
+                        <TextBlock Text="{x:Static st:PostDetailsView.Comments}">
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="-90"/>
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </Expander.Header>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,5,0">
+                        <StackPanel>
+                            <ItemsControl MinWidth="200" ItemsSource="{Binding Entity.Comments}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="models:Comment">
+                                        <DockPanel Margin="0,0,0,5">
+                                            <TextBlock Text="👤" Foreground="White" Background="SteelBlue" DockPanel.Dock="Left"/>
+                                            <DockPanel DockPanel.Dock="Top">
+                                                <TextBlock DockPanel.Dock="Right" Text="{Binding Timestamp}" Opacity="0.5"/>
+                                                <TextBlock Text="{Binding Creator.DisplayName}" FontWeight="Bold"/>
+                                            </DockPanel>
+                                            <TextBlock Text="{Binding Content}" TextWrapping="Wrap" Margin="0,5"/>
                                         </DockPanel>
-                                        <TextBlock Text="{Binding Content}" TextWrapping="Wrap" Margin="0,5"/>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </ScrollViewer>
-            </Expander>
-            <TextBlock Text="{Binding Entity.Content, Mode=OneWay}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Expander>
+            </gn:DecoratedBorder>
+            <gn:DecoratedBorder Margin="0,0,5,0" Padding="10">
+                <TextBlock Text="{Binding Entity.Content, Mode=OneWay}" TextWrapping="Wrap"/>
+            </gn:DecoratedBorder>
         </DockPanel>
     </StackPanel>
 </UserControl>

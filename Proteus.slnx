@@ -1,0 +1,56 @@
+<Solution>
+  <Folder Name="/Client/">
+    <Project Path="src/Client/ProteusDemo/ProteusDemo.Wpf/ProteusDemo.Wpf.csproj" />
+    <Project Path="src/Client/ProteusDemo/ProteusDemo/ProteusDemo.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="src/Core/Proteus.ServicePool/Proteus.ServicePool.csproj" />
+    <Project Path="src/Core/Proteus/Proteus.csproj" />
+  </Folder>
+  <Folder Name="/Data/">
+    <Project Path="src/Data/Proteus.ServicePool.Ef/Proteus.ServicePool.Ef.csproj" />
+    <Project Path="src/Data/Proteus.ServicePool.Sql/Proteus.ServicePool.Sql.csproj" />
+  </Folder>
+  <Folder Name="/Lib/" />
+  <Folder Name="/Lib/Triton/">
+    <Project Path="lib/Triton/src/Bundles/ServicePool.Triton/ServicePool.Triton.csproj" />
+    <Project Path="lib/Triton/src/Core/Triton.Models/Triton.Models.csproj" />
+    <Project Path="lib/Triton/src/Core/Triton/Triton.csproj" />
+  </Folder>
+  <Folder Name="/Platform/">
+    <Project Path="src/Platform/Proteus.Wpf/Proteus.Wpf.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Solution Items/Build/" />
+  <Folder Name="/Solution Items/Build/src/">
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Build.targets" />
+  </Folder>
+  <Folder Name="/Solution Items/Build/Targets/">
+    <File Path="BuildTargets/BuildPaths.props" />
+    <File Path="BuildTargets/Cleanup.targets" />
+    <File Path="BuildTargets/CompileOptions.targets" />
+    <File Path="BuildTargets/PackageInfo.props" />
+    <File Path="BuildTargets/PackageVersion.props" />
+  </Folder>
+  <Folder Name="/Solution Items/CI/" />
+  <Folder Name="/Solution Items/CI/Github/">
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/publish.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/docs/">
+    <File Path="docs/docfx.json" />
+    <File Path="docs/index.md" />
+    <File Path="docs/toc.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/docs/api/">
+    <File Path="docs/api/index.md" />
+  </Folder>
+  <Folder Name="/Solution Items/docs/articles/">
+    <File Path="docs/articles/intro.md" />
+    <File Path="docs/articles/toc.yml" />
+  </Folder>
+</Solution>

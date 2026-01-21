@@ -4,12 +4,12 @@ using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Proteus.Models;
 
-public class Post : Model<Guid>
+public class Post : TimestampModel<Guid>, ILastUpdatedModel
 {
     public User? Creator { get; set; }
     public string? Title { get; set; }
     public string? Content { get; set; }
-    public DateTime? CreationDate { get; set; }
-    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public virtual ICollection<Comment> Comments { get; set; } = [];
+    public DateTime LastUpdated { get; set; }
     public override string ToString() => Title ?? Id.ToString();
 }

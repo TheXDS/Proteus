@@ -67,7 +67,7 @@ public interface ITextPropertyDescriptor : IPropertyDescriptor<string>, INullabl
     }
 
     /// <summary>
-    /// Sets the desired text mask for the property. Implies 
+    /// Sets the desired text mask for the property. Implies
     /// <see cref="TextKind.Maskable"/>
     /// </summary>
     /// <param name="mask">

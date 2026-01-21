@@ -24,5 +24,6 @@ public class UserDescriptor : CrudDescriptor<User>
             c.Property(p => p.LikeFlags);
         });
         m.ListViewProperties(p => p.Id, p => p.DisplayName);
+        m.AddTimestampSetProlog();
     }
 }
