@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using TheXDS.Proteus.Services.Base;
 using TheXDS.Triton.Models.Base;
-using static TheXDS.Ganymede.Helpers.DependencyObjectHelpers;
+using static TheXDS.MCART.Helpers.DependencyObjectHelpers;
 
 namespace TheXDS.Proteus.Controls;
 
@@ -25,7 +25,7 @@ public class EntitySelector : Control
     {
         SetControlStyle<EntitySelector>(DefaultStyleKeyProperty);
         ProviderProperty = NewDp<IEntityProvider?, EntitySelector>(nameof(Provider));
-        SelectedEntityProperty = NewDp2Way<Model?, EntitySelector>(nameof(SelectedEntity));
+        SelectedEntityProperty = NewDp2Way<Model?, EntitySelector>(nameof(SelectedEntity), FrameworkPropertyMetadataOptions.None);
     }
 
     /// <summary>

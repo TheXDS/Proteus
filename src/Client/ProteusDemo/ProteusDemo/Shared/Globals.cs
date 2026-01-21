@@ -11,5 +11,5 @@ public static class Globals
     /// <summary>
     /// Gets a reference to the global service pool for this application.
     /// </summary>
-    public static PoolBase Pool { get; } = new Pool(new PoolConfig(true));
+    public static Pool Pool { get; } = new Pool(PoolConfig.FlexResolve);
 }

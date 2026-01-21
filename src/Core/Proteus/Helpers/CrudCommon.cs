@@ -2,7 +2,6 @@
 using System.Reflection;
 using TheXDS.Ganymede.Helpers;
 using TheXDS.Ganymede.Services;
-using TheXDS.Ganymede.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.CrudGen;
 using TheXDS.Proteus.CrudGen.Descriptions;
@@ -10,7 +9,6 @@ using TheXDS.Proteus.Services;
 using TheXDS.Proteus.ViewModels;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
-using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.Proteus.Helpers;
 
@@ -111,7 +109,7 @@ public static class CrudCommon
         var m = transaction.GetType().GetMethod(nameof(All), 1, BindingFlags.Instance | BindingFlags.Public, null, Type.EmptyTypes, null)!.MakeGenericMethod(model);
         object o = m.Invoke(transaction, [])!;
         ServiceResult r = (ServiceResult)o;
-        if (r.Success)
+        if (r.IsSuccessful)
         {
             return new QueryServiceResult<Model>((IQueryable<Model>)o);
         }
@@ -161,7 +159,7 @@ public static class CrudCommon
     }
 
     /// <summary>
-    /// Scans the available types and finds all the 
+    /// Scans the available types and finds all the
     /// <see cref="ICrudDescription"/> instances that can be used to describe
     /// potential values assignable to the specified property description.
     /// </summary>
@@ -175,7 +173,7 @@ public static class CrudCommon
     /// </returns>
     public static IEnumerable<ICrudDescription> InferDescriptions(IPropertyDescription property)
     {
-        var types = property.Property.PropertyType.ResolveCollectionType().Derivates().Where(p => p.IsInstantiable());
+        var types = property.Property.PropertyType.ResolveCollectionType().FindDerivedTypes().Where(p => p.IsInstantiable());
         foreach (var type in types)
         {
             foreach (var k in EnumerateDescriptors(type))

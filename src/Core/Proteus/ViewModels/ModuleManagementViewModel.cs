@@ -5,7 +5,7 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.CrudGen;
 using TheXDS.Proteus.Services;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 
 namespace TheXDS.Proteus.ViewModels;
 

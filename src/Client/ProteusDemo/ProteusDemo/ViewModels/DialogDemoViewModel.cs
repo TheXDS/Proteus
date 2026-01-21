@@ -3,7 +3,10 @@
 using System.Windows.Input;
 using TheXDS.Ganymede.Helpers;
 using TheXDS.Ganymede.Models;
+using TheXDS.Ganymede.Resources;
 using TheXDS.Ganymede.Types.Base;
+using TheXDS.MCART.Component;
+using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.ViewModels.WizardTest;
 using St = TheXDS.Proteus.Resources.Strings.Views.DialogDemoView;
@@ -12,7 +15,7 @@ namespace TheXDS.Proteus.ViewModels;
 
 public class DialogDemoViewModel : ViewModel
 {
-    private static ICommand NewDialogCmd(CommandBuilder<DialogDemoViewModel> builder, Func<Task> action)
+    private static ObservingCommand NewDialogCmd(CommandBuilder<DialogDemoViewModel> builder, Func<Task> action)
     {
         return builder.BuildObserving(action).CanExecuteIfNotNull(p => p.DialogService).Build();
     }
@@ -70,27 +73,27 @@ public class DialogDemoViewModel : ViewModel
     private async Task OnTestTextInput()
     {
         if (DialogService is null) return;
-        var text = await DialogService.GetInputText(St.TestTextInput, St.TextInputPrompt);
+        var text = await DialogService.GetInputText(CommonDialogTemplates.Input with { Title = St.TestTextInput, Text = St.TextInputPrompt });
         await DialogService.Message(St.TestTextInput, text.Success ? text.Result! : string.Empty);
     }
 
     private async Task OnTestValueInput<T>() where T : unmanaged, IComparable<T>
     {
         if (DialogService is null) return;
-        var text = await DialogService.GetInputValue<T>(St.TestTextInput, St.TextInputPrompt);
+        var text = await DialogService.GetInputValue<T>(CommonDialogTemplates.Input with { Title = St.TestTextInput, Text = St.TextInputPrompt }, null, null);
         await DialogService.Message(St.TestTextInput, text.Success ? text.Result.ToString()! : string.Empty);
     }
 
     private async Task OnTestRangeInput<T>() where T : unmanaged, IComparable<T>
     {
         if (DialogService is null) return;
-        var text = await DialogService.GetInputRange<T>(St.TestTextInput, St.TextInputPrompt);
+        var text = await DialogService.GetInputRange<T>(CommonDialogTemplates.Input with { Title = St.TestTextInput, Text = St.TextInputPrompt }, null, null);
         await DialogService.Message(St.TestTextInput, text.Success ? text.Result.ToString()! : string.Empty);
     }
 
     private async Task OnTestQuestion()
     {
-        var r = await (DialogService?.Ask(St.AskText) ?? Task.FromResult(false));
+        var r = await (DialogService?.AskYn(St.AskText) ?? Task.FromResult(false));
         DialogService?.Message(r.ToString());
     }
 
@@ -135,22 +138,22 @@ public class DialogDemoViewModel : ViewModel
 
     private async Task OnTestSelectDialog()
     {
-        var options = Enumerable.Range(1, 5).Select(p => string.Format(St.SelectDemo1, p)).ToArray();
-        var result = await DialogService!.SelectOption(St.SelectDemo2, St.SelectDemo3, options);
-        if (result == -1)
+        var options = Enumerable.Range(1, 5).Select(p => new NamedObject<int>(string.Format(St.SelectDemo1, p), p)).ToArray();
+        var result = await DialogService!.SelectOption(CommonDialogTemplates.Input with { Title = St.SelectDemo2, Text = St.SelectDemo3 }, options);
+        if (!result.Success)
         {
             await DialogService!.Message(St.SelectDemo4, St.SelectDemo5);
         }
         else
         {
-            await DialogService!.Message(St.SelectDemo2, string.Format(St.SelectDemo6, options[result]));
+            await DialogService!.Message(St.SelectDemo2, string.Format(St.SelectDemo6, result.Result));
         }
     }
 
     private async Task OnTestCredential()
     {
         if (DialogService is null) return;
-        var text = await DialogService.GetCredential(St.TestTextInput, St.TextInputPrompt);
+        var text = await DialogService.GetCredential(CommonDialogTemplates.Login with { Title = St.TestTextInput, Text = St.TextInputPrompt });
         await DialogService.Message(St.TestTextInput, text.Success ? $"{text.Result.User}\n{text.Result.Password.Read()}" : string.Empty);
     }
 
@@ -158,7 +161,7 @@ public class DialogDemoViewModel : ViewModel
     {
         if (DialogService is null) return;
         var vm = new CustomTestDialogViewModel();
-        await DialogService.CustomDialog(vm);
+        await DialogService.Show(vm);
         await DialogService.Message(St.CustomDialog1, vm.TimesRan.ToString());
     }
 

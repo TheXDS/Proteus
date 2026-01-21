@@ -5,8 +5,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using TheXDS.Ganymede.Resources;
 using TheXDS.Ganymede.Services;
 using TheXDS.MCART.Component;
+using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Controls.Base;
 using TheXDS.Proteus.CrudGen.Descriptions;
@@ -163,7 +165,7 @@ public abstract class ObjectMappingBase<TControl, TDescription>
                 : models[0];
             if (childDescription is null) return;
             var selectDialog = new DataCrudSelectorViewModel(vm.Context.PageDataService!, childDescription);
-            await vm.DialogService!.CustomDialog(selectDialog);
+            await vm.DialogService!.Show(selectDialog);
             if (selectDialog.SelectedEntity is not null)
             {
                 selectAction.Invoke(control, selectDialog.SelectedEntity, description.Property, vm.Entity);
@@ -191,8 +193,7 @@ public abstract class ObjectMappingBase<TControl, TDescription>
     private static async Task<ICrudDescription?> GetDesiredModel(IDialogService dialogService, ICrudDescription[] models)
     {
         var m = new Dictionary<string, ICrudDescription>(models.Select(p => new KeyValuePair<string, ICrudDescription>(p.FriendlyName, p)));
-        return await dialogService!.SelectOption(St.NewItem, St.NewItemHelp, m.Keys.ToArray()) is { } i && i >= 0
-            ? m[m.Keys.ToArray()[i]]
-            : null;
+        var result = await dialogService!.SelectOption(CommonDialogTemplates.Input with { Title = St.NewItem, Text = St.NewItemHelp }, m.Select(p => new NamedObject<ICrudDescription>(p.Value, p.Key)).ToArray());
+        return result.Success ? result.Result : null;
     }
 }

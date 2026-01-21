@@ -15,6 +15,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="WPF-UI" Version="4.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\..\Platform\Proteus.Wpf\Proteus.Wpf.csproj" />
 		<ProjectReference Include="..\ProteusDemo\ProteusDemo.csproj" />
 	</ItemGroup>
@@ -32,6 +36,10 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>ProteusDemoView.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.102" />
 	</ItemGroup>
 
 </Project>

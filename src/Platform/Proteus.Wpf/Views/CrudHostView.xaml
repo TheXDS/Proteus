@@ -26,11 +26,11 @@
         <gn:DecoratedBorder Padding="5" Margin="10">
             <controls:EntitySelector
                 Provider="{Binding EntityProvider}"
-                SelectedEntity="{Binding SelectedEntity}"/>
+                SelectedEntity="{Binding SelectedEntity, Mode=TwoWay}"/>
         </gn:DecoratedBorder>
         <DockPanel
             Visibility="{Binding CrudNavService.CurrentViewModel, Mode=OneWay, Converter={StaticResource nn2vc}}">
-            <ItemsControl ItemsSource="{Binding CrudNavService.NavigationStack, Mode=OneWay}" DockPanel.Dock="Top" Margin="5">
+            <ItemsControl ItemsSource="{Binding CrudNavService.NavigationSet, Mode=OneWay}" DockPanel.Dock="Top" Margin="5">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>

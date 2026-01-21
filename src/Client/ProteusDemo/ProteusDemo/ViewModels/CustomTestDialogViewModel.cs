@@ -31,7 +31,7 @@ public class CustomTestDialogViewModel : AwaitableDialogViewModel
         Message = St.DlgMessage;
 
         Interactions.Add(new(new SimpleCommand(OnRunRing), St.Run));
-        Interactions.Add(new(new SimpleCommand(CloseDialog), St.Close));
+        Interactions.Add(new(new SimpleCommand(Close), St.Close));
     }
 
     private async Task OnRunRing()

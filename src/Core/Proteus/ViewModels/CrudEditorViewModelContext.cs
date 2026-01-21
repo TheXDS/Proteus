@@ -1,7 +1,7 @@
 ﻿using TheXDS.Ganymede.Helpers;
 using TheXDS.Proteus.CrudGen;
 using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 
 namespace TheXDS.Proteus.ViewModels;
 
@@ -43,5 +43,5 @@ public record struct CrudEditorViewModelContext(bool CreatingNew, Type Model, Ty
     /// into the temporary editing entity, and therefore should be invoked on
     /// the UI thread via the <see cref="UiThread.Invoke(Action)"/> method.
     /// </remarks>
-    public ICollection<Action<Model>> PreSaveCallbacks { get; } = new List<Action<Model>>();
+    public ICollection<Action<Model>> PreSaveCallbacks { get; } = [];
 }

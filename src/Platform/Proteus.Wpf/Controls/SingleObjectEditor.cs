@@ -1,6 +1,6 @@
 ﻿using TheXDS.Proteus.Controls.Base;
 using TheXDS.Triton.Models.Base;
-using static TheXDS.Ganymede.Helpers.DependencyObjectHelpers;
+using static TheXDS.MCART.Helpers.DependencyObjectHelpers;
 
 namespace TheXDS.Proteus.Controls;
 

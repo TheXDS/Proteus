@@ -79,7 +79,7 @@ public class ProteusStackVisualResolver : IVisualResolver<FrameworkElement>, IVi
                          * controls, especially TextBoxes. Having a three-state CheckBox
                          * that should just accept two states is not what we want, so we
                          * just set it to false if it's on the third state (null).
-                         * 
+                         *
                          * Ask me how I know.
                          */
                         case null: chk.IsChecked = false; break;
