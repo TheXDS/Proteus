@@ -81,7 +81,7 @@ public static class CrudCommon
             new(b.BuildSimple(vm.OnCancel), "Back")
         ];
         vm.DialogService = settings.DialogService;
-        settings.NavigationService.Navigate(vm);
+        await settings.NavigationService.Navigate(vm);
         if (await vm.WaitForCompletion())
         {
             foreach (var saveProlog in settings.Description.SavePrologs)
