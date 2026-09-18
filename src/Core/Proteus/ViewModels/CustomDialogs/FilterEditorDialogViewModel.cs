@@ -42,7 +42,7 @@ public class FilterEditorDialogViewModel : AwaitableDialogViewModel
         {
             j.Filter.Items.RemoveAll(p => p.Property is null || p.Query.IsEmpty());
         }
-        CloseDialog();
+        Close();
     }
 
     private void OnClearAll()
@@ -51,6 +51,6 @@ public class FilterEditorDialogViewModel : AwaitableDialogViewModel
         {
             j.Filter.Items.Clear();
         }
-        CloseDialog();
+        Close();
     }
 }

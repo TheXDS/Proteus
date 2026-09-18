@@ -7,7 +7,7 @@ using TheXDS.MCART.Security;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models;
 using TheXDS.Triton.Faker;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 using Sp = TheXDS.Proteus.Shared.Globals;
 using St = TheXDS.Proteus.Resources.Strings.ViewModels.LoginViewModel;
 
@@ -60,7 +60,7 @@ public class LoginViewModel : ViewModel
         {
             using var trans = svc.GetReadTransaction();
             var result = await trans.ReadAsync<User, string>(Username!);
-            if (result && result.Result is { } user && (PasswordStorage.VerifyPassword(Password!.ToSecureString(), user.Password) ?? false))
+            if (result is { IsSuccessful: true, Result: { } user } && (PasswordStorage.VerifyPassword(Password!.ToSecureString(), user.Password) ?? false))
             {
                 NavigationService!.HomePage = new WelcomeViewModel();
             }
@@ -121,7 +121,7 @@ public class LoginViewModel : ViewModel
             Creator = u,
             Post = admPost
         });
-        admPost.Comments = comments.ToList();
+        admPost.Comments = [.. comments];
         trans.Create(admPost);
         trans.Create(comments.ToArray());
         await trans.CommitAsync();

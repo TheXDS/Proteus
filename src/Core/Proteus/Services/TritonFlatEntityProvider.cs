@@ -14,7 +14,7 @@ using TheXDS.Proteus.CrudGen;
 using TheXDS.Proteus.Services.Base;
 using TheXDS.Proteus.ViewModels.CustomDialogs;
 using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 using St = TheXDS.Proteus.Resources.Strings.Common;
 
 namespace TheXDS.Proteus.Services;
@@ -50,7 +50,6 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
     /// </exception>
     public TritonFlatEntityProvider(ITritonService dataService, params ICrudDescription[] models)
     {
-        RegisterPropertyChangeBroadcast(nameof(ItemsPerPage), nameof(TotalPages));
         _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
 
         Models = models.OrNull()?.ToArray() ?? throw new EmptyCollectionException(models);
@@ -60,13 +59,19 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
         }
         var b = new CommandBuilder<TritonFlatEntityProvider>(this);
 
-        FirstPageCommand = b.BuildSimple(OnFirst);
-        LastPageCommand = b.BuildSimple(OnLast);
+        FirstPageCommand = b.BuildObserving(OnFirst).ListensTo(p => p.Results).CanExecuteIfNotZero(p => p.TotalPages).Build();
+        LastPageCommand = b.BuildObserving(OnLast).ListensTo(p => p.Results).CanExecuteIfNotZero(p => p.TotalPages).Build();
         NextPageCommand = b.BuildObserving(OnNextPage).ListensTo(p => p.Results).CanExecute(CanGoNext).Build();
         PreviousPageCommand = b.BuildObserving(OnPreviousPage).ListensTo(p => p.Results).CanExecute(CanGoPrevious).Build();
         RefreshCommand = b.BuildBusyOperation(OnRefresh);
         EditFiltersCommand = b.BuildSimple(OnEditFilters);
         ClearFiltersCommand = b.BuildSimple(OnClearFilters);
+    }
+
+    /// <inheritdoc/>
+    protected override void OnInitialize(IPropertyBroadcastSetup broadcastSetup)
+    {
+        broadcastSetup.RegisterPropertyChangeBroadcast(() => ItemsPerPage, () => TotalPages);
     }
 
     /// <inheritdoc/>
@@ -170,13 +175,13 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
         }
         TotalItems = totalItems;
         _results.Substitute(tempResults);
-        Notify(nameof(Results));
+        Notify(nameof(Results), nameof(TotalPages));
     }
 
     private async Task OnEditFilters()
     {
         var vm = new FilterEditorDialogViewModel(Filters);
-        await (DialogService?.CustomDialog(vm) ?? Task.CompletedTask);
+        await (DialogService?.Show(vm) ?? Task.CompletedTask);
         Notify(nameof(FiltersCount));
         await FetchDataAsync();
     }
@@ -230,7 +235,7 @@ public class TritonFlatEntityProvider : ViewModelBase, IEntityProvider
 
     private static IQueryable<Model> BuildQuery(Type model, ICrudReadTransaction t, Filter filter)
     {
-        var expression = ToLambda(model, filter.Items.Where(IsValid).ToArray(), filter.AggregateWithOr ? Expression.OrElse : Expression.AndAlso);
+        var expression = ToLambda(model, [.. filter.Items.Where(IsValid)], filter.AggregateWithOr ? Expression.OrElse : Expression.AndAlso);
         return (IQueryable<Model>)typeof(TritonFlatEntityProvider)
             .GetMethod(nameof(BuildQueryGeneric), BindingFlags.NonPublic | BindingFlags.Static)!
             .MakeGenericMethod(model)

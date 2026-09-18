@@ -3,7 +3,7 @@ using TheXDS.Ganymede.Helpers;
 using TheXDS.Ganymede.Types.Base;
 using TheXDS.Proteus.CrudGen;
 using TheXDS.Proteus.Services;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 using Sp = TheXDS.Proteus.Shared.Globals;
 
 namespace TheXDS.Proteus.ViewModels;

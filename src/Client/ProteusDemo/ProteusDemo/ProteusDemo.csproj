@@ -8,12 +8,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TheXDS.MCART.Security" Version="0.17.2" />
-		<PackageReference Include="TheXDS.MCART.Security.Argon2" Version="0.17.2" />
-		<PackageReference Include="TheXDS.ServicePool" Version="2.0.0-beta.2" />
-		<PackageReference Include="TheXDS.Triton.Diagnostics" Version="1.6.1-alpha3" />
-		<PackageReference Include="TheXDS.Triton.Faker" Version="1.6.1-alpha3" />
-		<PackageReference Include="TheXDS.Triton.InMemory" Version="1.6.1-alpha3" />
+		<PackageReference Include="TheXDS.MCART.Security" Version="1.0.0-alpha.3" />
+		<PackageReference Include="TheXDS.MCART.Security.Argon2" Version="1.0.0-alpha.3" />
+		<PackageReference Include="TheXDS.ServicePool" Version="2.0.1" />
+		<PackageReference Include="TheXDS.Triton.Diagnostics" Version="2.0.0-beta.4" />
+		<PackageReference Include="TheXDS.Triton.Faker" Version="2.0.0-beta.4" />
+		<PackageReference Include="TheXDS.Triton.InMemory" Version="2.0.0-beta.4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -87,6 +87,10 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>WelcomeView.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.400" />
 	</ItemGroup>
 
 </Project>

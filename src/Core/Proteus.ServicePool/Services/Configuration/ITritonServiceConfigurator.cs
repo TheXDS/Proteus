@@ -1,4 +1,5 @@
-﻿using TheXDS.ServicePool.Triton;
+﻿using TheXDS.Ganymede.ViewModels;
+using TheXDS.ServicePool.Triton;
 
 namespace TheXDS.Proteus.Services.Configuration;
 
@@ -29,8 +30,8 @@ public interface ITritonServiceConfigurator
     void Configure(ITritonConfigurable configurable);
 
     /// <summary>
-    /// Gets a reference to a <see cref="IValidatableViewModel"/> used to
+    /// Gets a reference to a <see cref="IAwaitableDialogViewModel"/> used to
     /// configure the service on this instance.
     /// </summary>
-    IValidatableViewModel? ConfigurationViewModel { get; }
+    IAwaitableDialogViewModel? ConfigurationViewModel { get; }
 }

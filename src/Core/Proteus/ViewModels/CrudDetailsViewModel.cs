@@ -21,6 +21,6 @@ public class CrudDetailsViewModel : DynamicCrudViewModelBase
     /// </param>
     public CrudDetailsViewModel(Model entity, ICrudDescription description) : base(entity, description)
     {
-        Title = string.Format(St.DetailsOfX, description.FriendlyName, entity.IdAsString);
+        Title = string.Format(St.DetailsOfX, description.FriendlyName, entity.Metadata.IdAsString);
     }
 }

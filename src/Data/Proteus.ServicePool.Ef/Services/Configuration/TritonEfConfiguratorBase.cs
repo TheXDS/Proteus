@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TheXDS.Ganymede.ViewModels;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.ServicePool.Triton;
+using TheXDS.ServicePool.Triton.Ef;
+using TheXDS.Triton.EFCore.Services;
 using TheXDS.Triton.Services;
-using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.Proteus.Services.Configuration;
 
@@ -33,7 +35,7 @@ public abstract class TritonEfConfiguratorBase<TService, TContext> : ITritonServ
     }
 
     /// <inheritdoc/>
-    public virtual IValidatableViewModel? ConfigurationViewModel => null;
+    public virtual IAwaitableDialogViewModel? ConfigurationViewModel => null;
     
     /// <summary>
     /// Creates a new instance of the required service, given a set of

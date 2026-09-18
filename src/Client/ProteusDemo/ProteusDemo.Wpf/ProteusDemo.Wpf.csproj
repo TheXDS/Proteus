@@ -15,6 +15,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="TheXDS.MCART.Wpf.Controls.ModernWindow" Version="1.0.0-alpha.3" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\..\Platform\Proteus.Wpf\Proteus.Wpf.csproj" />
 		<ProjectReference Include="..\ProteusDemo\ProteusDemo.csproj" />
 	</ItemGroup>
@@ -32,6 +36,10 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>ProteusDemoView.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.400" />
 	</ItemGroup>
 
 </Project>

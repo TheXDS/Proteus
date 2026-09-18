@@ -16,7 +16,13 @@
                             <RowDefinition/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <gn:DecoratedBorder Margin="5">
+                        <Border Margin="5" BorderThickness="1" CornerRadius="5">
+                            <Border.BorderBrush>
+                                <LinearGradientBrush EndPoint="0,1">
+                                    <GradientStop Color="#c0c0c0"/>
+                                    <GradientStop Color="#404040" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
                             <Expander Padding="5">
                                 <Expander.Header>
                                     <TextBlock Foreground="{TemplateBinding Foreground}">
@@ -57,7 +63,7 @@
                                         Command="{Binding Provider.RefreshCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Content="{x:Static st:Common.RefreshData}"/>
                                 </StackPanel>
                             </Expander>
-                        </gn:DecoratedBorder>
+                        </Border>
                         <ListView
                             Grid.Row="1"
                             BorderBrush="{x:Null}"
@@ -66,57 +72,52 @@
                             View="{Binding Provider.Models, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, Converter={StaticResource lvg}}"
                             ItemsSource="{Binding Provider.Results, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
                             SelectedItem="{Binding SelectedEntity, RelativeSource={RelativeSource TemplatedParent}}"/>
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Button
-                                Margin="5,5,0,5"
-                                Padding="0"
-                                Width="20"
-                                Command="{Binding Provider.FirstPageCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
-                                <TextBlock>|◀</TextBlock>
-                            </Button>
-                            <Button
-                                Margin="0,5,5,5"
-                                Padding="0"
-                                Width="20"
-                                Grid.Column="1"
-                                Command="{Binding Provider.PreviousPageCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
-                                <TextBlock>◀</TextBlock>
-                            </Button>
-                            <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{x:Static st:Common.PageCount}">
-                                        <Binding Path="Provider.Page" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-                                        <Binding Path="Provider.TotalPages" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                            <Button
-                                Margin="5,5,0,5"
-                                Padding="0"
-                                Width="20"
-                                Grid.Column="3"
-                                Command="{Binding Provider.NextPageCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
-                                <TextBlock>▶</TextBlock>
-                            </Button>
-                            <Button
-                                Margin="0,5,5,5"
-                                Padding="0"
-                                Width="20"
-                                Grid.Column="4"
-                                Command="{Binding Provider.LastPageCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
-                                <TextBlock>▶|</TextBlock>
-                            </Button>
-                        </Grid>
+                        <Border Grid.Row="2" Margin="5" Padding="5" BorderThickness="1" CornerRadius="5">
+                            <Border.BorderBrush>
+                                <LinearGradientBrush EndPoint="0,1">
+                                    <GradientStop Color="#c0c0c0"/>
+                                    <GradientStop Color="#404040" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
+                            <Border.Resources>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="{x:Null}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Width" Value="20"/>
+                                </Style>
+                            </Border.Resources>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Command="{Binding Provider.FirstPageCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
+                                    <TextBlock>|◀</TextBlock>
+                                </Button>
+                                <Button Grid.Column="1" Command="{Binding Provider.PreviousPageCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
+                                    <TextBlock>◀</TextBlock>
+                                </Button>
+                                <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{x:Static st:Common.PageCount}">
+                                            <Binding Path="Provider.Page" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+                                            <Binding Path="Provider.TotalPages" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <Button Grid.Column="3" Command="{Binding Provider.NextPageCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
+                                    <TextBlock>▶</TextBlock>
+                                </Button>
+                                <Button Grid.Column="4" Command="{Binding Provider.LastPageCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
+                                    <TextBlock>▶|</TextBlock>
+                                </Button>
+                            </Grid>
+                        </Border>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

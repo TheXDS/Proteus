@@ -46,7 +46,7 @@ public class CrudEditorViewModel : DynamicCrudViewModelBase
         Context = context;
         Title = context.CreatingNew
             ? string.Format(St.NewModel, description.FriendlyName)
-            : string.Format(St.EditModel, description.FriendlyName, entity.IdAsString);
+            : string.Format(St.EditModel, description.FriendlyName, entity.Metadata.IdAsString);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class CrudEditorViewModel : DynamicCrudViewModelBase
     /// </returns>
     public async Task OnCancel()
     {
-        if (await (DialogService?.Ask(Title, St.WantToCancelChanges) ?? Task.FromResult(true)))
+        if (await (DialogService?.AskYn(Title, St.WantToCancelChanges) ?? Task.FromResult(true)))
         {
             NavigationService?.NavigateBack();
             _resultAwaiter.SetResult(false);

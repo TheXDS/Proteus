@@ -1,17 +1,19 @@
 ﻿using System.Collections.ObjectModel;
 using TheXDS.Ganymede.Helpers;
 using TheXDS.Ganymede.Models;
+using TheXDS.Ganymede.Resources;
 using TheXDS.Ganymede.Services;
 using TheXDS.Ganymede.Types;
 using TheXDS.Ganymede.Types.Base;
 using TheXDS.MCART.Exceptions;
+using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.CrudGen;
 using TheXDS.Proteus.Helpers;
 using TheXDS.Proteus.Services;
 using TheXDS.Proteus.Services.Base;
 using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 using St = TheXDS.Proteus.Resources.Strings.Common;
 
 namespace TheXDS.Proteus.ViewModels;
@@ -41,7 +43,7 @@ public class CrudPageViewModel : ViewModel
     /// <summary>
     /// Gets an array of model types handled by this ViewModel.
     /// </summary>
-    public Type[] Models => Descriptions.Select(p => p.Model).ToArray();
+    public Type[] Models => [.. Descriptions.Select(p => p.Model)];
 
     /// <summary>
     /// Gets a reference to the command used to unselect any entity, navigating
@@ -159,9 +161,9 @@ public class CrudPageViewModel : ViewModel
 
     private async Task<ICrudDescription?> SelectNew()
     {
-        var options = Descriptions.Select(p => p.FriendlyName).ToArray();
-        var i = await (DialogService?.SelectOption(St.NewItem, St.NewItemHelp, options) ?? Task.FromResult(new InputResult<int>(false, -1)));
-        return i >= 0 ? Descriptions[i] : null;
+        var options = Descriptions.Select(p => new NamedObject<ICrudDescription?>(p.FriendlyName, p)).ToArray();
+        var i = await (DialogService?.SelectOption(CommonDialogTemplates.Input with { Title = St.NewItem, Text = St.NewItemHelp }, options) ?? Task.FromResult(new DialogResult<ICrudDescription?>(false, null)));
+        return i.Success ? i.Result : null;
     }
 
     private Task OnUpdate()
@@ -172,7 +174,7 @@ public class CrudPageViewModel : ViewModel
 
     private async Task OnDelete(IProgress<ProgressReport> progress)
     {
-        if (await (DialogService?.Ask(St.AreYouSure) ?? Task.FromResult(true)))
+        if (await (DialogService?.AskYn(St.AreYouSure) ?? Task.FromResult(true)))
         {
             IsBusy = true;
             await TrySaveData(progress, SelectedEntity ?? throw new InvalidOperationException(), (p, q) => p.Delete(q));
@@ -238,7 +240,13 @@ public class CrudPageViewModel : ViewModel
 
     private Task<bool> TrySaveData(IProgress<ProgressReport> progress, Model entity)
     {
-        return TrySaveData(progress, entity, (p, q) => p.CreateOrUpdate(q));
+        return TrySaveData(progress, entity, CreateOrUpdate);
+    }
+
+    private static void CreateOrUpdate(ICrudWriteTransaction svc, Model entity)
+    {
+        if (entity.Metadata.IsNew) svc.Create(entity);
+        else svc.Update(entity);
     }
 
     private async Task<bool> TrySaveData(IProgress<ProgressReport> progress, Model entity, Action<ICrudWriteTransaction, Model> operation)
@@ -246,6 +254,6 @@ public class CrudPageViewModel : ViewModel
         progress.Report(St.Saving);
         await using var svc = _tritonService.GetWriteTransaction();
         operation.Invoke(svc, entity);
-        return (await svc.CommitAsync()).Success;
+        return (await svc.CommitAsync()).IsSuccessful;
     }
 }

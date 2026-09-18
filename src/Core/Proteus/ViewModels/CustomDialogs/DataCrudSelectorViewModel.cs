@@ -5,7 +5,7 @@ using TheXDS.Proteus.CrudGen;
 using TheXDS.Proteus.Services;
 using TheXDS.Proteus.Services.Base;
 using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 using Pst = TheXDS.Proteus.Resources.Strings.Common;
 using St = TheXDS.Ganymede.Resources.Strings.Common;
 
@@ -39,7 +39,7 @@ public class DataCrudSelectorViewModel : AwaitableDialogViewModel
         Message = Pst.SelectItemHelp;
 
         var cb = new CommandBuilder<DataCrudSelectorViewModel>(this);
-        Interactions.Add(new(cb.BuildObserving(CloseDialog).CanExecuteIfNotNull(p => p.SelectedEntity).Build(), Pst.Select));
+        Interactions.Add(new(cb.BuildObserving(Close).CanExecuteIfNotNull(p => p.SelectedEntity).Build(), Pst.Select));
         Interactions.Add(new(cb.BuildSimple(OnCancel), St.Cancel));
     }
 
@@ -71,6 +71,6 @@ public class DataCrudSelectorViewModel : AwaitableDialogViewModel
     private void OnCancel()
     {
         SelectedEntity = null;
-        CloseDialog();
+        Close();
     }
 }

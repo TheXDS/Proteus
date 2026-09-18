@@ -1,7 +1,7 @@
 ﻿using TheXDS.Ganymede.Helpers;
 using TheXDS.Proteus.CrudGen;
 using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 
 namespace TheXDS.Proteus.ViewModels;
 

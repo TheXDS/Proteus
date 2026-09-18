@@ -13,13 +13,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
-		<PackageReference Include="TheXDS.ServicePool.Triton.Ef" Version="1.6.1-alpha3" />
-		<PackageReference Include="TheXDS.Triton.EFCore" Version="1.6.1-alpha3" />
+		<PackageReference Include="TheXDS.ServicePool.Triton.Ef" Version="2.0.0-beta.4" />
+		<PackageReference Include="TheXDS.Triton.EFCore" Version="2.0.0-beta.4" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Proteus.ServicePool\Proteus.ServicePool.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.400" />
 	</ItemGroup>
 
 </Project>

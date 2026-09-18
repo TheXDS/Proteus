@@ -1,7 +1,6 @@
-﻿using TheXDS.Ganymede.Controls;
-using TheXDS.Ganymede.Helpers;
+﻿using TheXDS.Ganymede.Helpers;
 using TheXDS.Ganymede.Services;
-using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.Controls;
 using TheXDS.Triton.InMemory.Services;
 using TheXDS.Triton.Services;
 using Sp = TheXDS.Proteus.Shared.Globals;
@@ -11,7 +10,7 @@ namespace TheXDS.Proteus;
 /// <summary>
 /// Interaction logic for <see cref="MainWindow"/>.
 /// </summary>
-public partial class MainWindow : ModernWindow, ICloseable
+public partial class MainWindow : ModernWindow
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.

@@ -43,7 +43,7 @@ public class CollectionMapping : ObjectMappingBase<ListEditor, ICollectionProper
         {
             var vm = (CrudEditorViewModel)control.DataContext;
             if (control.SelectedEntity is not { } child || description.Property.GetValue(vm.Entity) is not { } parentCollection) return;
-            if (await vm.DialogService!.Ask(St.Delete, St.AreYouSureDelete))
+            if (await vm.DialogService!.AskYn(St.Delete, St.AreYouSureDelete))
             {
                 CrudCommon.DynamicRemove(parentCollection, child);
                 control.Collection.Remove(child);

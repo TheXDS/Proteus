@@ -1,27 +1,36 @@
 ﻿using TheXDS.Ganymede.Types;
+using TheXDS.Ganymede.Types.Base;
 using TheXDS.Ganymede.ViewModels;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.CrudGen;
 using TheXDS.Proteus.Helpers;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services;
 
 namespace TheXDS.Proteus.ViewModels;
 
 /// <summary>
-/// Implements a <see cref="HostViewModelBase"/> that contains functionality to
+/// Implements a <see cref="HostViewModel"/> that contains functionality to
 /// generate children CRUD pages using Proteus.
 /// </summary>
-/// <param name="service">
-/// Service to make available to all CRUD pages that get navigated to on 
-/// this instance.
-/// </param>
-public abstract class ProteusHostViewModel(ITritonService service) : HostViewModelBase
+public abstract class ProteusHostViewModel : ViewModel
 {
+    private readonly HostViewModel _childNavViewModel;
+
+    /// <param name="service">
+    /// Service to make available to all CRUD pages that get navigated to on 
+    /// this instance.
+    /// </param>
+    public ProteusHostViewModel(ITritonService service)
+    {
+        Service = service;
+        _childNavViewModel = new(this);
+    }
+
     /// <summary>
     /// Gets a reference to an <see cref="ITritonService"/> instance to make
     /// available to all CRUD pages that are navigated to.
     /// </summary>
-    protected ITritonService Service { get; } = service;
+    protected ITritonService Service { get; }
 
     /// <summary>
     /// Gets a grouped enumeration of interactions to be made available on the
@@ -54,8 +63,8 @@ public abstract class ProteusHostViewModel(ITritonService service) : HostViewMod
     {
         return new(() =>
         {
-            if (clearStack) ChildNavService!.Reset();
-            ChildNavService!.NavigateToCrud<TDescriptor>(Service);
+            if (clearStack) _childNavViewModel.NavigationService.Reset();
+            _childNavViewModel.NavigationService.NavigateToCrud<TDescriptor>(Service);
         }, label)
         { Group = group ?? string.Empty, Essential = essential };
     }

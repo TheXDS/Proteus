@@ -17,7 +17,12 @@ public class Filter : NotifyPropertyChanged
     /// </summary>
     public Filter()
     {
-        RegisterPropertyChangeBroadcast(nameof(AggregateWithOr), nameof(AggregateWithAnd));
+    }
+
+    /// <inheritdoc/>
+    protected override void OnInitialize(IPropertyBroadcastSetup broadcastSetup)
+    {
+        broadcastSetup.RegisterPropertyChangeBroadcast(() => AggregateWithOr, () => AggregateWithAnd);
     }
 
     /// <summary>

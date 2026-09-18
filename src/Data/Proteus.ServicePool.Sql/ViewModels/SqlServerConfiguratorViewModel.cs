@@ -1,16 +1,15 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Security;
 using System.Windows.Input;
 using TheXDS.Ganymede.Helpers;
 using TheXDS.Ganymede.Models;
-using TheXDS.Ganymede.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Services.Configuration;
 using St = TheXDS.Proteus.Resources.Strings.SqlCommon;
 
 namespace TheXDS.Proteus.ViewModels;
 
-internal class SqlServerConfiguratorViewModel : ViewModel, IValidatableViewModel
+internal class SqlServerConfiguratorViewModel : ProteusConfigDialogViewModel
 {
     private string _connectionString = string.Empty;
     private bool _UseSimpleSettings = true;
@@ -118,9 +117,6 @@ internal class SqlServerConfiguratorViewModel : ViewModel, IValidatableViewModel
     /// </summary>
     public bool? IsConnectionSucessful { get; private set; }
 
-    /// <inheritdoc/>
-    public bool IsStateValid => IsConnectionSucessful == true;
-
     /// <summary>
     /// Initializes a new instance of the
     /// <see cref="SqlServerConfiguratorViewModel"/> class.
@@ -129,6 +125,13 @@ internal class SqlServerConfiguratorViewModel : ViewModel, IValidatableViewModel
     {
         CommandBuilder<SqlServerConfiguratorViewModel> cb = new(this);
         TestConnectionCommand = cb.BuildBusyOperation(OnTestConnection, St.TestingConnection);
+        Observe([nameof(ConnectionString), nameof(Server), nameof(Database), nameof(UseTrustedConn), nameof(Username), nameof(Password)], ClearState);
+    }
+
+    private void ClearState()
+    {
+        IsStateValid = false;
+        IsConnectionSucessful = null;
     }
 
     private string GetConnectionString(bool censor = false)
@@ -154,25 +157,33 @@ internal class SqlServerConfiguratorViewModel : ViewModel, IValidatableViewModel
             await (DialogService?.Error(St.InvalidConnStr, St.InvalidConnStrMsg) ?? Task.CompletedTask);
             return;
         }
-        using var conn = new SqlConnection(GetConnectionString());
+        if (!UseFullConnStr)
+        {
+            ConnectionString = GetConnectionString();
+        }
+        else
+        {
+            ClearState();
+        }
+        using var conn = new SqlConnection(ConnectionString);
         try
         {
             progress.Report(string.Format(St.TryingConn, GetConnectionString(true)));
             await conn.OpenAsync();
             await conn.CloseAsync();
             await (DialogService?.Message(St.SQLConn, St.ConnSuccess) ?? Task.CompletedTask);
-            IsConnectionSucessful = true;
+            IsConnectionSucessful = IsStateValid = true;
         }
         catch (Exception ex)
         {
             await (DialogService?.Error(St.CouldNotConnect, ex.Message) ?? Task.CompletedTask);
-            IsConnectionSucessful = false;
+            IsConnectionSucessful = IsStateValid = false;
         }
         finally
         {
             conn.Dispose();
         }
-        Notify(nameof(IsConnectionSucessful), nameof(IsStateValid));
+        Notify(nameof(IsConnectionSucessful));
     }
 
     private bool IsFormNotFilled()
