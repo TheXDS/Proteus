@@ -109,7 +109,7 @@ public class LoginViewModel : ViewModel
         {
             Title = Text.Lorem(4),
             Content = Text.Lorem(200, 8, 3),
-            CreationDate = DateTime.Now,
+            Timestamp = DateTime.Now,
             Creator = users[1],
             Id = Guid.NewGuid(),
         };
@@ -117,7 +117,7 @@ public class LoginViewModel : ViewModel
         {
             Id = Guid.NewGuid(),
             Content = Text.Lorem(10),
-            CreationDate = DateTime.Now,
+            Timestamp = DateTime.Now,
             Creator = u,
             Post = admPost
         });

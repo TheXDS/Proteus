@@ -15,6 +15,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="WPF-UI" Version="4.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="TheXDS.MCART.Wpf.Controls.ModernWindow" Version="1.0.0-alpha.3" />
 	</ItemGroup>
 

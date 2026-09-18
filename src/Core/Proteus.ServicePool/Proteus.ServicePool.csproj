@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\lib\Triton\src\Bundles\ServicePool.Triton\ServicePool.Triton.csproj" />
     <ProjectReference Include="..\Proteus\Proteus.csproj" />
   </ItemGroup>
 

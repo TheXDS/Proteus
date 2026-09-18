@@ -16,7 +16,8 @@ public class PostDescriptor : CrudDescriptor<Post>
             c.Property(p => p.Title);
             c.Property(p => p.Creator).Selectable();
             c.Property(p => p.Content).Paragraph(WidgetSize.Large);
-            c.Property(p => p.CreationDate).WithTime().HideFromEditor();
+            c.Property(p => p.Timestamp).Label("Created").WithTime().HideFromEditor();
+            c.Property(p => p.LastUpdated).Label("Last updated").WithTime().HideFromEditor();
             c.Property(p => p.Comments)
                 .HideFromDetails()
                 .WidgetSize(WidgetSize.Large)
@@ -24,7 +25,8 @@ public class PostDescriptor : CrudDescriptor<Post>
         });
         m.DetailsViewModel<PostDetailsViewModel>();
         m.AddDefaultGuidIdProlog();
-        m.AddSaveProlog(p => p.CreationDate ??= DateTime.Now);
-        m.ListViewProperties(p => p.Title, p => p.CreationDate, p => p.Creator);
+        m.AddTimestampSetProlog();
+        m.AddLastUpdatedProlog();
+        m.ListViewProperties(p => p.Title, p => p.Timestamp, p => p.Creator, p => p.LastUpdated);
     }
 }

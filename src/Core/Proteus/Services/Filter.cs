@@ -12,10 +12,8 @@ public class Filter : NotifyPropertyChanged
     private bool _exclude;
     private bool _or;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Filter"/> class.
-    /// </summary>
-    public Filter()
+    /// <inheritdoc/>
+    protected override void OnInitialize(IPropertyBroadcastSetup broadcastSetup)
     {
     }
 
@@ -29,7 +27,7 @@ public class Filter : NotifyPropertyChanged
     /// Gets a reference to the collection of filter items that will be applied
     /// when fetching etities of the specified model.
     /// </summary>
-    public ICollection<FilterItem> Items { get; } = new ObservableCollectionWrap<FilterItem>(new List<FilterItem>());
+    public ICollection<FilterItem> Items { get; } = new ObservableCollectionWrap<FilterItem>([]);
 
     /// <summary>
     /// Gets or sets a value that indicates if all entities of the specified

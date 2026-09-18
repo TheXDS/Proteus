@@ -159,7 +159,7 @@ public static class CrudCommon
     }
 
     /// <summary>
-    /// Scans the available types and finds all the 
+    /// Scans the available types and finds all the
     /// <see cref="ICrudDescription"/> instances that can be used to describe
     /// potential values assignable to the specified property description.
     /// </summary>
@@ -173,7 +173,8 @@ public static class CrudCommon
     /// </returns>
     public static IEnumerable<ICrudDescription> InferDescriptions(IPropertyDescription property)
     {
-        var types = property.Property.PropertyType.ResolveCollectionType().GetDerivedTypes().Where(p => p.IsInstantiable());
+        var propertyType = property.Property.PropertyType.ResolveCollectionType();
+        var types = propertyType.FindDerivedTypes().Append(propertyType).Where(p => p.IsInstantiable());
         foreach (var type in types)
         {
             foreach (var k in EnumerateDescriptors(type))

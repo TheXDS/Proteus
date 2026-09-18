@@ -57,10 +57,10 @@ public abstract class TritonEfConfiguratorBase<TService, TContext> : ITritonServ
     /// Options builder to use when configuring the <see cref="DbContext"/>
     /// options.
     /// </param>
-    protected abstract void ConfigureContext(DbContextOptionsBuilder<TContext> builder);
+    protected abstract ITransactionFactory ConfigureContext(DbContextOptionsBuilder<TContext> builder);
 
     void ITritonServiceConfigurator.Configure(ITritonConfigurable configurable)
     {
-        configurable.UseService<TService, TContext>(CreateService, ConfigureContext);
+        configurable.UseService((a,b) => CreateService(a,(EfCoreTransFactory<TContext>)b), () => ConfigureContext(null));
     }
 }

@@ -64,4 +64,33 @@ public static class ModelConfiguratorExtensions
     {
         return configurator.AddSaveProlog(p => { if (string.IsNullOrEmpty(p.Id)) p.Id = idGenerator.Invoke(p); });
     }
+
+    /// <summary>
+    /// Adds a prolog action to the model configurator that updates the model's timestamp to the current date and time
+    /// before saving.
+    /// </summary>
+    /// <remarks>This method is typically used to ensure that the model's timestamp is automatically set to
+    /// the current time when the model is created.</remarks>
+    /// <typeparam name="T">The type of the model being configured. Must inherit from Model and implement ITimestampModel.</typeparam>
+    /// <param name="configurator">The model configurator to which the timestamp update prolog will be added.</param>
+    /// <returns>The same model configurator instance with the timestamp update prolog configured.</returns>
+    public static IModelConfigurator<T> AddTimestampSetProlog<T>(this IModelConfigurator<T> configurator) where T : Model, ITimestampModel
+    {
+        return configurator.AddSaveProlog(p => p.Timestamp ??= DateTime.Now);
+    }
+
+
+    /// <summary>
+    /// Adds a prolog action to the model configurator that updates the model's timestamp to the current date and time
+    /// before saving.
+    /// </summary>
+    /// <remarks>This method is typically used to ensure that the model's timestamp is automatically set to
+    /// the current time when the model is created.</remarks>
+    /// <typeparam name="T">The type of the model being configured. Must inherit from Model and implement ITimestampModel.</typeparam>
+    /// <param name="configurator">The model configurator to which the timestamp update prolog will be added.</param>
+    /// <returns>The same model configurator instance with the timestamp update prolog configured.</returns>
+    public static IModelConfigurator<T> AddLastUpdatedProlog<T>(this IModelConfigurator<T> configurator) where T : Model, ILastUpdatedModel
+    {
+        return configurator.AddSaveProlog(p => p.LastUpdated = DateTime.Now);
+    }
 }

@@ -25,7 +25,7 @@ public class EntitySelector : Control
     {
         SetControlStyle<EntitySelector>(DefaultStyleKeyProperty);
         ProviderProperty = NewDp<IEntityProvider?, EntitySelector>(nameof(Provider));
-        SelectedEntityProperty = NewDp2Way<Model?, EntitySelector>(nameof(SelectedEntity));
+        SelectedEntityProperty = NewDp2Way<Model?, EntitySelector>(nameof(SelectedEntity), FrameworkPropertyMetadataOptions.None);
     }
 
     /// <summary>

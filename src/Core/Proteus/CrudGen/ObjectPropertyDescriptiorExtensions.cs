@@ -3,7 +3,7 @@
 namespace TheXDS.Proteus.CrudGen;
 
 /// <summary>
-/// Includes a set of extensions for the 
+/// Includes a set of extensions for the
 /// <see cref="ICollectionPropertyDescriptor"/> interface.
 /// </summary>
 public static class ObjectPropertyDescriptiorExtensions

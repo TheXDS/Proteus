@@ -26,5 +26,5 @@ public interface IObjectPropertyDescription : IPropertyDescription
     /// <summary>
     /// Indicates the available models to be added/selected/updated.
     /// </summary>
-    ICrudDescription[] AvailableModels => (GetClassValue<ICrudDescription[]>()?.OrNull() ?? CrudCommon.InferDescriptions(this)).ToArray();
+    ICrudDescription[] AvailableModels => [.. (GetClassValue<ICrudDescription[]>()?.OrNull() ?? CrudCommon.InferDescriptions(this))];
 }
