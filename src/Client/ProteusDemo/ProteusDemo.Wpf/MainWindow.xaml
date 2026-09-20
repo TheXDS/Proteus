@@ -7,6 +7,7 @@
     xmlns:gn="http://schemas.thexds.local/ganymede"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:TheXDS.Proteus.ViewModels;assembly=ProteusDemo"
+    xmlns:pt="http://schemas.thexds.local/proteus"
     mc:Ignorable="d"
     ui:Design.Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}"
@@ -52,7 +53,7 @@
             Navigator="{gn:NavService Home={x:Type vm:WelcomeViewModel}}">
             <gn:NavigationHost.VisualResolver>
                 <gn:WpfResolverStack>
-                    <gn:ProteusStackVisualResolver/>
+                    <pt:ProteusStackVisualResolver/>
                     <gn:WpfConventionVisualResolver/>
                 </gn:WpfResolverStack>
             </gn:NavigationHost.VisualResolver>

@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="WPF-UI" Version="4.2.0" />
+	  <PackageReference Include="WPF-UI" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -43,7 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.400" />
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.203" />
 	</ItemGroup>
 
 </Project>

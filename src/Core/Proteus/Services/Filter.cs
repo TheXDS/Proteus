@@ -15,11 +15,6 @@ public class Filter : NotifyPropertyChanged
     /// <inheritdoc/>
     protected override void OnInitialize(IPropertyBroadcastSetup broadcastSetup)
     {
-    }
-
-    /// <inheritdoc/>
-    protected override void OnInitialize(IPropertyBroadcastSetup broadcastSetup)
-    {
         broadcastSetup.RegisterPropertyChangeBroadcast(() => AggregateWithOr, () => AggregateWithAnd);
     }
 

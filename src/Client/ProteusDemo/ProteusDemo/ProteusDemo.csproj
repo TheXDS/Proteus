@@ -11,12 +11,12 @@
 		<PackageReference Include="TheXDS.MCART.Security" Version="1.0.0-alpha.3" />
 		<PackageReference Include="TheXDS.MCART.Security.Argon2" Version="1.0.0-alpha.3" />
 		<PackageReference Include="TheXDS.ServicePool" Version="2.0.1" />
-		<PackageReference Include="TheXDS.Triton.Diagnostics" Version="2.0.0-beta.4" />
-		<PackageReference Include="TheXDS.Triton.Faker" Version="2.0.0-beta.4" />
-		<PackageReference Include="TheXDS.Triton.InMemory" Version="2.0.0-beta.4" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\lib\Triton\src\Bundles\Triton.Diagnostics\Triton.Diagnostics.csproj" />
+		<ProjectReference Include="..\..\..\..\lib\Triton\src\Bundles\Triton.Faker\Triton.Faker.csproj" />
+		<ProjectReference Include="..\..\..\..\lib\Triton\src\Transport\Triton.InMemory\Triton.InMemory.csproj" />
 		<ProjectReference Include="..\..\..\Core\Proteus\Proteus.csproj" />
 	</ItemGroup>
 
@@ -90,7 +90,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.400" />
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.203" />
 	</ItemGroup>
 
 </Project>

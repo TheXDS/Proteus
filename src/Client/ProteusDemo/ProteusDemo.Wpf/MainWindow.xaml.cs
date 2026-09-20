@@ -1,6 +1,6 @@
 ﻿using TheXDS.Ganymede.Helpers;
 using TheXDS.Ganymede.Services;
-using TheXDS.MCART.Controls;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.InMemory.Services;
 using TheXDS.Triton.Services;
 using Sp = TheXDS.Proteus.Shared.Globals;

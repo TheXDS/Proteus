@@ -243,16 +243,17 @@ public class CrudPageViewModel : ViewModel
         return TrySaveData(progress, entity, CreateOrUpdate);
     }
 
-    private static void CreateOrUpdate(ICrudWriteTransaction svc, Model entity)
+    private static void CreateOrUpdate(ICrudReadWriteTransaction svc, Model entity)
     {
-        if (entity.Metadata.IsNew) svc.Create(entity);
-        else svc.Update(entity);
+        //if (entity.Metadata.IsNew) svc.Create(entity);
+        //else svc.Update(entity);
+        svc.CreateOrUpdate(entity);
     }
 
-    private async Task<bool> TrySaveData(IProgress<ProgressReport> progress, Model entity, Action<ICrudWriteTransaction, Model> operation)
+    private async Task<bool> TrySaveData(IProgress<ProgressReport> progress, Model entity, Action<ICrudReadWriteTransaction, Model> operation)
     {
         progress.Report(St.Saving);
-        await using var svc = _tritonService.GetWriteTransaction();
+        await using var svc = _tritonService.GetTransaction();
         operation.Invoke(svc, entity);
         return (await svc.CommitAsync()).IsSuccessful;
     }

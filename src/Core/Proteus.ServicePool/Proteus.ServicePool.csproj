@@ -8,16 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="TheXDS.ServicePool" Version="2.0.1" />
-    <PackageReference Include="TheXDS.ServicePool.Triton" Version="2.0.0-beta.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\lib\Triton\src\Bundles\ServicePool.Triton\ServicePool.Triton.csproj" />
     <ProjectReference Include="..\Proteus\Proteus.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.400" />
   </ItemGroup>
 
 </Project>

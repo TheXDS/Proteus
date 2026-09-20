@@ -13,9 +13,14 @@
   </Folder>
   <Folder Name="/Lib/" />
   <Folder Name="/Lib/Triton/">
+    <Project Path="lib/Triton/src/Bundles/ServicePool.Triton.Ef/ServicePool.Triton.Ef.csproj" />
     <Project Path="lib/Triton/src/Bundles/ServicePool.Triton/ServicePool.Triton.csproj" />
+    <Project Path="lib/Triton/src/Bundles/Triton.Diagnostics/Triton.Diagnostics.csproj" />
+    <Project Path="lib/Triton/src/Bundles/Triton.Faker/Triton.Faker.csproj" />
     <Project Path="lib/Triton/src/Core/Triton.Models/Triton.Models.csproj" />
     <Project Path="lib/Triton/src/Core/Triton/Triton.csproj" />
+    <Project Path="lib/Triton/src/Transport/Triton.EFCore/Triton.EFCore.csproj" />
+    <Project Path="lib/Triton/src/Transport/Triton.InMemory/Triton.InMemory.csproj" />
   </Folder>
   <Folder Name="/Platform/">
     <Project Path="src/Platform/Proteus.Wpf/Proteus.Wpf.csproj" />
